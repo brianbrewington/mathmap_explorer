@@ -157,6 +157,7 @@ for (let i = 0; i < iterations; i++) {
       { type: 'slider', key: 'yMin', label: 'y Min', min: -10, max: 0, step: 0.1, value: this.params.yMin },
       { type: 'slider', key: 'yMax', label: 'y Max', min: 0, max: 10, step: 0.1, value: this.params.yMax },
       { type: 'separator' },
+      { type: 'slider', key: 'iterations', label: 'Iterations', min: 500000, max: 50000000, step: 500000, value: this.params.iterations },
       { type: 'select', key: 'resolution', label: 'Resolution', options: [
         { value: 800, label: '800 (Fast)' },
         { value: 2000, label: '2000 (Medium)' },
