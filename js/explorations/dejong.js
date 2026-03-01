@@ -8,6 +8,7 @@ class DeJongExploration extends BaseExploration {
   static title = 'Peter de Jong';
   static description = "x' = sin(a*y) + c*cos(a*x), y' = sin(b*x) + d*cos(b*y)";
   static category = 'attractor';
+  static tags = ['strange-attractor', 'discrete-map', '2D', 'density-rendering', 'trigonometric'];
   static formulaShort = "x' = sin(ay) + c·cos(ax)";
   static formula = `<h3>Peter de Jong Attractor</h3>
 <div class="formula-block">

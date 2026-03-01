@@ -1,10 +1,14 @@
 import { getAll, getById } from './explorations/registry.js';
-import { buildSidebar, setActive } from './ui/sidebar.js';
+import { buildSidebar, setActive, updateHeroImage, setCaptureHeroCallback } from './ui/sidebar.js';
 import { buildControls, updateSliderDisplay } from './ui/controls.js';
 import { setupCanvasResize } from './ui/layout.js';
-import { initInfoPanel, showInfoPanel, updateInfoPanel, setTourCallback } from './ui/info-panel.js';
+import { initInfoPanel, showInfoPanel, updateInfoPanel, setTourCallback, setRelatedCallback, setSnapshotLoadCallback, triggerSaveSnapshot } from './ui/info-panel.js';
 import { AnimationController } from './ui/animation-controller.js';
 import { RecipeManager } from './ui/recipe-manager.js';
+import { captureHeroImage, captureCanvasThumbnail } from './ui/hero-images.js';
+import { embedAllExplorations } from './embeddings/exploration-embeddings.js';
+import { recordVisit, getSnapshots, getLastExploration, setLastExploration } from './ui/user-state.js';
+import { initChatPanel } from './ui/chat-panel.js';
 
 // Import all explorations (self-registering)
 import './explorations/mandelbrot.js';
@@ -21,6 +25,8 @@ import './explorations/l-system.js';
 import './explorations/mandelbrot-logistic-3d.js';
 import './explorations/julia-set.js';
 import './explorations/kleinian.js';
+import './explorations/coupled-systems.js';
+import './explorations/fluid-dynamics.js';
 
 const canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
@@ -76,11 +82,28 @@ const ANIM_PARAMS = {
   'mandelbrot-logistic-3d': [
     { key: 'azimuth', label: 'Azimuth', min: -3.14, max: 3.14 },
     { key: 'elevation', label: 'Elevation', min: 0.1, max: 1.5 }
+  ],
+  'coupled-systems': [
+    { key: 'epsilon', label: 'Coupling ε', min: 0, max: 0.5 },
+    { key: 'rA', label: 'r (A)', min: 0.5, max: 4.0 },
+    { key: 'rB', label: 'r (B)', min: 0.5, max: 4.0 }
   ]
 };
 
 function getAnimParamsForExploration(id) {
   return ANIM_PARAMS[id] || [];
+}
+
+let heroRefreshTimer = null;
+
+function scheduleHeroCapture() {
+  clearTimeout(heroRefreshTimer);
+  heroRefreshTimer = setTimeout(async () => {
+    if (!currentExploration || !currentInstance) return;
+    currentInstance.render();
+    const dataUrl = await captureHeroImage(canvas, currentExploration);
+    if (dataUrl) updateHeroImage(currentExploration, dataUrl);
+  }, 1500);
 }
 
 function rebuildControls() {
@@ -97,9 +120,10 @@ function rebuildControls() {
     });
   }
 
-  // Add recipe controls for custom iterator
+  controls.push({ type: 'separator' });
+  controls.push({ type: 'button', key: 'saveSnapshot', label: 'Save Snapshot', action: 'saveSnapshot' });
+
   if (currentExploration === 'custom-iterator') {
-    controls.push({ type: 'separator' });
     controls.push({ type: 'button', key: 'saveRecipe', label: 'Save Recipe', action: 'saveRecipe' });
     controls.push({ type: 'button', key: 'loadRecipe', label: 'Load Recipe', action: 'loadRecipe' });
   }
@@ -110,12 +134,30 @@ function rebuildControls() {
       if (currentInstance.shouldRebuildControls?.(key)) {
         rebuildControls();
       }
+      scheduleHeroCapture();
     },
     onAction(action) {
       if (action === 'start') currentInstance.start();
       else if (action === 'stop') currentInstance.stop();
       else if (action === 'reset') { animator.stop(); currentInstance.reset(); }
+      else if (action === 'regrow' && currentInstance.onAction) { currentInstance.onAction('regrow'); }
       else if (action === 'showInfo') showInfoPanel();
+      else if (action === 'saveSnapshot') {
+        const name = prompt('Snapshot name:');
+        if (name) {
+          currentInstance.render();
+          captureCanvasThumbnail(canvas).then(thumb => {
+            triggerSaveSnapshot(name, currentInstance.params, thumb);
+            fetch('/api/save-snapshot-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: currentExploration, name, dataUrl: thumb })
+            }).catch(() => {});
+          }).catch(() => {
+            triggerSaveSnapshot(name, currentInstance.params);
+          });
+        }
+      }
       else if (action === 'saveRecipe') saveCurrentRecipe();
       else if (action === 'loadRecipe') showRecipeLoader();
     },
@@ -244,6 +286,8 @@ function selectExploration(id) {
   currentExploration = id;
   currentExplClass = ExplClass;
   setActive(listEl, id);
+  recordVisit(id);
+  setLastExploration(id);
 
   currentInstance = new ExplClass(canvas, controlsPanel);
   rebuildControls();
@@ -266,10 +310,98 @@ function selectExploration(id) {
   currentInstance.activate();
   currentInstance.resize(canvas.width, canvas.height);
   currentInstance.render();
+
+  // Capture hero image after a delay to let workers/shaders finish.
+  // Re-render immediately before capture so the WebGL buffer is fresh
+  // (browsers clear it after compositing if preserveDrawingBuffer is off).
+  setTimeout(async () => {
+    if (currentExploration === id && currentInstance) {
+      currentInstance.render();
+      const dataUrl = await captureHeroImage(canvas, id);
+      if (dataUrl) updateHeroImage(id, dataUrl);
+    }
+  }, 800);
 }
 
 initInfoPanel();
-buildSidebar(listEl, selectExploration);
+setRelatedCallback(id => selectExploration(id));
+
+setCaptureHeroCallback(async (id) => {
+  if (currentInstance) currentInstance.render();
+  const dataUrl = await captureHeroImage(canvas, id);
+  if (dataUrl) updateHeroImage(id, dataUrl);
+});
+setSnapshotLoadCallback(async (index) => {
+  if (!currentInstance || !currentExploration) return;
+  const snapshots = await getSnapshots(currentExploration);
+  const snap = snapshots[index];
+  if (!snap) return;
+  Object.assign(currentInstance.params, snap.params);
+  rebuildControls();
+  currentInstance.deactivate();
+  currentInstance.activate();
+  currentInstance.resize(canvas.width, canvas.height);
+  currentInstance.render();
+  scheduleHeroCapture();
+});
+
+// buildSidebar is async (loads hero images from IndexedDB)
+buildSidebar(listEl, selectExploration).then(() => {
+  const all = getAll();
+  if (all.length === 0) return;
+
+  // ?generate-heroes: batch-cycle every exploration to capture thumbnails
+  if (new URLSearchParams(location.search).has('generate-heroes')) {
+    runHeroGeneration(all);
+    return;
+  }
+
+  // Restore last exploration or fall back to first
+  const lastId = getLastExploration();
+  const startId = (lastId && all.find(e => e.id === lastId)) ? lastId : all[0].id;
+  selectExploration(startId);
+
+  // Embed explorations in background (non-blocking, graceful if Ollama unavailable)
+  embedAllExplorations().then(ok => {
+    if (ok && currentExplClass) updateInfoPanel(currentExplClass);
+  });
+
+  // Initialize chat panel (non-blocking, hidden if no Ollama chat model)
+  const chatContainer = document.getElementById('chat-container');
+  if (chatContainer) initChatPanel(chatContainer, id => selectExploration(id));
+});
+
+async function runHeroGeneration(explorations) {
+  const status = document.createElement('div');
+  status.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a1d27;color:#e2e4ea;padding:12px 24px;border-radius:8px;border:1px solid #6b7cff;z-index:9999;font-family:inherit;font-size:14px;';
+  document.body.appendChild(status);
+
+  let saved = 0;
+  for (let i = 0; i < explorations.length; i++) {
+    const E = explorations[i];
+    status.textContent = `Generating heroes: ${i + 1}/${explorations.length} — ${E.title}`;
+    selectExploration(E.id);
+    await new Promise(r => setTimeout(r, 2000));
+    currentInstance.render();
+    const dataUrl = await captureCanvasThumbnail(canvas);
+    if (dataUrl) {
+      updateHeroImage(E.id, dataUrl);
+      try {
+        await fetch('/api/save-hero', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: E.id, dataUrl })
+        });
+        saved++;
+      } catch { /* server may not support save — IndexedDB fallback */ }
+    }
+  }
+
+  await fetch('/api/heroes-complete', { method: 'POST' }).catch(() => {});
+  status.textContent = `Done — ${saved} hero images saved to heroes/`;
+  setTimeout(() => status.remove(), 3000);
+}
+
 setupCanvasResize(canvas, (w, h) => {
   if (currentInstance) {
     currentInstance.resize(w, h);
@@ -287,14 +419,9 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'r' || e.key === 'R') {
     if (currentInstance) { animator.stop(); currentInstance.reset(); }
   }
-  // Space toggles animation
   if (e.key === ' ') {
     e.preventDefault();
     if (animator.playing) animator.pause();
     else if (animator.paramKey) animator.play();
   }
 });
-
-// Select first exploration on load
-const all = getAll();
-if (all.length > 0) selectExploration(all[0].id);

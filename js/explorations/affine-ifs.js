@@ -101,6 +101,7 @@ class AffineIFSExploration extends BaseExploration {
   static title = 'Affine IFS';
   static description = 'General affine Iterated Function System';
   static category = 'fractal';
+  static tags = ['ifs-classic', 'affine-transform', 'self-similar', 'chaos-game', 'configurable'];
   static formulaShort = '(x,y) \u2192 A\u00B7(x,y) + t';
 
   static formula = `<h3>Affine Iterated Function System</h3>

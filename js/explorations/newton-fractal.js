@@ -11,6 +11,7 @@ class NewtonFractalExploration extends BaseExploration {
   static title = 'Newton Fractal';
   static description = 'Newton\'s method on z^n - 1 = 0';
   static category = 'fractal';
+  static tags = ['complex-plane', 'root-finding', 'convergence', 'basin-of-attraction', 'numerical-methods'];
   static formulaShort = 'z → z − f(z)/f\'(z)';
   static formula = `<h3>Newton Fractal</h3>
 <div class="formula-block">

@@ -8,6 +8,7 @@ class BarnsleyExploration extends BaseExploration {
   static title = 'Barnsley Fern';
   static description = 'IFS with 4 affine transforms';
   static category = 'fractal';
+  static tags = ['ifs-classic', 'affine-transform', 'self-similar', 'biological-form', 'random-iteration'];
   static formulaShort = '4 affine transforms';
   static formula = `<h3>Barnsley Fern (IFS)</h3>
 <div class="formula-block">

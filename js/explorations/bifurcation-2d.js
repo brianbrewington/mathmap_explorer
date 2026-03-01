@@ -40,6 +40,7 @@ class Bifurcation2DExploration extends BaseExploration {
   static title = '2D Map Bifurcation';
   static description = 'Bifurcation diagram of 2D maps';
   static category = 'map';
+  static tags = ['discrete-map', '2D', 'bifurcation', 'chaos', 'henon-family'];
   static formulaShort = 'Sweep parameter of 2D maps';
   static formula = `<h3>2D Map Bifurcation</h3>
 <div class="formula-block">

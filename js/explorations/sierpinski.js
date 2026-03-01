@@ -8,6 +8,7 @@ class SierpinskiExploration extends BaseExploration {
   static title = 'Sierpinski Triangle';
   static description = 'Chaos game with 3 vertices';
   static category = 'fractal';
+  static tags = ['chaos-game', 'self-similar', 'ifs-classic', 'discrete-map', 'random-iteration'];
   static formulaShort = 'p<sub>n+1</sub> = (p<sub>n</sub> + v) / 2';
   static formula = `<h3>Sierpinski Triangle (Chaos Game)</h3>
 <div class="formula-block">

@@ -53,6 +53,7 @@ class KleinianExploration extends BaseExploration {
   static title = 'Kleinian Group';
   static description = 'Limit sets of Kleinian groups and Möbius transformations';
   static category = 'fractal';
+  static tags = ['complex-plane', 'group-theory', 'mobius-transformation', 'hyperbolic-geometry', 'limit-set'];
   static formulaShort = 'z \u2192 (az+b)/(cz+d)';
   static formula = `<h3>Kleinian Group Limit Sets</h3>
 <div class="formula-block">

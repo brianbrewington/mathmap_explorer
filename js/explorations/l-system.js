@@ -1,62 +1,105 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 
+// Seeded PRNG (mulberry32)
+function mulberry32(seed) {
+  let s = seed | 0;
+  return function() {
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 const L_PRESETS = {
   koch_curve: {
     label: 'Koch Curve',
     axiom: 'F',
     rules: 'F=F+F-F-F+F',
     angle: 90,
-    iterations: 4
+    iterations: 4,
+    angleVariation: 0
   },
   sierpinski_triangle: {
     label: 'Sierpinski Triangle',
     axiom: 'F-G-G',
     rules: 'F=F-G+F+G-F\nG=GG',
     angle: 120,
-    iterations: 5
+    iterations: 5,
+    angleVariation: 0
   },
   dragon_curve: {
     label: 'Dragon Curve',
     axiom: 'FX',
     rules: 'X=X+YF+\nY=-FX-Y',
     angle: 90,
-    iterations: 10
+    iterations: 10,
+    angleVariation: 0
   },
   hilbert: {
     label: 'Hilbert Curve',
     axiom: 'A',
     rules: 'A=-BF+AFA+FB-\nB=+AF-BFB-FA+',
     angle: 90,
-    iterations: 5
+    iterations: 5,
+    angleVariation: 0
   },
   plant: {
     label: 'Fractal Plant',
     axiom: 'X',
     rules: 'X=F+[[X]-X]-F[-FX]+X\nF=FF',
     angle: 25,
-    iterations: 5
+    iterations: 5,
+    angleVariation: 0
+  },
+  stochastic_plant: {
+    label: 'Stochastic Plant',
+    axiom: 'X',
+    rules: 'X(0.6)=F+[[X]-X]-F[-FX]+X\nX(0.3)=F+[X]-F[-FX]+X\nX(0.1)=F\nF=FF',
+    angle: 25,
+    iterations: 5,
+    angleVariation: 3
+  },
+  windswept: {
+    label: 'Windswept Tree',
+    axiom: 'X',
+    rules: 'X(0.7)=F+[[X]-X]-F[-FX]+X\nX(0.2)=F[+X]F\nX(0.1)=F\nF=FF',
+    angle: 20,
+    iterations: 5,
+    angleVariation: 5
+  },
+  coral: {
+    label: 'Coral Growth',
+    axiom: 'F',
+    rules: 'F(0.5)=FF+[+F-F-F]-[-F+F+F]\nF(0.3)=FF+[+F]-[-F]\nF(0.2)=FF',
+    angle: 22,
+    iterations: 4,
+    angleVariation: 4
   },
   penrose: {
     label: 'Penrose Tiling',
     axiom: '[7]++[7]++[7]++[7]++[7]',
     rules: '6=81++91----71[-81----61]++\n7=+81--91[---61--71]+\n8=-61++71[+++81++91]-\n9=--81++++61[+91++++71]--71\n1=',
     angle: 36,
-    iterations: 4
+    iterations: 4,
+    angleVariation: 0
   },
   gosper: {
     label: 'Gosper Curve',
     axiom: 'A',
     rules: 'A=A-B--B+A++AA+B-\nB=+A-BB--B-A++A+B',
     angle: 60,
-    iterations: 4
+    iterations: 4,
+    angleVariation: 0
   },
   levy_c: {
     label: 'Levy C Curve',
     axiom: 'F',
     rules: 'F=+F--F+',
     angle: 45,
-    iterations: 10
+    iterations: 10,
+    angleVariation: 0
   }
 };
 
@@ -65,15 +108,20 @@ class LSystemExploration extends BaseExploration {
   static title = 'L-System';
   static description = 'Lindenmayer systems — string-rewriting fractals';
   static category = 'custom';
+  static tags = ['string-rewriting', 'turtle-graphics', 'biological-form', 'self-similar', 'grammar'];
   static formulaShort = 'Axiom → Rules → Turtle';
   static formula = `<h3>L-Systems</h3>
 <div class="formula-block">
 Axiom: initial string<br>
 Rules: character → replacement (per iteration)<br>
 F = draw forward, + = turn left, - = turn right<br>
-[ = push state, ] = pop state
+[ = push state, ] = pop state<br><br>
+<b>Stochastic rules:</b><br>
+F(0.6) = F[+F]F[-F]F<br>
+F(0.3) = F[+F]F<br>
+F(0.1) = F
 </div>
-<p>Lindenmayer systems generate complex fractal patterns through simple string rewriting rules, then interpreting the result as turtle graphics commands.</p>`;
+<p>Lindenmayer systems generate complex fractal patterns through simple string rewriting rules. With probability weights, the same rules produce different organisms each time — same genotype, different phenotype.</p>`;
   static tutorial = `<h3>How L-Systems Work</h3>
 <p>Starting from an axiom string, each iteration replaces characters according to production rules. The final string is interpreted as turtle graphics:</p>
 <pre><code class="language-js">// F = move forward and draw
@@ -99,8 +147,10 @@ F = draw forward, + = turn left, - = turn right<br>
       rules: preset.rules,
       angle: preset.angle,
       iterations: preset.iterations,
+      angleVariation: 0,
+      seed: Math.floor(Math.random() * 100000),
       lineWidth: 1,
-      color: 0 // 0=accent, 1=green, 2=white, 3=rainbow
+      color: 0
     };
     this._canvas2d = null;
     this._ctx = null;
@@ -119,6 +169,7 @@ F = draw forward, + = turn left, - = turn right<br>
       { type: 'text', key: 'axiom', label: 'Axiom', value: this.params.axiom, placeholder: 'F', minWidth: 200 },
       { type: 'text', key: 'rules', label: 'Rules', value: this.params.rules, placeholder: 'F=F+F-F-F+F', minWidth: 300 },
       { type: 'slider', key: 'angle', label: 'Angle (°)', min: 1, max: 180, step: 1, value: this.params.angle },
+      { type: 'slider', key: 'angleVariation', label: 'Angle Jitter (°)', min: 0, max: 15, step: 0.5, value: this.params.angleVariation },
       { type: 'slider', key: 'iterations', label: 'Iterations', min: 1, max: 12, step: 1, value: this.params.iterations },
       { type: 'slider', key: 'lineWidth', label: 'Line Width', min: 0.5, max: 5, step: 0.5, value: this.params.lineWidth },
       { type: 'select', key: 'color', label: 'Color', options: [
@@ -126,8 +177,9 @@ F = draw forward, + = turn left, - = turn right<br>
         { value: 2, label: 'White' }, { value: 3, label: 'Rainbow' }
       ], value: this.params.color },
       { type: 'separator' },
+      { type: 'button', key: 'regrow', label: 'Regrow (New Seed)', action: 'regrow' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
-      { type: 'description', text: 'F=draw, +=left, -=right, [=push, ]=pop. Separate rules with newlines.' },
+      { type: 'description', text: 'F=draw, +=left, -=right, [=push, ]=pop. Use F(0.6)=... for stochastic rules.' },
       { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
     ];
   }
@@ -153,12 +205,21 @@ F = draw forward, + = turn left, - = turn right<br>
         this.params.rules = p.rules;
         this.params.angle = p.angle;
         this.params.iterations = p.iterations;
+        this.params.angleVariation = p.angleVariation || 0;
+        this.params.seed = Math.floor(Math.random() * 100000);
       }
     }
     if (key === 'axiom' || key === 'rules') {
       this.params.preset = 'custom';
     }
     this._render();
+  }
+
+  onAction(action) {
+    if (action === 'regrow') {
+      this.params.seed = Math.floor(Math.random() * 100000);
+      this._render();
+    }
   }
 
   reset() {
@@ -168,6 +229,8 @@ F = draw forward, + = turn left, - = turn right<br>
     this.params.rules = preset.rules;
     this.params.angle = preset.angle;
     this.params.iterations = preset.iterations;
+    this.params.angleVariation = 0;
+    this.params.seed = Math.floor(Math.random() * 100000);
     this._render();
   }
 
@@ -176,27 +239,65 @@ F = draw forward, + = turn left, - = turn right<br>
 
   _parseRules(rulesStr) {
     const rules = {};
+    const probRegex = /^([A-Za-z0-9])\(([0-9.]+)\)$/;
     const lines = rulesStr.split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed) continue;
       const eqIdx = trimmed.indexOf('=');
       if (eqIdx < 0) continue;
-      const key = trimmed.slice(0, eqIdx).trim();
+      const lhs = trimmed.slice(0, eqIdx).trim();
       const val = trimmed.slice(eqIdx + 1).trim();
-      if (key.length === 1) rules[key] = val;
+
+      const match = lhs.match(probRegex);
+      if (match) {
+        const key = match[1];
+        const prob = parseFloat(match[2]);
+        if (!rules[key]) rules[key] = [];
+        if (!Array.isArray(rules[key])) rules[key] = [{ replacement: rules[key], probability: 1 }];
+        rules[key].push({ replacement: val, probability: prob });
+      } else if (lhs.length === 1) {
+        if (rules[lhs] && Array.isArray(rules[lhs])) {
+          rules[lhs].push({ replacement: val, probability: 1 });
+        } else {
+          rules[lhs] = val;
+        }
+      }
+    }
+
+    // Normalize probabilities for stochastic rules
+    for (const key of Object.keys(rules)) {
+      if (Array.isArray(rules[key])) {
+        const total = rules[key].reduce((s, r) => s + r.probability, 0);
+        if (total > 0) rules[key].forEach(r => r.probability /= total);
+      }
     }
     return rules;
   }
 
-  _generateString(axiom, rules, iterations) {
+  _generateString(axiom, rules, iterations, rng) {
     let current = axiom;
-    const maxLen = 5000000; // safety limit
+    const maxLen = 5000000;
     for (let i = 0; i < iterations; i++) {
       let next = '';
       for (let j = 0; j < current.length; j++) {
         const ch = current[j];
-        next += (rules[ch] !== undefined) ? rules[ch] : ch;
+        const rule = rules[ch];
+        if (rule === undefined) {
+          next += ch;
+        } else if (typeof rule === 'string') {
+          next += rule;
+        } else {
+          // Stochastic: weighted random selection
+          const r = rng();
+          let cumulative = 0;
+          let chosen = rule[rule.length - 1].replacement;
+          for (const option of rule) {
+            cumulative += option.probability;
+            if (r <= cumulative) { chosen = option.replacement; break; }
+          }
+          next += chosen;
+        }
         if (next.length > maxLen) return next;
       }
       current = next;
@@ -204,13 +305,13 @@ F = draw forward, + = turn left, - = turn right<br>
     return current;
   }
 
-  _computeSegments(str, angleDeg) {
+  _computeSegments(str, angleDeg, angleVariation, rng) {
     const angleRad = angleDeg * Math.PI / 180;
+    const varRad = angleVariation * Math.PI / 180;
     const segments = [];
     let x = 0, y = 0, dir = 0;
     const stack = [];
 
-    // Drawing chars: F, G, 1-9 all draw
     const drawChars = new Set('FG0123456789'.split(''));
 
     for (let i = 0; i < str.length; i++) {
@@ -221,9 +322,11 @@ F = draw forward, + = turn left, - = turn right<br>
         segments.push(x, y, nx, ny);
         x = nx; y = ny;
       } else if (ch === '+') {
-        dir += angleRad;
+        const jitter = varRad > 0 ? (rng() * 2 - 1) * varRad : 0;
+        dir += angleRad + jitter;
       } else if (ch === '-') {
-        dir -= angleRad;
+        const jitter = varRad > 0 ? (rng() * 2 - 1) * varRad : 0;
+        dir -= angleRad + jitter;
       } else if (ch === '[') {
         stack.push({ x, y, dir });
       } else if (ch === ']') {
@@ -232,7 +335,6 @@ F = draw forward, + = turn left, - = turn right<br>
           x = s.x; y = s.y; dir = s.dir;
         }
       }
-      // Other chars: skip (variables)
     }
     return segments;
   }
@@ -251,9 +353,10 @@ F = draw forward, + = turn left, - = turn right<br>
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, w, h);
 
+    const rng = mulberry32(this.params.seed);
     const rules = this._parseRules(this.params.rules);
-    const str = this._generateString(this.params.axiom, rules, this.params.iterations);
-    const segments = this._computeSegments(str, this.params.angle);
+    const str = this._generateString(this.params.axiom, rules, this.params.iterations, rng);
+    const segments = this._computeSegments(str, this.params.angle, this.params.angleVariation || 0, rng);
 
     if (segments.length < 4) return;
 
@@ -367,3 +470,5 @@ void main() { fragColor = texture(u_tex, v_uv); }`;
 }
 
 register(LSystemExploration);
+
+export { mulberry32, LSystemExploration };

@@ -21,6 +21,7 @@ class LogisticMapExploration extends BaseExploration {
   static title = 'Logistic Map';
   static description = 'Bifurcation diagram of x_{n+1} = r*x_n*(1-x_n)';
   static category = 'map';
+  static tags = ['discrete-map', '1D', 'bifurcation', 'chaos', 'lyapunov', 'period-doubling'];
   static formulaShort = 'x<sub>n+1</sub> = r·x<sub>n</sub>·(1 − x<sub>n</sub>)';
   static formula = `<h3>Logistic Map</h3>
 <div class="formula-block">

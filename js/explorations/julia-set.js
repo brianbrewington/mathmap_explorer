@@ -19,6 +19,7 @@ class JuliaSetExploration extends BaseExploration {
   static title = 'Julia Set';
   static description = 'Explore Julia sets for z → z² + c with a fixed complex parameter c';
   static category = 'fractal';
+  static tags = ['complex-plane', 'escape-time', 'fractal-boundary', 'connected-sets', 'mandelbrot-dual'];
   static formulaShort = 'z → z² + c (fixed c)';
   static formula = `<h3>Julia Set</h3>
 <div class="formula-block">

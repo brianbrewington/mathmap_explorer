@@ -3,6 +3,7 @@ export class BaseExploration {
   static title = 'Base';
   static description = '';
   static category = 'fractal';
+  static tags = [];
   static formula = '';
   static formulaShort = '';
   static tutorial = '';

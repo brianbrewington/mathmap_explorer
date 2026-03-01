@@ -11,6 +11,7 @@ class MandelbrotLogistic3DExploration extends BaseExploration {
   static title = 'Mandelbrot \u2194 Logistic 3D';
   static description = 'Ray-marched 3D visualization showing the Mandelbrot set as a floor with the bifurcation diagram rising vertically';
   static category = 'fractal';
+  static tags = ['complex-plane', 'bifurcation', '3D', 'ray-marching', 'logistic-connection'];
   static formulaShort = 'c = r(2\u2212r)/4';
   static formula = `<h3>Mandelbrot \u2194 Logistic Conjugacy</h3>
 <div class="formula-block">

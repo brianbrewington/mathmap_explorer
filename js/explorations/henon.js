@@ -8,6 +8,7 @@ class HenonExploration extends BaseExploration {
   static title = 'Henon Map';
   static description = "x' = 1 - a*x^2 + y, y' = b*x";
   static category = 'attractor';
+  static tags = ['strange-attractor', 'discrete-map', '2D', 'chaos', 'bifurcation'];
   static formulaShort = "x' = 1 − ax² + y";
   static formula = `<h3>Hénon Map</h3>
 <div class="formula-block">

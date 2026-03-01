@@ -90,6 +90,7 @@ class CustomIteratorExploration extends BaseExploration {
   static title = 'Custom Iterator';
   static description = 'Define your own iteration formulas';
   static category = 'custom';
+  static tags = ['user-defined', 'discrete-map', 'configurable', 'escape-time', 'expression-parser'];
   static formulaShort = 'x\' = f(x, y, a, b, c, d)';
   static formula = `<h3>Custom Iterator</h3>
 <div class="formula-block">

@@ -11,6 +11,7 @@ class MandelbrotExploration extends BaseExploration {
   static title = 'Mandelbrot Set';
   static description = 'The classic Mandelbrot set fractal';
   static category = 'fractal';
+  static tags = ['complex-plane', 'escape-time', 'fractal-boundary', 'parameter-space', 'bifurcation'];
   static formulaShort = 'z → z² + c';
   static formula = `<h3>Mandelbrot Set</h3>
 <div class="formula-block">
