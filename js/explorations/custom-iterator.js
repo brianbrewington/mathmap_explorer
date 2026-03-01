@@ -135,7 +135,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       gpuColorScheme: 0,
       // 1D map params
       rMin: 2.5, rMax: 4.0,
-      mapTransient: 500, mapSamples: 200, mapRSteps: 2000,
+      mapTransient: 1000, mapSamples: 500, mapRSteps: 5000,
       mapResolution: 2000
     };
     this._parseError = '';
@@ -254,9 +254,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
         { type: 'separator' },
         { type: 'slider', key: 'rMin', label: 'r Min', min: 0, max: 4, step: 0.01, value: this.params.rMin },
         { type: 'slider', key: 'rMax', label: 'r Max', min: 0, max: 4, step: 0.01, value: this.params.rMax },
-        { type: 'slider', key: 'mapTransient', label: 'Transient', min: 100, max: 2000, step: 100, value: this.params.mapTransient },
-        { type: 'slider', key: 'mapSamples', label: 'Samples', min: 50, max: 500, step: 50, value: this.params.mapSamples },
-        { type: 'slider', key: 'mapRSteps', label: 'r Steps', min: 500, max: 5000, step: 500, value: this.params.mapRSteps },
+        { type: 'slider', key: 'mapTransient', label: 'Transient', min: 100, max: 5000, step: 100, value: this.params.mapTransient },
+        { type: 'slider', key: 'mapSamples', label: 'Samples', min: 50, max: 5000, step: 50, value: this.params.mapSamples },
+        { type: 'slider', key: 'mapRSteps', label: 'r Steps', min: 500, max: 50000, step: 500, value: this.params.mapRSteps },
         { type: 'select', key: 'mapResolution', label: 'Resolution', options: [
           { value: 800, label: '800 (Fast)' }, { value: 2000, label: '2000 (Medium)' },
           { value: 4000, label: '4000 (High)' }
