@@ -1,5 +1,5 @@
 {
-  "name": "ifs-explorer",
+  "name": "@mathmap/explorer",
   "private": true,
   "type": "module",
   "scripts": {

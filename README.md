@@ -1,8 +1,8 @@
-# IFS Explorer
+# MathMap Explorer
 
-![IFS Explorer Demo](demo.png)
+![MathMap Explorer Demo](demo.png)
 
-A web-based exploration tool for visualizing Iterated Function Systems (IFS), fractals, and strange attractors. This project provides an interactive canvas to tweak parameters and observe the chaotic yet deterministic beauty of various mathematical systems in real-time.
+A web-based exploration tool for visualizing Iterated Function Systems (IFS), fractals, strange attractors, and more. This project provides an interactive canvas to tweak parameters and observe the chaotic yet deterministic beauty of various mathematical systems in real-time.
 
 ## Features
 

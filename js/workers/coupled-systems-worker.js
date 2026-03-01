@@ -5,7 +5,7 @@ self.onmessage = function(e) {
   let maxDensity = 0;
 
   let xA = 0.1, yA = 0.1;
-  let xB = 0.3, yB = 0.3;
+  let xB = 0.6, yB = -0.2;
 
   const { xMin, xMax, yMin, yMax } = bounds;
   const xScale = width / (xMax - xMin);

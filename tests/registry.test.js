@@ -46,12 +46,12 @@ describe('Registry', () => {
     warn.mockRestore();
   });
 
-  it('warns on invalid category', () => {
+  it('warns on missing topic tags', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    class BadCat { static id = 'bad'; static title = 'X'; static category = 'bogus'; }
-    register(BadCat);
-    const catCall = warn.mock.calls.find(c => c[0]?.includes?.('Unknown category'));
-    expect(catCall).toBeTruthy();
+    class NoTopicTags { static id = 'no-topic'; static title = 'X'; static tags = ['chaos']; }
+    register(NoTopicTags);
+    const tagCall = warn.mock.calls.find(c => c[0]?.includes?.('No topic tag'));
+    expect(tagCall).toBeTruthy();
     warn.mockRestore();
   });
 

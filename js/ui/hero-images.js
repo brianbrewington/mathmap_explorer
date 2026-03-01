@@ -52,9 +52,60 @@ function blobToDataUrl(blob) {
 export async function captureCanvasThumbnail(canvas, size = THUMB_SIZE) {
   const oc = new OffscreenCanvas(size, size);
   const ctx = oc.getContext('2d');
-  ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, size, size);
+  const sw = canvas.width, sh = canvas.height;
+  const cropSize = Math.min(sw, sh);
+  const sx = (sw - cropSize) / 2;
+  const sy = (sh - cropSize) / 2;
+  ctx.drawImage(canvas, sx, sy, cropSize, cropSize, 0, 0, size, size);
   const blob = await oc.convertToBlob({ type: 'image/webp', quality: 0.7 });
   return blobToDataUrl(blob);
+}
+
+function isCanvasBlank(canvas) {
+  try {
+    const oc = new OffscreenCanvas(16, 16);
+    const ctx = oc.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 16, 16);
+    const { data } = ctx.getImageData(0, 0, 16, 16);
+    let bright = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] > 15 || data[i + 1] > 15 || data[i + 2] > 15) {
+        if (++bright > 10) return false;
+      }
+    }
+    return true;
+  } catch { return false; }
+}
+
+async function isBlankDataUrl(dataUrl) {
+  if (!dataUrl) return true;
+  if (!dataUrl.startsWith('data:')) return false;
+  try {
+    const resp = await fetch(dataUrl);
+    const blob = await resp.blob();
+    const bmp = await createImageBitmap(blob);
+    const oc = new OffscreenCanvas(16, 16);
+    const ctx = oc.getContext('2d');
+    ctx.drawImage(bmp, 0, 0, 16, 16);
+    bmp.close();
+    const { data } = ctx.getImageData(0, 0, 16, 16);
+    let bright = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] > 15 || data[i + 1] > 15 || data[i + 2] > 15) {
+        if (++bright > 10) return false;
+      }
+    }
+    return true;
+  } catch { return true; }
+}
+
+/**
+ * Returns true if a non-blank hero image exists for this exploration.
+ */
+export async function hasRealHero(id) {
+  const hero = await getHeroImage(id);
+  if (!hero) return false;
+  return !(await isBlankDataUrl(hero));
 }
 
 export async function getHeroImage(id) {
@@ -63,9 +114,23 @@ export async function getHeroImage(id) {
   } catch { return null; }
 }
 
+/**
+ * Capture the canvas as a hero image, but reject blank/black canvases.
+ */
 export async function captureHeroImage(canvas, id) {
   try {
+    if (isCanvasBlank(canvas)) return null;
     const dataUrl = await captureCanvasThumbnail(canvas);
+    await putToDB(id, dataUrl);
+    return dataUrl;
+  } catch { return null; }
+}
+
+/**
+ * Set hero image directly from a data URL (e.g. from a saved snapshot thumbnail).
+ */
+export async function setHeroImage(id, dataUrl) {
+  try {
     await putToDB(id, dataUrl);
     return dataUrl;
   } catch { return null; }

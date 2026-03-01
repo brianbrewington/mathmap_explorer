@@ -8,7 +8,7 @@ class SierpinskiExploration extends BaseExploration {
   static title = 'Sierpinski Triangle';
   static description = 'Chaos game with 3 vertices';
   static category = 'fractal';
-  static tags = ['chaos-game', 'self-similar', 'ifs-classic', 'discrete-map', 'random-iteration'];
+  static tags = ['fractals', 'chaos-game', 'beginner', 'self-similar', 'ifs-classic', 'discrete-map', 'random-iteration'];
   static formulaShort = 'p<sub>n+1</sub> = (p<sub>n</sub> + v) / 2';
   static formula = `<h3>Sierpinski Triangle (Chaos Game)</h3>
 <div class="formula-block">
@@ -34,6 +34,30 @@ for (let i = 0; i < iterations; i++) {
   }
 }</code></pre>
 <p>The resulting pattern is a perfect Sierpinski triangle — demonstrating how randomness and a simple rule can generate precise fractal structure.</p>`;
+  static extensions = ['affine-ifs', 'barnsley'];
+
+  static guidedSteps = [
+    {
+      label: 'Sparse Points',
+      description: 'With fewer iterations individual points are visible. The chaos game randomly picks a vertex and jumps halfway — slowly building self-similar structure.',
+      params: { iterations: 100000, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Dense Triangle',
+      description: 'More iterations fill in the fractal completely. Notice the empty triangular gaps at every scale — removed middle thirds nest infinitely deep.',
+      params: { iterations: 2000000, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Fire View',
+      description: 'The fire palette reveals visit-density patterns. In the true fractal all surviving points are equally likely — density variations here show the finite-sample structure.',
+      params: { iterations: 2000000, colorScheme: 1, brightness: 1.5 }
+    },
+    {
+      label: 'High Density',
+      description: 'Maximum iterations for the smoothest rendering. At this scale the fractal dimension ≈ 1.585 is apparent — more than a line, less than a filled plane.',
+      params: { iterations: 5000000, colorScheme: 0, brightness: 1.0 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

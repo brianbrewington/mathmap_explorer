@@ -11,7 +11,7 @@ class MandelbrotLogistic3DExploration extends BaseExploration {
   static title = 'Mandelbrot \u2194 Logistic 3D';
   static description = 'Ray-marched 3D visualization showing the Mandelbrot set as a floor with the bifurcation diagram rising vertically';
   static category = 'fractal';
-  static tags = ['complex-plane', 'bifurcation', '3D', 'ray-marching', 'logistic-connection'];
+  static tags = ['fractals', 'dynamical-systems', 'escape-time', 'advanced', 'complex-plane', 'bifurcation', '3D', 'ray-marching', 'logistic-connection'];
   static formulaShort = 'c = r(2\u2212r)/4';
   static formula = `<h3>Mandelbrot \u2194 Logistic Conjugacy</h3>
 <div class="formula-block">
@@ -34,6 +34,35 @@ function logisticR_to_mandelbrotC(r) {
 // r=3 (first bifurcation) \u2192 c = 3(2\u22123)/4 = \u22120.75
 // r=4 (full chaos)        \u2192 c = 4(2\u22124)/4 = \u22122.0</code></pre>
 <p>In this visualization, the Mandelbrot set is rendered as a floor plane. The bifurcation diagram stands vertically on the z=0 plane, directly above the real axis of the Mandelbrot set, making the conjugacy visible in 3D.</p>`;
+  static foundations = ['mandelbrot', 'logistic-map'];
+
+  static guidedSteps = [
+    {
+      label: 'Default View',
+      description: 'See the Mandelbrot set on the complex plane with the logistic-map bifurcation diagram rising above the real axis. Two of the most famous objects in dynamics are secretly the same.',
+      params: { azimuth: 0.5, elevation: 0.8, maxIter: 200, colorScheme: 0, showPlane: 1, showBifurcation: 1 }
+    },
+    {
+      label: 'Top Down',
+      description: 'Look straight down to see the Mandelbrot set from above. The bifurcation ridge disappears into the plane — from this angle it\'s a classic 2D fractal.',
+      params: { azimuth: 0.0, elevation: 1.5, maxIter: 200, colorScheme: 0, showPlane: 1, showBifurcation: 1 }
+    },
+    {
+      label: 'Side View',
+      description: 'Rotate to see the bifurcation diagram edge-on along the real axis. The period-doubling cascade and chaotic bands are visible as a vertical silhouette.',
+      params: { azimuth: 1.57, elevation: 0.3, maxIter: 200, colorScheme: 0, showPlane: 1, showBifurcation: 1 }
+    },
+    {
+      label: 'Fire Palette',
+      description: 'Switch to fire colors for dramatic contrast. The iteration-count coloring maps to warm tones — the boundary between bounded and escaping regions glows.',
+      params: { azimuth: 0.5, elevation: 0.8, maxIter: 200, colorScheme: 1, showPlane: 1, showBifurcation: 1 }
+    },
+    {
+      label: 'Bifurcation Only',
+      description: 'Hide the Mandelbrot plane to isolate the bifurcation diagram. Rotate around it to see its 3D structure — the branches spread in all directions from the real axis.',
+      params: { azimuth: 0.5, elevation: 0.6, maxIter: 200, colorScheme: 0, showPlane: 0, showBifurcation: 1 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

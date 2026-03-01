@@ -21,7 +21,7 @@ class LogisticMapExploration extends BaseExploration {
   static title = 'Logistic Map';
   static description = 'Bifurcation diagram of x_{n+1} = r*x_n*(1-x_n)';
   static category = 'map';
-  static tags = ['discrete-map', '1D', 'bifurcation', 'chaos', 'lyapunov', 'period-doubling'];
+  static tags = ['dynamical-systems', 'iteration', 'intermediate', 'discrete-map', '1D', 'bifurcation', 'chaos', 'lyapunov', 'period-doubling'];
   static formulaShort = 'x<sub>n+1</sub> = r·x<sub>n</sub>·(1 − x<sub>n</sub>)';
   static formula = `<h3>Logistic Map</h3>
 <div class="formula-block">
@@ -73,6 +73,35 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 <p>When enabled, the colored band at the bottom shows the Lyapunov exponent λ(r). <strong>Blue</strong> regions (λ &lt; 0) indicate stable periodic orbits. <strong>Red</strong> regions (λ &gt; 0) indicate chaos. The boundary (λ = 0) marks where bifurcations occur.</p>
 <h3>Feigenbaum's Universality</h3>
 <p>The ratios of successive bifurcation intervals converge to δ ≈ 4.6692... and the scaling of the attractor converges to α ≈ 2.5029... These constants are <em>universal</em> — they appear in any system undergoing period-doubling, regardless of the specific function. This is one of the most remarkable discoveries in chaos theory.</p>`;
+  static extensions = ['bifurcation-2d', 'henon', 'mandelbrot-logistic-3d', 'coupled-systems'];
+
+  static guidedSteps = [
+    {
+      label: 'The Full Picture',
+      description: 'The complete bifurcation diagram. Follow the single line as it splits into 2, then 4, then chaos. Notice "windows" of order inside the chaotic region.',
+      params: { rMin: 2.5, rMax: 4.0, transient: 500, samples: 4000, bifColor: 0, showLyapunov: 'hidden' }
+    },
+    {
+      label: 'Period Doubling',
+      description: 'Zoom to r ≈ 3.0–3.6 to see the period-doubling cascade. One branch splits into two, then four, then eight — each split faster than the last.',
+      params: { rMin: 2.8, rMax: 3.6, transient: 500, samples: 4000, bifColor: 0, showLyapunov: 'hidden' }
+    },
+    {
+      label: 'Onset of Chaos',
+      description: 'At r ≈ 3.57 the doublings accumulate infinitely fast. The attractor suddenly fills a band. The ratio between successive doublings approaches the Feigenbaum constant δ ≈ 4.669.',
+      params: { rMin: 3.4, rMax: 3.7, transient: 500, samples: 4000, bifColor: 0, showLyapunov: 'hidden' }
+    },
+    {
+      label: 'Period-3 Window',
+      description: 'Inside the chaos a window of period 3 appears near r ≈ 3.83. Li & Yorke proved: "period 3 implies chaos" — if a map has a 3-cycle it has cycles of every period.',
+      params: { rMin: 3.8, rMax: 3.9, transient: 500, samples: 4000, bifColor: 0, showLyapunov: 'hidden' }
+    },
+    {
+      label: 'Lyapunov Overlay',
+      description: 'The Lyapunov exponent measures sensitivity to initial conditions. Positive (bright) = chaotic, negative (dark) = stable. Watch it dip negative at every periodic window.',
+      params: { rMin: 2.5, rMax: 4.0, transient: 500, samples: 4000, bifColor: 0, showLyapunov: 'overlay' }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

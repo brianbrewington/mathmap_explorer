@@ -42,10 +42,10 @@ const PRESETS = {
   henon_coupled: {
     label: 'Coupled Hénon',
     systemA: 'henon', systemB: 'henon',
-    paramsA: { a: 1.4, b: 0.3 }, paramsB: { a: 1.4, b: 0.3 },
-    coupling: 'additive', epsilon: 0.05, bidirectional: true,
+    paramsA: { a: 1.4, b: 0.3 }, paramsB: { a: 1.3, b: 0.3 },
+    coupling: 'additive', epsilon: 0.08, bidirectional: true,
     viewMode: 'phase',
-    bounds: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 }
+    bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
   },
   asymmetric: {
     label: 'Asymmetric Drive',
@@ -62,7 +62,7 @@ class CoupledSystemsExploration extends BaseExploration {
   static title = 'Coupled Systems';
   static description = 'Two interacting chaotic maps with tunable coupling';
   static category = 'attractor';
-  static tags = ['chaos', 'synchronization', 'coupled-dynamics', 'discrete-map', '2D', 'strange-attractor'];
+  static tags = ['dynamical-systems', 'iteration', 'advanced', 'chaos', 'synchronization', 'coupled-dynamics', 'discrete-map', '2D', 'strange-attractor'];
   static formulaShort = 'x_A ↔ x_B coupled';
   static formula = `<h3>Coupled Chaotic Systems</h3>
 <div class="formula-block">
@@ -84,12 +84,79 @@ xA_next = f(xA) + epsilon * (xB - xA);
 xB_next = f(xB) + epsilon * (xA - xB);
 // When epsilon is large enough,
 // xA converges to xB despite chaos</code></pre>`;
+  static overview = `<div class="overview-intro">
+<p>What happens when two chaotic systems <strong>talk to each other</strong>?</p>
+<p>Each system on its own is unpredictable \u2014 tiny differences in starting conditions lead to wildly different outcomes. But connect them with even a weak link, and something remarkable emerges: <strong>synchronization</strong>. Two chaotic systems can lock onto the same trajectory, creating order from disorder.</p>
+<p>This isn't just mathematics. Fireflies blinking in unison, neurons firing together in the brain, power grids staying in phase \u2014 these are all coupled chaotic systems finding synchronization.</p>
+</div>
+<div class="diagram-block">
+  <div class="diagram-node">
+    <span class="diagram-node-title">System A</span>
+    <span class="diagram-node-sub">H\u00E9non map</span>
+  </div>
+  <div class="diagram-arrow">
+    <span>\u2194</span>
+    <span class="diagram-arrow-label">coupling \u03B5</span>
+  </div>
+  <div class="diagram-node">
+    <span class="diagram-node-title">System B</span>
+    <span class="diagram-node-sub">H\u00E9non map</span>
+  </div>
+</div>
+<div class="key-concepts">
+  <div class="key-concept"><span class="key-concept-term">Phase portrait</span> <span class="key-concept-def">\u2014 plots x<sub>A</sub> vs x<sub>B</sub>. If they synchronize, points collapse onto the diagonal.</span></div>
+  <div class="key-concept"><span class="key-concept-term">Coupling \u03B5</span> <span class="key-concept-def">\u2014 how strongly the systems influence each other. \u03B5=0 means independent; larger \u03B5 means tighter connection.</span></div>
+  <div class="key-concept"><span class="key-concept-term">Synchronization</span> <span class="key-concept-def">\u2014 when coupled chaotic systems converge to the same trajectory despite starting apart.</span></div>
+</div>`;
+
+  static resources = [
+    { type: 'youtube', title: 'The Surprising Secret of Synchronization \u2014 Veritasium', url: 'https://www.youtube.com/watch?v=t-_VPRCtiUg' },
+    { type: 'youtube', title: 'Nonlinear Dynamics: Coupled Oscillators \u2014 Steven Strogatz', url: 'https://www.youtube.com/watch?v=5zFDmyVeSCw' },
+    { type: 'wikipedia', title: 'Coupled map lattice', url: 'https://en.wikipedia.org/wiki/Coupled_map_lattice' },
+    { type: 'wolfram', title: 'H\u00E9non Map \u2014 Wolfram MathWorld', url: 'https://mathworld.wolfram.com/HenonMap.html' }
+  ];
+
+  static guidedSteps = [
+    {
+      label: 'Independent Chaos',
+      description: 'Two H\u00E9non maps with no connection. The phase portrait fills a 2D cloud \u2014 no correlation.',
+      params: { preset: 'henon_coupled', systemA: 'henon', systemB: 'henon', aA: 1.4, bA: 0.3, aB: 1.3, bB: 0.3, couplingType: 'additive', epsilon: 0, bidirectional: 1, viewMode: 'phase' },
+      bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
+    },
+    {
+      label: 'Weak Coupling',
+      description: 'A small \u03B5 introduces subtle correlations. The cloud starts to show structure.',
+      params: { preset: 'custom', systemA: 'henon', systemB: 'henon', aA: 1.4, bA: 0.3, aB: 1.3, bB: 0.3, couplingType: 'additive', epsilon: 0.02, bidirectional: 1, viewMode: 'phase' },
+      bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
+    },
+    {
+      label: 'Partial Synchronization',
+      description: 'Moderate coupling pulls the orbits closer. Structure concentrates near the diagonal x_A \u2248 x_B.',
+      params: { preset: 'custom', systemA: 'henon', systemB: 'henon', aA: 1.4, bA: 0.3, aB: 1.3, bB: 0.3, couplingType: 'additive', epsilon: 0.08, bidirectional: 1, viewMode: 'phase' },
+      bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
+    },
+    {
+      label: 'Full Synchronization',
+      description: 'Strong coupling forces both systems onto the same trajectory. The phase portrait collapses to a thin line along the diagonal.',
+      params: { preset: 'custom', systemA: 'henon', systemB: 'henon', aA: 1.4, bA: 0.3, aB: 1.4, bB: 0.3, couplingType: 'additive', epsilon: 0.25, bidirectional: 1, viewMode: 'phase' },
+      bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
+    },
+    {
+      label: 'Break the Symmetry',
+      description: 'Give the systems different parameters (a=1.4 vs a=1.1). Even with coupling, perfect sync is impossible \u2014 the diagonal is never quite reached.',
+      params: { preset: 'custom', systemA: 'henon', systemB: 'henon', aA: 1.4, bA: 0.3, aB: 1.1, bB: 0.3, couplingType: 'additive', epsilon: 0.15, bidirectional: 1, viewMode: 'phase' },
+      bounds: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 }
+    }
+  ];
+
+  static foundations = ['logistic-map', 'henon'];
+  static extensions = ['fluid-dynamics'];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
-    const p = PRESETS.sync_demo;
+    const p = PRESETS.henon_coupled;
     this.params = {
-      preset: 'sync_demo',
+      preset: 'henon_coupled',
       systemA: p.systemA, systemB: p.systemB,
       rA: p.paramsA.r ?? 3.9, rB: p.paramsB.r ?? 3.9,
       aA: p.paramsA.a ?? 1.4, bA: p.paramsA.b ?? 0.3,
@@ -101,7 +168,7 @@ xB_next = f(xB) + epsilon * (xA - xB);
       iterations: 3000000,
       resolution: 2000,
       colorScheme: 0,
-      brightness: 1.0
+      brightness: 1.5
     };
     this._bounds = { ...p.bounds };
     this._defaultBounds = { ...p.bounds };
@@ -227,12 +294,14 @@ xB_next = f(xB) + epsilon * (xA - xB);
   }
 
   reset() {
-    const p = PRESETS.sync_demo;
-    this.params.preset = 'sync_demo';
+    const p = PRESETS.henon_coupled;
+    this.params.preset = 'henon_coupled';
     this.params.systemA = p.systemA;
     this.params.systemB = p.systemB;
-    this.params.rA = p.paramsA.r;
-    this.params.rB = p.paramsB.r;
+    this.params.aA = p.paramsA.a;
+    this.params.bA = p.paramsA.b;
+    this.params.aB = p.paramsB.a;
+    this.params.bB = p.paramsB.b;
     this.params.epsilon = p.epsilon;
     this.params.bidirectional = p.bidirectional ? 1 : 0;
     this.params.couplingType = p.coupling;

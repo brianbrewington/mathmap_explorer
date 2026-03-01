@@ -101,7 +101,7 @@ class AffineIFSExploration extends BaseExploration {
   static title = 'Affine IFS';
   static description = 'General affine Iterated Function System';
   static category = 'fractal';
-  static tags = ['ifs-classic', 'affine-transform', 'self-similar', 'chaos-game', 'configurable'];
+  static tags = ['fractals', 'affine-transform', 'intermediate', 'ifs-classic', 'self-similar', 'chaos-game', 'configurable'];
   static formulaShort = '(x,y) \u2192 A\u00B7(x,y) + t';
 
   static formula = `<h3>Affine Iterated Function System</h3>
@@ -155,6 +155,36 @@ for (let i = 0; i < iterations; i++) {
 <p>Each line in the text box defines one transform:<br>
 <code>a b c d e f p</code><br>
 where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p is the selection probability.</p>`;
+  static foundations = ['sierpinski'];
+  static extensions = ['barnsley'];
+
+  static guidedSteps = [
+    {
+      label: 'Barnsley Fern',
+      description: 'Four affine transforms build a lifelike fern. Each frond is a scaled copy of the entire plant — nature encoded in a handful of numbers.',
+      params: { preset: 'barnsley_fern' }
+    },
+    {
+      label: 'Sierpinski Triangle',
+      description: 'Three transforms, each scaling by ½ toward a vertex. The result is the Sierpinski gasket — Hausdorff dimension log(3)/log(2) ≈ 1.585.',
+      params: { preset: 'sierpinski_triangle' }
+    },
+    {
+      label: 'Dragon Curve',
+      description: 'Two transforms produce the classic dragon curve. It\'s the shape you get by folding a strip of paper in half repeatedly and opening each fold to 90°.',
+      params: { preset: 'dragon_curve' }
+    },
+    {
+      label: 'Maple Leaf',
+      description: 'Broader lobe-like structures create a maple leaf. Another demonstration that simple affine rules generate complex natural shapes.',
+      params: { preset: 'maple_leaf' }
+    },
+    {
+      label: 'Koch Snowflake',
+      description: 'Seven transforms build the Koch snowflake boundary. Infinite perimeter enclosing finite area — a classic fractal curve.',
+      params: { preset: 'koch_snowflake' }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

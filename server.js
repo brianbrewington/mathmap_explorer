@@ -142,7 +142,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\n  IFS Explorer running at  http://localhost:${PORT}`);
+  console.log(`\n  MathMap Explorer running at  http://localhost:${PORT}`);
   console.log(`  Ollama proxy             /ollama/ → ${OLLAMA_HOST}`);
   console.log(`  Press Ctrl+C to stop\n`);
 });

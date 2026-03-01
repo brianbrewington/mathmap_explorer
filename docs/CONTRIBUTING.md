@@ -1,4 +1,4 @@
-# Contributing Explorations to IFS Explorer
+# Contributing Explorations to MathMap Explorer
 
 ## Quick Start
 
@@ -125,6 +125,115 @@ For CPU-intensive iteration, use a Web Worker:
 
 See `js/workers/attractor-worker.js` for the standard pattern.
 
+## Connecting Explorations
+
+Each exploration can declare two optional static arrays that create navigable
+links in the info panel's **Related** tab:
+
+```javascript
+static foundations = ['mandelbrot', 'logistic-map'];
+static extensions  = ['fluid-dynamics'];
+```
+
+- **`foundations`** — "Understanding these helps you understand this one."
+  Listed as prerequisites in the info panel.
+- **`extensions`** — "Enjoyed this? Try these next."
+  Listed as next-steps in the info panel.
+
+Values are exploration IDs (the `static id` string). The system resolves
+them to titles and thumbnails automatically.
+
+Bidirectionality is a convention, not enforced: if A lists B as an extension,
+B should list A as a foundation. Check the existing explorations for the
+current link map.
+
+## Suggesting a Module
+
+Code-free contributions are welcome! If you have an idea for a new
+exploration but don't want to write the code, create a markdown file in
+`docs/suggested_modules/` describing it. Use the following template:
+
+```markdown
+# Title
+
+## Motivation
+What does this visualize and why is it interesting?
+
+## Mathematical Background
+Key equations, references, or concepts involved. Use code blocks for
+equation notation.
+
+## Connections
+- **Foundations:** which existing explorations build intuition for this one?
+- **Extensions:** which explorations would naturally follow?
+
+## Suggested Controls
+
+### Primary (always visible)
+| Control | Type | Range | Default | Notes |
+|---------|------|-------|---------|-------|
+| Param A | slider | 0 – 10 | 5 | What it does |
+
+### Secondary (in a collapsible group)
+| Control | Type | Range | Default | Notes |
+|---------|------|-------|---------|-------|
+
+### Presets
+Named presets with parameter values that land in interesting regimes.
+
+### Interaction
+Mouse/touch interaction (e.g. click to seed, drag to perturb).
+
+### Buttons
+- **Reset** — restore initial state
+
+## Implementation
+
+### Rendering tier
+Tier 1 (points), 2 (2D canvas), 3 (fragment shader), or 4 (full WebGL).
+
+### File structure
+- `js/explorations/my-exploration.js`
+- `js/workers/my-worker.js` (if needed)
+- `js/shaders/my-shader.frag.js` (if Tier 3+)
+
+### Registration
+```​javascript
+static id = 'my-exploration';
+static title = 'My Exploration';
+static description = 'One-line description';
+static tags = ['topic-tag', 'technique-tag', 'level-tag'];
+static foundations = ['prereq-id'];
+```
+
+### Animation parameters for `ANIM_PARAMS` in app.js
+```​javascript
+'my-exploration': [
+  { key: 'param', label: 'Param', min: 0, max: 10 }
+]
+```
+
+## What the User Learns
+One paragraph on the key insight or "aha moment."
+```
+
+See [`docs/suggested_modules/reaction_diffusion.md`](suggested_modules/reaction_diffusion.md)
+for a detailed example. The `docs/suggested_modules/` directory contains
+specs for 30 proposed explorations organized by topic:
+
+| Topic | Modules |
+|-------|---------|
+| **Fundamentals** | [Sine & Cosine](suggested_modules/sine_cosine.md), [Trig Identities (Circle)](suggested_modules/trig_identities_circle.md), [Wave Identities](suggested_modules/wave_identities.md) |
+| **Physics & Waves** | [Damped Oscillation](suggested_modules/damped_oscillation.md), [Resonance](suggested_modules/resonance.md), [Electro-Mechanical Analogy](suggested_modules/electro_mechanical_analogy.md), [Acoustic Beats](suggested_modules/acoustic_beats.md), [Wave Packet](suggested_modules/wave_packet.md), [Doppler Effect](suggested_modules/doppler_effect.md) |
+| **Complex Analysis** | [Roots of Unity](suggested_modules/roots_of_unity.md), [Complex Spiral](suggested_modules/complex_spiral.md), [Power Mapping](suggested_modules/power_mapping.md), [Phasor Diagrams](suggested_modules/phasor_diagrams.md), [Pole-Zero Plot](suggested_modules/pole_zero_plot.md) |
+| **Parametric Curves** | [Rose Curves](suggested_modules/rose_curves.md), [Epitrochoid](suggested_modules/epitrochoid.md), [Archimedean Spiral](suggested_modules/archimedean_spiral.md), [Cycloid](suggested_modules/cycloid.md), [Heart Curve](suggested_modules/heart_curve.md), [Butterfly Curve](suggested_modules/butterfly_curve.md) |
+| **Series & Transforms** | [Fourier Analysis](suggested_modules/fourier_analysis.md), [Series to Transform](suggested_modules/fourier_limit.md), [Taylor Series](suggested_modules/taylor_series.md), [Calculus of Trig](suggested_modules/calculus_of_trig.md), [The Matthew Conjecture](suggested_modules/matthew_conjecture.md) |
+| **Signal Processing** | [Audio Feedback](suggested_modules/audio_feedback.md), [Additive Synthesis](suggested_modules/additive_synthesis.md), [AM Radio](suggested_modules/am_radio.md), [Spectrogram](suggested_modules/spectrogram.md) |
+| **PDEs & Simulation** | [Reaction-Diffusion](suggested_modules/reaction_diffusion.md) |
+
+The `docs/ideas/` directory is for broader design discussions and roadmap
+documents (not individual module specs).
+
 ## File Checklist
 
 - [ ] `js/explorations/my-exploration.js` — exploration class
@@ -132,3 +241,4 @@ See `js/workers/attractor-worker.js` for the standard pattern.
 - [ ] `js/shaders/my-shader.frag.js` — fragment shader (if Tier 3+)
 - [ ] Import added to `js/app.js`
 - [ ] `ANIM_PARAMS` entry in `js/app.js` (if animatable)
+- [ ] `foundations` / `extensions` arrays populated (if applicable)

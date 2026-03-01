@@ -8,7 +8,7 @@ class DeJongExploration extends BaseExploration {
   static title = 'Peter de Jong';
   static description = "x' = sin(a*y) + c*cos(a*x), y' = sin(b*x) + d*cos(b*y)";
   static category = 'attractor';
-  static tags = ['strange-attractor', 'discrete-map', '2D', 'density-rendering', 'trigonometric'];
+  static tags = ['dynamical-systems', 'iteration', 'intermediate', 'strange-attractor', 'discrete-map', '2D', 'density-rendering', 'trigonometric'];
   static formulaShort = "x' = sin(ay) + c·cos(ax)";
   static formula = `<h3>Peter de Jong Attractor</h3>
 <div class="formula-block">
@@ -35,6 +35,35 @@ for (let i = 0; i < iterations; i++) {
   }
 }</code></pre>
 <p>The density buffer is then rendered with a logarithmic color map on the GPU for smooth visualization.</p>`;
+  static extensions = ['henon', 'custom-iterator'];
+
+  static guidedSteps = [
+    {
+      label: 'Classic Swirl',
+      description: 'The default parameters produce a swirling, feathered pattern. Each point comes from x\' = sin(ay) − cos(bx), y\' = sin(cx) − cos(dy) — pure trigonometry generating art.',
+      params: { a: 1.4, b: -2.3, c: 2.4, d: -2.1, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Butterfly',
+      description: 'Wing-like structures emerge from this parameter combination. The attractor has bilateral symmetry created by the interplay of sine and cosine terms.',
+      params: { a: 2.01, b: -2.53, c: 1.61, d: -0.33, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Nebula Cloud',
+      description: 'A diffuse, nebula-like cloud fills the plane. Some parameter combinations produce attractors that cover 2D regions rather than tracing sharp curves.',
+      params: { a: -2.24, b: 0.43, c: -0.65, d: -2.43, colorScheme: 0, brightness: 1.2 }
+    },
+    {
+      label: 'Tight Loops',
+      description: 'Symmetric integer parameters create more periodic-looking orbits with visible loop structure. The attractor sits inside a more compact region.',
+      params: { a: 1.0, b: -1.0, c: 1.0, d: -1.0, colorScheme: 4, brightness: 1.0 }
+    },
+    {
+      label: 'Fire Palette',
+      description: 'The fire palette maps visit density to warm colors. Bright regions show where the orbit spends the most time — the "hotspots" of the attractor.',
+      params: { a: 1.4, b: -2.3, c: 2.4, d: -2.1, colorScheme: 1, brightness: 1.5 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -11,7 +11,7 @@ class NewtonFractalExploration extends BaseExploration {
   static title = 'Newton Fractal';
   static description = 'Newton\'s method on z^n - 1 = 0';
   static category = 'fractal';
-  static tags = ['complex-plane', 'root-finding', 'convergence', 'basin-of-attraction', 'numerical-methods'];
+  static tags = ['fractals', 'complex-analysis', 'numerical-methods', 'advanced', 'complex-plane', 'root-finding', 'convergence', 'basin-of-attraction'];
   static formulaShort = 'z → z − f(z)/f\'(z)';
   static formula = `<h3>Newton Fractal</h3>
 <div class="formula-block">
@@ -31,6 +31,35 @@ for (let i = 0; i < maxIter; i++) {
   if (|step| < tolerance) break;
 }
 // Color by angle of z (which root)</code></pre>`;
+  static foundations = ['mandelbrot', 'julia-set'];
+
+  static guidedSteps = [
+    {
+      label: 'Cubic Roots',
+      description: 'Newton\'s method for z³ − 1 = 0. Three colored basins show which root each starting point converges to. The fractal boundary is where convergence becomes ambiguous.',
+      params: { degree: 3, damping: 1.0, maxIter: 100 }
+    },
+    {
+      label: 'Five-Fold Symmetry',
+      description: 'With degree 5, five roots of unity arrange around a circle. Five competing basins create elaborate spiral frontiers at every boundary.',
+      params: { degree: 5, damping: 1.0, maxIter: 100 }
+    },
+    {
+      label: 'Underdamped Spirals',
+      description: 'Reducing damping below 1 makes Newton\'s method overshoot. The basins develop dramatic spiral arms as convergence becomes turbulent.',
+      params: { degree: 3, damping: 0.6, maxIter: 200 }
+    },
+    {
+      label: 'Overdamped',
+      description: 'Damping above 1 slows convergence. Basin boundaries simplify and widen — the method is more cautious but convergence bands grow thicker.',
+      params: { degree: 3, damping: 1.5, maxIter: 200 }
+    },
+    {
+      label: 'Maximum Complexity',
+      description: 'Degree 8 with moderate damping. Eight competing roots create the most intricate boundary pattern — a kaleidoscope of interleaved convergence basins.',
+      params: { degree: 8, damping: 0.8, maxIter: 300 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -19,7 +19,7 @@ class JuliaSetExploration extends BaseExploration {
   static title = 'Julia Set';
   static description = 'Explore Julia sets for z → z² + c with a fixed complex parameter c';
   static category = 'fractal';
-  static tags = ['complex-plane', 'escape-time', 'fractal-boundary', 'connected-sets', 'mandelbrot-dual'];
+  static tags = ['fractals', 'complex-analysis', 'escape-time', 'intermediate', 'complex-plane', 'fractal-boundary', 'connected-sets', 'mandelbrot-dual'];
   static formulaShort = 'z → z² + c (fixed c)';
   static formula = `<h3>Julia Set</h3>
 <div class="formula-block">
@@ -57,6 +57,36 @@ for (let i = 0; i < maxIter; i++) {
   <li>The most beautiful Julia sets come from c values near the <em>boundary</em> of the Mandelbrot set.</li>
 </ul>
 <p>Try the presets to see famous examples, or adjust c<sub>re</sub> and c<sub>im</sub> to explore on your own.</p>`;
+  static foundations = ['mandelbrot'];
+  static extensions = ['newton-fractal'];
+
+  static guidedSteps = [
+    {
+      label: 'Dendrite',
+      description: 'At c = −0.4 + 0.6i the Julia set is a tree-like "dendrite" — an infinitely branching, connected filament sitting right on the Mandelbrot boundary.',
+      params: { preset: 'dendrite', maxIter: 300, colorScheme: 0 }
+    },
+    {
+      label: 'Douady Rabbit',
+      description: 'Three "ears" emerge — the famous Douady Rabbit. c lies inside a period-3 bulb of the Mandelbrot set, giving three-fold rotational symmetry.',
+      params: { preset: 'douady_rabbit', maxIter: 300, colorScheme: 0 }
+    },
+    {
+      label: 'Spiral Arms',
+      description: 'Delicate spiraling arms twist outward from the center. This c value near the main cardioid boundary produces a connected set with beautiful rotational features.',
+      params: { preset: 'spiral', maxIter: 300, colorScheme: 0 }
+    },
+    {
+      label: 'Basilica',
+      description: 'At c = i, cathedral-like arches appear. c is inside the period-2 bulb, producing mirror symmetry and intricate nested structure.',
+      params: { preset: 'basilica', maxIter: 300, colorScheme: 0 }
+    },
+    {
+      label: 'Disconnected Dust',
+      description: 'When c is outside the Mandelbrot set the Julia set shatters into a Cantor dust — infinitely many disconnected points. The escape-time coloring reveals hidden structure.',
+      params: { preset: 'custom', c_re: 0.36, c_im: 0.36, maxIter: 300, colorScheme: 2 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

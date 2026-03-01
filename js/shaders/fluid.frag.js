@@ -2,13 +2,12 @@ export const fluidAdvectFrag = `#version 300 es
 precision highp float;
 uniform sampler2D u_velocity;
 uniform sampler2D u_source;
-uniform vec2 u_texelSize;
 uniform float u_dt;
 in vec2 v_uv;
 out vec4 fragColor;
 void main() {
   vec2 vel = texture(u_velocity, v_uv).xy;
-  vec2 pos = v_uv - u_dt * vel * u_texelSize;
+  vec2 pos = v_uv - u_dt * vel;
   fragColor = texture(u_source, pos);
 }`;
 
@@ -55,8 +54,8 @@ out vec4 fragColor;
 void main() {
   float pR = texture(u_pressure, v_uv + vec2(u_texelSize.x, 0.0)).x;
   float pL = texture(u_pressure, v_uv - vec2(u_texelSize.x, 0.0)).x;
-  float pT = texture(u_pressure, v_uv + vec2(0.0, u_texelSize.y)).y;
-  float pB = texture(u_pressure, v_uv - vec2(0.0, u_texelSize.y)).y;
+  float pT = texture(u_pressure, v_uv + vec2(0.0, u_texelSize.y)).x;
+  float pB = texture(u_pressure, v_uv - vec2(0.0, u_texelSize.y)).x;
   vec2 vel = texture(u_velocity, v_uv).xy;
   vel -= 0.5 * vec2(pR - pL, pT - pB);
   fragColor = vec4(vel, 0.0, 1.0);

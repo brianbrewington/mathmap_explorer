@@ -56,8 +56,8 @@ export function setupPanZoom(canvas, callbacks) {
     callbacks.setBounds({
       xMin: xMin - xShift,
       xMax: xMax - xShift,
-      yMin: yMin - yShift,
-      yMax: yMax - yShift
+      yMin: yMin + yShift,
+      yMax: yMax + yShift
     });
     callbacks.onUpdate();
   };

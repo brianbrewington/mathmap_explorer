@@ -100,7 +100,7 @@ Averaging treats all orbit points equally for all inputs. Attention-weighted rou
 
 This is an open question. The first experiment is averaging. The interesting experiments come after.
 
-## Visual Building Blocks for the IFS Explorer
+## Visual Building Blocks for MathMap Explorer
 
 Layered from simple to deep, each building on the last:
 
@@ -130,6 +130,6 @@ The culmination. High-η bifurcation diagram with model-quality overlay. Click a
 
 ## First Milestone
 
-A single-perceptron bifurcation diagram in the IFS Explorer, rendered side-by-side with the logistic map. Learning rate on the x-axis, visited weight values on the y-axis, loss as color. Interactive: drag a crosshair to see the orbit at any η, with a readout of the loss at each orbit point and the averaged loss.
+A single-perceptron bifurcation diagram in MathMap Explorer, rendered side-by-side with the logistic map. Learning rate on the x-axis, visited weight values on the y-axis, loss as color. Interactive: drag a crosshair to see the orbit at any η, with a readout of the loss at each orbit point and the averaged loss.
 
 That single visualization — the proof that gradient descent bifurcates like the logistic map, with model quality visible as color — is worth the entire exploration.

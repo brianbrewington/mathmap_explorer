@@ -11,7 +11,7 @@ class MandelbrotExploration extends BaseExploration {
   static title = 'Mandelbrot Set';
   static description = 'The classic Mandelbrot set fractal';
   static category = 'fractal';
-  static tags = ['complex-plane', 'escape-time', 'fractal-boundary', 'parameter-space', 'bifurcation'];
+  static tags = ['fractals', 'complex-analysis', 'escape-time', 'intermediate', 'complex-plane', 'fractal-boundary', 'parameter-space', 'bifurcation'];
   static formulaShort = 'z → z² + c';
   static formula = `<h3>Mandelbrot Set</h3>
 <div class="formula-block">
@@ -38,6 +38,35 @@ for (let i = 0; i < maxIter; i++) {
   z_re = z_re2 - z_im2 + c_re;
 }</code></pre>
 <p>In this app, the iteration runs entirely on the GPU in a fragment shader for real-time interaction.</p>`;
+  static extensions = ['julia-set', 'mandelbrot-logistic-3d', 'newton-fractal'];
+
+  static guidedSteps = [
+    {
+      label: 'The Full Set',
+      description: 'The complete Mandelbrot set in classic blue. The large cardioid on the left is the main body — every black point stays bounded under z → z² + c forever.',
+      params: { maxIter: 200, colorScheme: 0, zoom: 3.5, centerX: -0.5, centerY: 0 }
+    },
+    {
+      label: 'Seahorse Valley',
+      description: 'Zoom into the crease between the main cardioid and the primary bulb. Spiraling tendrils appear — each a miniature copy of the whole set.',
+      params: { maxIter: 500, colorScheme: 0, zoom: 0.3, centerX: -0.75, centerY: 0.1 }
+    },
+    {
+      label: 'Deep Zoom',
+      description: 'Deeper into the boundary reveals self-similar structure. Higher iterations resolve finer filaments connecting mini-copies of the set — spirals within spirals.',
+      params: { maxIter: 1000, colorScheme: 0, zoom: 0.02, centerX: -0.7435, centerY: 0.1314 }
+    },
+    {
+      label: 'Lightning Antenna',
+      description: 'The long spike along the negative real axis is the "antenna." Zoom in to see dendritic branches radiating outward like forked lightning.',
+      params: { maxIter: 600, colorScheme: 0, zoom: 0.15, centerX: -1.77, centerY: 0.0 }
+    },
+    {
+      label: 'Fire Palette',
+      description: 'Same region, dramatic new palette. Color maps iteration count to a gradient — fast-escaping points glow bright, slow ones stay dark.',
+      params: { maxIter: 500, colorScheme: 1, zoom: 0.3, centerX: -0.75, centerY: 0.1 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

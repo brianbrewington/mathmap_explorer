@@ -1,12 +1,27 @@
+/**
+ * Base class for all explorations.
+ *
+ * Tags convention (see taxonomy.js for full list):
+ *   - At least one **topic** tag:     fractals, dynamical-systems, physics, ...
+ *   - At least one **technique** tag:  escape-time, iteration, parametric, ...
+ *   - One **level** tag:               beginner, intermediate, advanced
+ *   - Additional free-form descriptive tags for search/badges.
+ */
 export class BaseExploration {
   static id = 'base';
   static title = 'Base';
   static description = '';
-  static category = 'fractal';
+  /** @deprecated Use topic tags in `tags[]` instead. Kept for backward compat. */
+  static category = '';
   static tags = [];
   static formula = '';
   static formulaShort = '';
   static tutorial = '';
+  static overview = '';
+  static resources = [];
+  static guidedSteps = [];
+  static foundations = [];
+  static extensions = [];
 
   constructor(canvas, controlsContainer) {
     this.canvas = canvas;
@@ -45,4 +60,21 @@ export class BaseExploration {
       });
     }
   }
+
+  /** Return a CSS font string with the size scaled by devicePixelRatio. */
+  _font(px, family = '"Lexend", sans-serif', weight = '') {
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    const s = Math.round(px * dpr);
+    return weight ? `${weight} ${s}px ${family}` : `${s}px ${family}`;
+  }
+
+  _monoFont(px, weight = '') {
+    return this._font(px, '"SF Mono", "Fira Code", monospace', weight);
+  }
+
+  // ── Audio hooks (override in subclasses that support sonification) ──
+
+  setupAudio(audioCtx, masterGain) {}
+  updateAudio(time) {}
+  teardownAudio() {}
 }

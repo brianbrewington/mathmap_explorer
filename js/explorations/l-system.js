@@ -108,7 +108,7 @@ class LSystemExploration extends BaseExploration {
   static title = 'L-System';
   static description = 'Lindenmayer systems — string-rewriting fractals';
   static category = 'custom';
-  static tags = ['string-rewriting', 'turtle-graphics', 'biological-form', 'self-similar', 'grammar'];
+  static tags = ['fractals', 'string-rewriting', 'intermediate', 'turtle-graphics', 'biological-form', 'self-similar', 'grammar'];
   static formulaShort = 'Axiom → Rules → Turtle';
   static formula = `<h3>L-Systems</h3>
 <div class="formula-block">
@@ -137,6 +137,35 @@ F(0.1) = F
 // Angle: 90°
 // After 2 iterations:
 // F+F-F-F+F + F+F-F-F+F - ...</code></pre>`;
+  static foundations = ['sierpinski'];
+
+  static guidedSteps = [
+    {
+      label: 'Koch Curve',
+      description: 'Replace each segment with a triangle bump. After 4 iterations the smooth line becomes an infinitely jagged coastline — infinite length in finite space.',
+      params: { preset: 'koch_curve', iterations: 4, lineWidth: 1, color: 0 }
+    },
+    {
+      label: 'Fractal Plant',
+      description: 'Branching rules with brackets create realistic plant growth. "[" saves the turtle position, "]" restores it — producing branches within branches.',
+      params: { preset: 'fractal_plant', iterations: 6, lineWidth: 1, color: 1 }
+    },
+    {
+      label: 'Dragon Curve',
+      description: 'Fold a paper strip in half repeatedly, then open each fold to 90°. The L-system encodes this folding — watch it fill space without ever crossing itself.',
+      params: { preset: 'dragon_curve', iterations: 10, lineWidth: 1, color: 0 }
+    },
+    {
+      label: 'Hilbert Curve',
+      description: 'A space-filling curve that visits every point in a square. After enough iterations the 1D line covers 2D space — used in database indexing and image compression.',
+      params: { preset: 'hilbert_curve', iterations: 5, lineWidth: 1, color: 3 }
+    },
+    {
+      label: 'Stochastic Plant',
+      description: 'Add angle jitter to break mechanical symmetry. Small random variations in branch angles make the plant look natural — each rendering is unique.',
+      params: { preset: 'stochastic_plant', iterations: 5, angleVariation: 5, lineWidth: 1, color: 1 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

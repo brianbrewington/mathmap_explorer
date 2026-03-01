@@ -8,7 +8,7 @@ class BarnsleyExploration extends BaseExploration {
   static title = 'Barnsley Fern';
   static description = 'IFS with 4 affine transforms';
   static category = 'fractal';
-  static tags = ['ifs-classic', 'affine-transform', 'self-similar', 'biological-form', 'random-iteration'];
+  static tags = ['fractals', 'affine-transform', 'beginner', 'ifs-classic', 'self-similar', 'biological-form', 'random-iteration'];
   static formulaShort = '4 affine transforms';
   static formula = `<h3>Barnsley Fern (IFS)</h3>
 <div class="formula-block">
@@ -43,6 +43,31 @@ for (let i = 0; i < iterations; i++) {
   // ... bin into density grid
 }</code></pre>
 <p>The f<sub>2</sub> transform (85% probability) generates the self-similar copies of the whole fern, giving it its recursive structure.</p>`;
+  static foundations = ['sierpinski', 'affine-ifs'];
+  static extensions = ['l-system'];
+
+  static guidedSteps = [
+    {
+      label: 'Sparse Fern',
+      description: 'With fewer iterations individual points are visible. Four affine transforms with different probabilities build the stem, leaflets, and tip of the fern.',
+      params: { iterations: 200000, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Full Fern',
+      description: 'More iterations fill the complete fern. The largest transform (85% probability) builds the bulk of each frond — self-similar copies appear at every scale.',
+      params: { iterations: 2000000, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Viridis Palette',
+      description: 'Viridis colors points by visit density. Brighter regions show where the orbit spends more time — the stem and rachis receive the most visits.',
+      params: { iterations: 2000000, colorScheme: 4, brightness: 1.5 }
+    },
+    {
+      label: 'Maximum Detail',
+      description: 'Push iterations to the max for razor-sharp leaflets. Each tiny frond is a scaled, rotated copy of the whole fern — an iterated function system in action.',
+      params: { iterations: 10000000, colorScheme: 0, brightness: 1.0 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

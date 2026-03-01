@@ -1,14 +1,15 @@
 import { getAll, getById } from './explorations/registry.js';
-import { buildSidebar, setActive, updateHeroImage, setCaptureHeroCallback } from './ui/sidebar.js';
+import { buildSidebar, setActive, updateHeroImage, setCaptureHeroCallback, setSnapshotLoadCallback as setSidebarSnapshotLoadCallback } from './ui/sidebar.js';
 import { buildControls, updateSliderDisplay } from './ui/controls.js';
 import { setupCanvasResize } from './ui/layout.js';
-import { initInfoPanel, showInfoPanel, updateInfoPanel, setTourCallback, setRelatedCallback, setSnapshotLoadCallback, triggerSaveSnapshot } from './ui/info-panel.js';
+import { initInfoPanel, showInfoPanel, updateInfoPanel, setGuidedStepCallback, setRelatedCallback, setSnapshotLoadCallback, setSaveViewCallback, setSetHeroCallback, triggerSaveSnapshot, getGuidedSteps } from './ui/info-panel.js';
 import { AnimationController } from './ui/animation-controller.js';
 import { RecipeManager } from './ui/recipe-manager.js';
-import { captureHeroImage, captureCanvasThumbnail } from './ui/hero-images.js';
+import { captureHeroImage, captureCanvasThumbnail, hasRealHero, setHeroImage } from './ui/hero-images.js';
 import { embedAllExplorations } from './embeddings/exploration-embeddings.js';
-import { recordVisit, getSnapshots, getLastExploration, setLastExploration } from './ui/user-state.js';
+import { recordVisit, hasVisited, getSnapshots, getLastExploration, setLastExploration } from './ui/user-state.js';
 import { initChatPanel } from './ui/chat-panel.js';
+import { AudioEngine } from './audio/engine.js';
 
 // Import all explorations (self-registering)
 import './explorations/mandelbrot.js';
@@ -28,15 +29,57 @@ import './explorations/kleinian.js';
 import './explorations/coupled-systems.js';
 import './explorations/fluid-dynamics.js';
 
-const canvas = document.getElementById('render-canvas');
+// PDE demos
+import './explorations/thermal-diffusion.js';
+
+// Trig explorer ports
+import './explorations/lissajous.js';
+import './explorations/fourier-synthesis.js';
+import './explorations/unit-circle.js';
+import './explorations/phase-space.js';
+import './explorations/simple-harmonic.js';
+
+let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
 const listEl = document.getElementById('exploration-list');
 const overlay = document.getElementById('canvas-overlay');
 const overlayText = document.getElementById('overlay-text');
 
+/**
+ * Replace the canvas element with a fresh one so the new exploration can
+ * request whichever context type it needs (2d vs webgl2).  A canvas that
+ * already owns a context of one type will refuse a different type.
+ */
+function resetCanvas() {
+  const parent = canvas.parentElement;
+  const fresh = document.createElement('canvas');
+  fresh.id = canvas.id;
+  fresh.width = canvas.width;
+  fresh.height = canvas.height;
+  parent.replaceChild(fresh, canvas);
+  canvas = fresh;
+}
+
 let currentExploration = null;
 let currentInstance = null;
 let currentExplClass = null;
+
+const audioEngine = new AudioEngine();
+const muteBtn = document.getElementById('mute-toggle');
+if (muteBtn) {
+  if (!audioEngine.isMuted) muteBtn.classList.add('audible');
+  muteBtn.addEventListener('click', () => {
+    const audible = audioEngine.toggle();
+    muteBtn.classList.toggle('audible', audible);
+    if (currentInstance) {
+      if (audible) {
+        currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
+      } else {
+        currentInstance.teardownAudio();
+      }
+    }
+  });
+}
 
 const animator = new AnimationController();
 const recipeManager = new RecipeManager();
@@ -94,18 +137,6 @@ function getAnimParamsForExploration(id) {
   return ANIM_PARAMS[id] || [];
 }
 
-let heroRefreshTimer = null;
-
-function scheduleHeroCapture() {
-  clearTimeout(heroRefreshTimer);
-  heroRefreshTimer = setTimeout(async () => {
-    if (!currentExploration || !currentInstance) return;
-    currentInstance.render();
-    const dataUrl = await captureHeroImage(canvas, currentExploration);
-    if (dataUrl) updateHeroImage(currentExploration, dataUrl);
-  }, 1500);
-}
-
 function rebuildControls() {
   const controls = currentInstance.getControls();
 
@@ -134,7 +165,6 @@ function rebuildControls() {
       if (currentInstance.shouldRebuildControls?.(key)) {
         rebuildControls();
       }
-      scheduleHeroCapture();
     },
     onAction(action) {
       if (action === 'start') currentInstance.start();
@@ -143,20 +173,19 @@ function rebuildControls() {
       else if (action === 'regrow' && currentInstance.onAction) { currentInstance.onAction('regrow'); }
       else if (action === 'showInfo') showInfoPanel();
       else if (action === 'saveSnapshot') {
-        const name = prompt('Snapshot name:');
-        if (name) {
-          currentInstance.render();
-          captureCanvasThumbnail(canvas).then(thumb => {
-            triggerSaveSnapshot(name, currentInstance.params, thumb);
-            fetch('/api/save-snapshot-image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ id: currentExploration, name, dataUrl: thumb })
-            }).catch(() => {});
-          }).catch(() => {
-            triggerSaveSnapshot(name, currentInstance.params);
-          });
-        }
+        const now = new Date();
+        const name = now.toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+        currentInstance.render();
+        captureCanvasThumbnail(canvas).then(thumb => {
+          triggerSaveSnapshot(name, currentInstance.params, thumb);
+          fetch('/api/save-snapshot-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: currentExploration, name, dataUrl: thumb })
+          }).catch(() => {});
+        }).catch(() => {
+          triggerSaveSnapshot(name, currentInstance.params);
+        });
       }
       else if (action === 'saveRecipe') saveCurrentRecipe();
       else if (action === 'loadRecipe') showRecipeLoader();
@@ -276,15 +305,19 @@ function selectExploration(id) {
   animator.stop();
 
   if (currentInstance) {
+    currentInstance.teardownAudio();
     currentInstance.deactivate();
     currentInstance = null;
   }
+
+  resetCanvas();
 
   const ExplClass = getById(id);
   if (!ExplClass) return;
 
   currentExploration = id;
   currentExplClass = ExplClass;
+  const firstVisit = !hasVisited(id);
   setActive(listEl, id);
   recordVisit(id);
   setLastExploration(id);
@@ -293,34 +326,73 @@ function selectExploration(id) {
   rebuildControls();
   updateInfoPanel(ExplClass);
 
-  // Wire up tour callback for logistic map
-  if (id === 'logistic-map') {
-    setTourCallback((rmin, rmax) => {
-      currentInstance.params.rMin = rmin;
-      currentInstance.params.rMax = rmax;
-      currentInstance._bounds.xMin = rmin;
-      currentInstance._bounds.xMax = rmax;
-      currentInstance._startWorker();
+  // Generic guided step callback — works for any exploration
+  setGuidedStepCallback((indexOrType, data) => {
+    if (!currentInstance) return;
+
+    // Legacy tour-btn support (logistic map)
+    if (indexOrType === 'tour' && data) {
+      currentInstance.params.rMin = data.rmin;
+      currentInstance.params.rMax = data.rmax;
+      if (currentInstance._bounds) {
+        currentInstance._bounds.xMin = data.rmin;
+        currentInstance._bounds.xMax = data.rmax;
+      }
+      if (currentInstance._startWorker) currentInstance._startWorker();
       rebuildControls();
-    });
-  } else {
-    setTourCallback(null);
+      return;
+    }
+
+    // Generic guided steps from ExplClass.guidedSteps[]
+    const steps = getGuidedSteps();
+    const step = steps[indexOrType];
+    if (!step) return;
+
+    if (step.params) {
+      for (const [key, value] of Object.entries(step.params)) {
+        currentInstance.params[key] = value;
+        currentInstance.onParamChange(key, value);
+      }
+    }
+    if (step.bounds && currentInstance._bounds) {
+      Object.assign(currentInstance._bounds, step.bounds);
+    }
+    if (currentInstance.shouldRebuildControls?.('preset')) {
+      rebuildControls();
+    } else {
+      rebuildControls();
+    }
+    if (currentInstance._startWorker) currentInstance._startWorker();
+  });
+
+  // Auto-open info panel on first visit if there's educational content
+  if (firstVisit && (ExplClass.overview || (ExplClass.guidedSteps && ExplClass.guidedSteps.length > 0))) {
+    showInfoPanel();
   }
 
   currentInstance.activate();
   currentInstance.resize(canvas.width, canvas.height);
   currentInstance.render();
 
-  // Capture hero image after a delay to let workers/shaders finish.
-  // Re-render immediately before capture so the WebGL buffer is fresh
-  // (browsers clear it after compositing if preserveDrawingBuffer is off).
+  if (!audioEngine.isMuted) {
+    currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
+  }
+
+  // Auto-capture hero only when one doesn't already exist (or existing is blank).
+  // Two attempts with increasing delay for worker-based explorations.
+  const attemptAutoHero = async () => {
+    if (currentExploration !== id || !currentInstance) return false;
+    if (await hasRealHero(id)) return true;
+    currentInstance.render();
+    const dataUrl = await captureHeroImage(canvas, id);
+    if (dataUrl) { updateHeroImage(id, dataUrl); return true; }
+    return false;
+  };
   setTimeout(async () => {
-    if (currentExploration === id && currentInstance) {
-      currentInstance.render();
-      const dataUrl = await captureHeroImage(canvas, id);
-      if (dataUrl) updateHeroImage(id, dataUrl);
+    if (!(await attemptAutoHero())) {
+      setTimeout(() => attemptAutoHero(), 3000);
     }
-  }, 800);
+  }, 1500);
 }
 
 initInfoPanel();
@@ -331,7 +403,7 @@ setCaptureHeroCallback(async (id) => {
   const dataUrl = await captureHeroImage(canvas, id);
   if (dataUrl) updateHeroImage(id, dataUrl);
 });
-setSnapshotLoadCallback(async (index) => {
+const loadSnapshot = async (index) => {
   if (!currentInstance || !currentExploration) return;
   const snapshots = await getSnapshots(currentExploration);
   const snap = snapshots[index];
@@ -342,7 +414,34 @@ setSnapshotLoadCallback(async (index) => {
   currentInstance.activate();
   currentInstance.resize(canvas.width, canvas.height);
   currentInstance.render();
-  scheduleHeroCapture();
+};
+setSnapshotLoadCallback(loadSnapshot);
+setSidebarSnapshotLoadCallback(loadSnapshot);
+
+setSetHeroCallback(async (index) => {
+  if (!currentExploration) return;
+  const snapshots = await getSnapshots(currentExploration);
+  const snap = snapshots[index];
+  if (!snap?.thumbnail) return;
+  const saved = await setHeroImage(currentExploration, snap.thumbnail);
+  if (saved) updateHeroImage(currentExploration, saved);
+});
+
+setSaveViewCallback(() => {
+  if (!currentInstance) return;
+  const now = new Date();
+  const name = now.toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+  currentInstance.render();
+  captureCanvasThumbnail(canvas).then(thumb => {
+    triggerSaveSnapshot(name, currentInstance.params, thumb);
+    fetch('/api/save-snapshot-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: currentExploration, name, dataUrl: thumb })
+    }).catch(() => {});
+  }).catch(() => {
+    triggerSaveSnapshot(name, currentInstance.params);
+  });
 });
 
 // buildSidebar is async (loads hero images from IndexedDB)
@@ -371,6 +470,26 @@ buildSidebar(listEl, selectExploration).then(() => {
   if (chatContainer) initChatPanel(chatContainer, id => selectExploration(id));
 });
 
+const HERO_OVERRIDES = {
+  'mandelbrot':           { maxIter: 100 },
+  'julia-set':            { maxIter: 100 },
+  'newton-fractal':       { maxIter: 100 },
+  'kleinian':             { maxIter: 100 },
+  'dejong':               { resolution: 800, iterations: 500000 },
+  'henon':                { resolution: 800, iterations: 500000 },
+  'sierpinski':           { resolution: 800, iterations: 500000 },
+  'barnsley':             { resolution: 800, iterations: 500000 },
+  'affine-ifs':           { resolution: 800, iterations: 500000 },
+  'coupled-systems':      { resolution: 800, iterations: 500000 },
+  'custom-iterator':      { resolution: 800, iterations: 500000 },
+  'fluid-dynamics':       { resolution: 128, pressureIterations: 5 },
+};
+
+const WORKER_EXPLORATIONS = new Set([
+  'dejong', 'henon', 'sierpinski', 'barnsley', 'affine-ifs',
+  'coupled-systems', 'custom-iterator'
+]);
+
 async function runHeroGeneration(explorations) {
   const status = document.createElement('div');
   status.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a1d27;color:#e2e4ea;padding:12px 24px;border-radius:8px;border:1px solid #6b7cff;z-index:9999;font-family:inherit;font-size:14px;';
@@ -380,10 +499,29 @@ async function runHeroGeneration(explorations) {
   for (let i = 0; i < explorations.length; i++) {
     const E = explorations[i];
     status.textContent = `Generating heroes: ${i + 1}/${explorations.length} — ${E.title}`;
+
+    const overrides = HERO_OVERRIDES[E.id];
+    let savedParams = null;
     selectExploration(E.id);
-    await new Promise(r => setTimeout(r, 2000));
+    if (overrides && currentInstance) {
+      savedParams = {};
+      for (const [k, v] of Object.entries(overrides)) {
+        savedParams[k] = currentInstance.params[k];
+        currentInstance.onParamChange(k, v);
+      }
+    }
+
+    const wait = WORKER_EXPLORATIONS.has(E.id) ? 3000 : 2000;
+    await new Promise(r => setTimeout(r, wait));
     currentInstance.render();
     const dataUrl = await captureCanvasThumbnail(canvas);
+
+    if (savedParams && currentInstance) {
+      for (const [k, v] of Object.entries(savedParams)) {
+        currentInstance.onParamChange(k, v);
+      }
+    }
+
     if (dataUrl) {
       updateHeroImage(E.id, dataUrl);
       try {

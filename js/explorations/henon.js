@@ -8,7 +8,7 @@ class HenonExploration extends BaseExploration {
   static title = 'Henon Map';
   static description = "x' = 1 - a*x^2 + y, y' = b*x";
   static category = 'attractor';
-  static tags = ['strange-attractor', 'discrete-map', '2D', 'chaos', 'bifurcation'];
+  static tags = ['dynamical-systems', 'iteration', 'intermediate', 'strange-attractor', 'discrete-map', '2D', 'chaos', 'bifurcation'];
   static formulaShort = "x' = 1 − ax² + y";
   static formula = `<h3>Hénon Map</h3>
 <div class="formula-block">
@@ -34,6 +34,36 @@ for (let i = 0; i < iterations; i++) {
   }
 }</code></pre>
 <p>The quadratic term (−ax²) creates the folding that leads to chaos, while the linear term (by) provides the stretching.</p>`;
+  static foundations = ['dejong'];
+  static extensions = ['logistic-map', 'coupled-systems'];
+
+  static guidedSteps = [
+    {
+      label: 'Classic Attractor',
+      description: 'The iconic Hénon attractor at a = 1.4, b = 0.3. Millions of iterated points trace a curved, layered structure — a "strange attractor" with fractal detail at every scale.',
+      params: { a: 1.4, b: 0.3, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Thin Attractor',
+      description: 'Reduce b to 0.1 for stronger dissipation. The attractor thins dramatically — the folding layers compress, revealing the stretching-and-folding dynamics more clearly.',
+      params: { a: 1.4, b: 0.1, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Edge of Chaos',
+      description: 'Push a up to 1.6 — the attractor barely survives. It looks more scattered and fragmented, close to the boundary where bounded orbits cease to exist.',
+      params: { a: 1.6, b: 0.3, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Period-7 Orbit',
+      description: 'At a ≈ 1.07 the system settles into a periodic orbit instead of chaos. You\'ll see discrete clusters of points rather than a continuous cloud.',
+      params: { a: 1.07, b: 0.3, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Fire Nebula',
+      description: 'Switch to fire palette for a dramatic view. Pixel brightness maps to visit density — hot regions are visited most often by the chaotic orbit.',
+      params: { a: 1.4, b: 0.3, colorScheme: 1, brightness: 1.5 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

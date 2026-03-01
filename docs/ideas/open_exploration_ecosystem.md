@@ -4,7 +4,7 @@
 
 ## The Premise
 
-The IFS Explorer already has the skeleton of something bigger than a personal project. Fourteen explorations, a self-registering module system, a shared rendering pipeline, a controls descriptor language. What it doesn't have yet is a way for explorations to *talk to each other* — and a way for people outside this repo to contribute new ones without understanding WebGL internals.
+MathMap Explorer already has the skeleton of something bigger than a personal project. Fourteen explorations, a self-registering module system, a shared rendering pipeline, a controls descriptor language. What it doesn't have yet is a way for explorations to *talk to each other* — and a way for people outside this repo to contribute new ones without understanding WebGL internals.
 
 The question: what would it look like to turn this into an open platform for visual mathematics — a place where mathematicians, scientists, and engineers could build interconnected explorations, and where the connections between explorations are themselves explorable?
 
@@ -16,7 +16,7 @@ There's a gap in mathematical education and communication. Formulas-on-a-blackbo
 - **Observable** is interactive but code-first. The notebook *is* the interface.
 - **Desmos** is immediate but constrained. Great for functions, not for dynamical systems.
 
-The IFS Explorer sits in unclaimed territory: **explorable, visual, dynamical, and extensible.** The vision is to hold that territory deliberately.
+MathMap Explorer sits in unclaimed territory: **explorable, visual, dynamical, and extensible.** The vision is to hold that territory deliberately.
 
 ## What the Ecosystem Looks Like
 
@@ -45,7 +45,7 @@ The coupling protocol turns the Explorer from a *gallery* into a *laboratory*.
 For this to be an ecosystem, people need to be able to contribute explorations without a PhD in WebGL. That means:
 
 - **Rendering tiers:** A contributor can target the simplest tier (return a 2D array of points, we render it) or the most powerful (write your own fragment shader). The platform meets them where they are.
-- **A template generator:** `npx create-ifs-exploration` scaffolds a new exploration with the protocol, a sample worker, and a test harness.
+- **A template generator:** `npx create-mathmap-exploration` scaffolds a new exploration with the protocol, a sample worker, and a test harness.
 - **A catalog:** Explorations can be published, discovered, and composed. Think npm for mathematical visualizations, but the install target is a running Explorer instance.
 - **Documentation-as-exploration:** Every exploration carries its own tutorial content (already true today). The ecosystem extends this: tutorials can reference other explorations, and "learning paths" are curated sequences of explorations that build on each other.
 

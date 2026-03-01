@@ -20,6 +20,10 @@ function createDoubleFBO(gl, w, h, internalFormat, format, type, filter) {
     const fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE) {
+      throw new Error(`Fluid FBO incomplete (status 0x${status.toString(16)}). Float textures may not be supported.`);
+    }
     return { texture: tex, fbo };
   }
   const a = makeFBO();
@@ -42,7 +46,12 @@ export class FluidSolver {
     this.simHeight = simWidth;
 
     const gl = this.gl;
-    const halfFloat = gl.getExtension('EXT_color_buffer_float');
+    if (!gl.getExtension('EXT_color_buffer_float')) {
+      console.warn('[FluidSolver] EXT_color_buffer_float not available — float FBOs may fail');
+    }
+    if (!gl.getExtension('OES_texture_float_linear')) {
+      console.warn('[FluidSolver] OES_texture_float_linear not available — linear filtering on float textures may fail');
+    }
 
     this.velocity = createDoubleFBO(gl, simWidth, simWidth, gl.RG32F, gl.RG, gl.FLOAT, gl.LINEAR);
     this.pressure = createDoubleFBO(gl, simWidth, simWidth, gl.R32F, gl.RED, gl.FLOAT, gl.LINEAR);
@@ -218,7 +227,6 @@ export class FluidSolver {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, target.read.texture);
     gl.uniform1i(u.u_source, 1);
-    gl.uniform2f(u.u_texelSize, 1.0 / this.simWidth, 1.0 / this.simHeight);
     gl.uniform1f(u.u_dt, dt);
     drawFullscreenQuad(gl);
     target.swap();

@@ -114,7 +114,7 @@ The entire simulation runs in fragment shaders on a WebGL2 pipeline:
 
 This is 5-7 shader programs with ping-pong framebuffers. Each Jacobi pass is one draw call. 20-40 draw calls per frame total — well within real-time budget at 512x512 or higher.
 
-### Integration with IFS Explorer
+### Integration with MathMap Explorer
 
 This exploration extends `BaseExploration` like the others but uses a multi-pass shader pipeline instead of a single fullscreen quad. It'll need:
 

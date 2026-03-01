@@ -104,6 +104,17 @@ export function buildControls(container, descriptors, callbacks) {
       wrapper.className = 'control-error';
       wrapper.textContent = desc.text || '';
       wrapper.dataset.key = desc.key;
+    } else if (desc.type === 'readout') {
+      wrapper.classList.add('control-readout');
+      const label = document.createElement('label');
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = desc.label;
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = typeof desc.get === 'function' ? desc.get() : '';
+      label.appendChild(nameSpan);
+      label.appendChild(valueSpan);
+      wrapper.appendChild(label);
     } else if (desc.type === 'animation') {
       wrapper.className = 'control-group animation-controls';
 
@@ -195,7 +206,16 @@ export function buildControls(container, descriptors, callbacks) {
   });
 }
 
-// Update a slider's display value externally (for animation)
+export function updateReadouts(container, descriptors) {
+  descriptors.forEach(desc => {
+    if (desc.type !== 'readout' || typeof desc.get !== 'function') return;
+    const group = container.querySelector(`.control-group[data-key="${desc.key}"]`);
+    if (!group) return;
+    const valueSpan = group.querySelector('.value');
+    if (valueSpan) valueSpan.textContent = desc.get();
+  });
+}
+
 export function updateSliderDisplay(container, key, value) {
   const group = container.querySelector(`.control-group[data-key="${key}"]`);
   if (!group) return;

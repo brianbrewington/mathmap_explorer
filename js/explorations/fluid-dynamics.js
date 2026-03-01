@@ -13,8 +13,8 @@ class FluidDynamicsExploration extends BaseExploration {
   static id = 'fluid-dynamics';
   static title = 'Fluid Dynamics';
   static description = 'Interactive Navier-Stokes fluid simulation';
-  static category = 'custom';
-  static tags = ['continuous-ode', 'pde', 'navier-stokes', 'advection', 'diffusion', 'convection'];
+  static category = 'pde';
+  static tags = ['pde-simulation', 'ode-integration', 'advanced', 'continuous-ode', 'pde', 'navier-stokes', 'advection', 'diffusion', 'convection'];
   static formulaShort = '\u2202v/\u2202t + (v\u00B7\u2207)v = \u2212\u2207p + \u03BD\u2207\u00B2v';
   static formula = `<h3>Navier-Stokes Equations</h3>
 <div class="formula-block">
@@ -47,6 +47,30 @@ for (let i = 0; i < 20; i++)
 // 4. Projection: subtract pressure gradient
 v -= 0.5 * gradient(pressure);</code></pre>
 <p><b>Rayleigh-B\u00E9nard mode:</b> Heat rises from the bottom. At low heat, steady convection cells form. Increase buoyancy to see the transition to turbulence \u2014 the same transition Lorenz studied when he discovered the butterfly attractor.</p>`;
+  static foundations = ['coupled-systems'];
+
+  static guidedSteps = [
+    {
+      label: 'Free Play',
+      description: 'Draw on the canvas with your mouse to inject dye and force into the fluid. Watch vortices form and interact — the Navier–Stokes equations in real time.',
+      params: { preset: 'freeplay' }
+    },
+    {
+      label: 'High Viscosity (Honey)',
+      description: 'Thick, syrupy flow. Dye spreads slowly and vortices die quickly — viscous forces dominate inertia. This is low-Reynolds-number flow.',
+      params: { preset: 'honey' }
+    },
+    {
+      label: 'Low Viscosity (Water)',
+      description: 'Thin, fast flow. Dye swirls into tight vortices that persist and interact. Turbulence develops easily — this is high-Reynolds-number flow.',
+      params: { preset: 'water' }
+    },
+    {
+      label: 'Rayleigh–Bénard Convection',
+      description: 'Heat the bottom, cool the top. Buoyancy drives convective rolls — warm fluid rises, cool fluid sinks, creating organized circulation cells.',
+      params: { preset: 'rayleigh' }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

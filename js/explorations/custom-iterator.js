@@ -90,7 +90,7 @@ class CustomIteratorExploration extends BaseExploration {
   static title = 'Custom Iterator';
   static description = 'Define your own iteration formulas';
   static category = 'custom';
-  static tags = ['user-defined', 'discrete-map', 'configurable', 'escape-time', 'expression-parser'];
+  static tags = ['dynamical-systems', 'fractals', 'iteration', 'advanced', 'user-defined', 'discrete-map', 'configurable', 'escape-time', 'expression-parser'];
   static formulaShort = 'x\' = f(x, y, a, b, c, d)';
   static formula = `<h3>Custom Iterator</h3>
 <div class="formula-block">
@@ -114,6 +114,26 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
 // csquare(z) + c
 // where csquare is a vec2 complex multiply</code></pre>
 <p>Try the presets to see classic attractors, then modify the expressions to discover new ones!</p>`;
+  static foundations = ['dejong'];
+  static extensions = ['bifurcation-2d'];
+
+  static guidedSteps = [
+    {
+      label: 'De Jong Attractor',
+      description: 'The classic De Jong strange attractor: sin/cos maps produce a swirling pattern. Drag the a, b, c, d sliders to sculpt the shape — every combination is unique.',
+      params: { mode: 'real', a: 1.4, b: -2.3, c: 2.4, d: -2.1 }
+    },
+    {
+      label: 'Symmetric Pattern',
+      description: 'Integer-valued parameters create more symmetric, lattice-like orbits. The attractor becomes periodic and geometric rather than chaotic.',
+      params: { mode: 'real', a: 2.0, b: -2.0, c: 2.0, d: -2.0 }
+    },
+    {
+      label: 'Scattered Cloud',
+      description: 'Large parameter magnitudes scatter the orbit widely. The attractor fills a broader region — the dynamics are more mixing and turbulent.',
+      params: { mode: 'real', a: -3.5, b: 2.2, c: -1.8, d: 3.1 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -16,6 +16,9 @@
 .control-btn.danger { border-color: var(--danger); color: var(--danger); }
 .control-btn.danger:hover { background: rgba(255, 107, 107, 0.1); }
 
+.control-readout label { font-size: 11px; opacity: 0.85; }
+.control-readout .value { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 12px; }
+
 .controls-separator { width: 1px; height: 40px; background: var(--border-color); }
 
 .control-group.description-text { color: var(--text-secondary); font-size: 12px; line-height: 1.5; max-width: 300px; min-width: 200px; }

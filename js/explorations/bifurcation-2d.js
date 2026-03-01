@@ -40,7 +40,7 @@ class Bifurcation2DExploration extends BaseExploration {
   static title = '2D Map Bifurcation';
   static description = 'Bifurcation diagram of 2D maps';
   static category = 'map';
-  static tags = ['discrete-map', '2D', 'bifurcation', 'chaos', 'henon-family'];
+  static tags = ['dynamical-systems', 'iteration', 'intermediate', 'discrete-map', '2D', 'bifurcation', 'chaos', 'henon-family'];
   static formulaShort = 'Sweep parameter of 2D maps';
   static formula = `<h3>2D Map Bifurcation</h3>
 <div class="formula-block">
@@ -51,6 +51,31 @@ Supported maps: Henon, Tinkerbell, Ikeda
 <p>Like the logistic map bifurcation diagram, but for 2D iterated maps. Reveals period-doubling cascades and chaotic regions as parameters vary.</p>`;
   static tutorial = `<h3>How 2D Map Bifurcation Works</h3>
 <p>For each value of the swept parameter, iterate the 2D map. After discarding transient iterations, plot the x (or y) coordinate vertically. This reveals the attractor structure as the parameter changes.</p>`;
+  static foundations = ['logistic-map'];
+  static extensions = ['coupled-systems'];
+
+  static guidedSteps = [
+    {
+      label: 'Hénon — Sweep a',
+      description: 'Sweep the "a" parameter of the Hénon map from 0 to 2. Watch a fixed point undergo period doubling and then dissolve into a strange attractor.',
+      params: { mapType: 'henon', sweepParam: 'a', sweepMin: 0.0, sweepMax: 2.0, coordToPlot: 'x', fixed_b: 0.3 }
+    },
+    {
+      label: 'Hénon — Sweep b',
+      description: 'Now sweep "b" while holding a = 1.4. The dissipation parameter controls how much the map contracts area — watch the attractor fatten and thin.',
+      params: { mapType: 'henon', sweepParam: 'b', sweepMin: 0.0, sweepMax: 0.5, coordToPlot: 'x', fixed_a: 1.4 }
+    },
+    {
+      label: 'Tinkerbell Map',
+      description: 'The Tinkerbell map has a crescent-shaped attractor. Sweep "a" to see it appear, deform, and break apart as the parameter changes.',
+      params: { mapType: 'tinkerbell', sweepParam: 'a', sweepMin: -1.0, sweepMax: 1.5, coordToPlot: 'x' }
+    },
+    {
+      label: 'Ikeda Map',
+      description: 'The Ikeda map models light in a nonlinear optical cavity. Sweep the parameter to see photon trajectories transition from stable orbits to chaos.',
+      params: { mapType: 'ikeda', sweepParam: 'a', sweepMin: 0.0, sweepMax: 1.5, coordToPlot: 'x' }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

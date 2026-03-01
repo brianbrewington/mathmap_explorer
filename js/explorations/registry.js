@@ -1,18 +1,22 @@
+import { validateTags } from './taxonomy.js';
+
 const explorations = [];
-const REQUIRED_FIELDS = ['id', 'title', 'category'];
-const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom'];
+const REQUIRED_FIELDS = ['id', 'title'];
+
+/** @deprecated Use taxonomy topic tags instead. Kept for backward compat. */
+const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'pde', 'custom'];
 
 export function register(ExplorationClass) {
   for (const field of REQUIRED_FIELDS) {
     if (!ExplorationClass[field]) {
-      console.warn(`[IFS Registry] Exploration missing required field "${field}":`, ExplorationClass);
+      console.warn(`[Registry] Exploration missing required field "${field}":`, ExplorationClass);
     }
   }
-  if (ExplorationClass.category && !VALID_CATEGORIES.includes(ExplorationClass.category)) {
-    console.warn(`[IFS Registry] Unknown category "${ExplorationClass.category}" for ${ExplorationClass.id}. Valid: ${VALID_CATEGORIES.join(', ')}`);
-  }
+  const tagWarnings = validateTags(ExplorationClass);
+  for (const w of tagWarnings) console.warn(`[Registry] ${w}`);
+
   if (explorations.some(e => e.id === ExplorationClass.id)) {
-    console.warn(`[IFS Registry] Duplicate exploration id "${ExplorationClass.id}"`);
+    console.warn(`[Registry] Duplicate exploration id "${ExplorationClass.id}"`);
     return;
   }
   explorations.push(ExplorationClass);

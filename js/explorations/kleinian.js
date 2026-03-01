@@ -53,7 +53,7 @@ class KleinianExploration extends BaseExploration {
   static title = 'Kleinian Group';
   static description = 'Limit sets of Kleinian groups and Möbius transformations';
   static category = 'fractal';
-  static tags = ['complex-plane', 'group-theory', 'mobius-transformation', 'hyperbolic-geometry', 'limit-set'];
+  static tags = ['fractals', 'complex-analysis', 'iteration', 'advanced', 'complex-plane', 'group-theory', 'mobius-transformation', 'hyperbolic-geometry', 'limit-set'];
   static formulaShort = 'z \u2192 (az+b)/(cz+d)';
   static formula = `<h3>Kleinian Group Limit Sets</h3>
 <div class="formula-block">
@@ -105,6 +105,30 @@ for (let i = 0; i < maxIter; i++) {
 <p>Pixels are colored by iteration depth and orbit trap distance \u2014 how close the orbit passes to the limit set.</p>
 <h4>PSL(2,\u2102) and Discreteness</h4>
 <p>The group of all M\u00F6bius transforms with ad\u2212bc=1 is PSL(2,\u2102). A Kleinian group is a <em>discrete</em> subgroup. Discreteness means orbits don\u2019t fill space \u2014 they accumulate on a fractal limit set. The complement of the limit set is the <em>ordinary set</em> (or domain of discontinuity), where the group acts properly discontinuously.</p>`;
+  static foundations = ['mandelbrot'];
+
+  static guidedSteps = [
+    {
+      label: 'Apollonian Gasket',
+      description: 'Circles packed within circles, each tangent to its neighbors. This classical construction dates back to ancient Greece — the group-theoretic version reveals its full fractal structure.',
+      params: { preset: 'apollonian', maxIter: 200, colorScheme: 0 }
+    },
+    {
+      label: 'Schottky Group',
+      description: 'Two pairs of circles define the generators. The limit set is a Cantor-like dust of points — a totally disconnected fractal emerging from Möbius transformations.',
+      params: { preset: 'schottky', maxIter: 200, colorScheme: 0 }
+    },
+    {
+      label: 'Maskit Slice',
+      description: 'A degenerate group at the boundary of discrete representations. The limit set fills a curve with intricate self-touching spirals.',
+      params: { preset: 'maskit', maxIter: 200, colorScheme: 0 }
+    },
+    {
+      label: 'High Detail',
+      description: 'Increase iterations for finer detail in the Apollonian gasket. More layers of nested circles emerge with each additional iteration.',
+      params: { preset: 'apollonian', maxIter: 400, colorScheme: 4 }
+    }
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

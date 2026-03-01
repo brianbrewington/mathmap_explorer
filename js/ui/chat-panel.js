@@ -15,7 +15,7 @@ function buildSystemPrompt() {
     `- [${E.id}] ${E.title} (${E.category}): ${E.description || ''}. Tags: ${(E.tags || []).join(', ')}`
   ).join('\n');
 
-  return `You are a helpful guide for the IFS Explorer, a web application for exploring iterated function systems, fractals, strange attractors, and related mathematics.
+  return `You are a helpful guide for MathMap Explorer, a web application for exploring iterated function systems, fractals, strange attractors, fluid dynamics, and related mathematics.
 
 Available explorations:
 ${catalog}

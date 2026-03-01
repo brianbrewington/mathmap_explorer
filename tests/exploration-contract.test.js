@@ -37,14 +37,18 @@ import '../js/explorations/julia-set.js';
 import '../js/explorations/kleinian.js';
 import '../js/explorations/coupled-systems.js';
 import '../js/explorations/fluid-dynamics.js';
+import '../js/explorations/lissajous.js';
+import '../js/explorations/fourier-synthesis.js';
+import '../js/explorations/unit-circle.js';
+import '../js/explorations/phase-space.js';
+import '../js/explorations/simple-harmonic.js';
 
-const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom'];
+const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
 const REQUIRED_STATIC_FIELDS = [
   { name: 'id', type: 'string' },
   { name: 'title', type: 'string' },
   { name: 'description', type: 'string' },
-  { name: 'category', type: 'string' },
   { name: 'tags', type: 'object' },
   { name: 'formula', type: 'string' },
   { name: 'formulaShort', type: 'string' },
@@ -59,8 +63,8 @@ const REQUIRED_METHODS = [
 const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
-  it('has exactly 16 registered explorations', () => {
-    expect(explorations.length).toBe(16);
+  it('has exactly 21 registered explorations', () => {
+    expect(explorations.length).toBe(21);
   });
 
   it('all ids are unique', () => {
@@ -85,8 +89,10 @@ describe.each(explorations.map(E => [E.id, E]))('exploration "%s"', (_id, ExplCl
     });
   }
 
-  it('category is valid', () => {
-    expect(VALID_CATEGORIES).toContain(ExplClass.category);
+  it('category is valid or uses taxonomy topic tags', () => {
+    if (ExplClass.category) {
+      expect(VALID_CATEGORIES).toContain(ExplClass.category);
+    }
   });
 
   it('formula contains HTML', () => {
@@ -107,4 +113,58 @@ describe.each(explorations.map(E => [E.id, E]))('exploration "%s"', (_id, ExplCl
       expect(typeof ExplClass.prototype[method]).toBe('function');
     });
   }
+
+  it('foundations is an array of strings', () => {
+    expect(Array.isArray(ExplClass.foundations)).toBe(true);
+    ExplClass.foundations.forEach(id => expect(typeof id).toBe('string'));
+  });
+
+  it('extensions is an array of strings', () => {
+    expect(Array.isArray(ExplClass.extensions)).toBe(true);
+    ExplClass.extensions.forEach(id => expect(typeof id).toBe('string'));
+  });
+
+  it('foundations reference registered explorations', () => {
+    const allIds = new Set(explorations.map(E => E.id));
+    ExplClass.foundations.forEach(id => {
+      expect(allIds.has(id)).toBe(true);
+    });
+  });
+
+  it('extensions reference registered explorations', () => {
+    const allIds = new Set(explorations.map(E => E.id));
+    ExplClass.extensions.forEach(id => {
+      expect(allIds.has(id)).toBe(true);
+    });
+  });
+
+  it('overview is a string if present', () => {
+    if (ExplClass.overview) {
+      expect(typeof ExplClass.overview).toBe('string');
+    }
+  });
+
+  it('resources is a well-formed array if present', () => {
+    if (ExplClass.resources && ExplClass.resources.length > 0) {
+      expect(Array.isArray(ExplClass.resources)).toBe(true);
+      for (const r of ExplClass.resources) {
+        expect(typeof r.type).toBe('string');
+        expect(typeof r.title).toBe('string');
+        expect(typeof r.url).toBe('string');
+        expect(r.url).toMatch(/^https?:\/\//);
+      }
+    }
+  });
+
+  it('guidedSteps is a well-formed array if present', () => {
+    if (ExplClass.guidedSteps && ExplClass.guidedSteps.length > 0) {
+      expect(Array.isArray(ExplClass.guidedSteps)).toBe(true);
+      for (const step of ExplClass.guidedSteps) {
+        expect(typeof step.label).toBe('string');
+        expect(step.label.length).toBeGreaterThan(0);
+        if (step.params) expect(typeof step.params).toBe('object');
+        if (step.bounds) expect(typeof step.bounds).toBe('object');
+      }
+    }
+  });
 });
