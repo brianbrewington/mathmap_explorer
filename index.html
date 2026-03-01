@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFS Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/controls.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h1>IFS Explorer</h1>
+        <p class="subtitle">Iterated Function Systems</p>
+      </div>
+      <nav id="exploration-list"></nav>
+    </aside>
+    <main id="main-area">
+      <div id="canvas-container">
+        <canvas id="render-canvas"></canvas>
+        <div id="canvas-overlay" class="hidden">
+          <div class="spinner"></div>
+          <span id="overlay-text">Computing...</span>
+        </div>
+      </div>
+      <div id="info-panel" class="collapsed">
+        <div class="info-panel-tabs">
+          <button class="info-tab active" data-tab="formula">Formula</button>
+          <button class="info-tab" data-tab="tutorial">How It Works</button>
+          <button class="info-panel-close">&times;</button>
+        </div>
+        <div class="info-panel-content">
+          <div id="formula-content" class="info-section active"></div>
+          <div id="tutorial-content" class="info-section"></div>
+        </div>
+      </div>
+      <div id="controls-panel"></div>
+    </main>
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

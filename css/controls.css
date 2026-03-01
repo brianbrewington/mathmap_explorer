@@ -1,0 +1,33 @@
+.control-group { display: flex; flex-direction: column; min-width: 160px; }
+.control-group label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; display: flex; justify-content: space-between; }
+.control-group label .value { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+.control-group input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; outline: none; }
+.control-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--bg-controls); }
+.control-group input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--bg-controls); }
+
+.control-group select { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; font-size: 13px; outline: none; cursor: pointer; }
+.control-group select:focus { border-color: var(--accent); }
+
+.control-btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.control-btn:hover { border-color: var(--accent); background: rgba(107, 124, 255, 0.1); }
+.control-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.control-btn.primary:hover { background: var(--accent-hover); }
+.control-btn.danger { border-color: var(--danger); color: var(--danger); }
+.control-btn.danger:hover { background: rgba(255, 107, 107, 0.1); }
+
+.controls-separator { width: 1px; height: 40px; background: var(--border-color); }
+
+.control-group.description-text { color: var(--text-secondary); font-size: 12px; line-height: 1.5; max-width: 300px; min-width: 200px; }
+
+.control-text-input { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; outline: none; width: 100%; min-width: 200px; }
+.control-text-input:focus { border-color: var(--accent); }
+.control-text-input.has-error { border-color: var(--danger); }
+
+.control-error { color: var(--danger); font-size: 11px; line-height: 1.4; min-width: 200px; }
+
+/* Syntax highlight colors */
+.sh-kw { color: #c792ea; }
+.sh-num { color: #f78c6c; }
+.sh-str { color: #c3e88d; }
+.sh-cm { color: #546e7a; }

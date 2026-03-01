@@ -1,0 +1,153 @@
+import { BaseExploration } from './base-exploration.js';
+import { register } from './registry.js';
+import { DensityRenderer } from '../renderer/density-renderer.js';
+
+class SierpinskiExploration extends BaseExploration {
+  static id = 'sierpinski';
+  static title = 'Sierpinski Triangle';
+  static description = 'Chaos game with 3 vertices';
+  static category = 'fractal';
+  static formulaShort = 'p<sub>n+1</sub> = (p<sub>n</sub> + v) / 2';
+  static formula = `<h3>Sierpinski Triangle (Chaos Game)</h3>
+<div class="formula-block">
+p<sub>n+1</sub> = (p<sub>n</sub> + v<sub>k</sub>) / 2<br>
+where v<sub>k</sub> is a randomly chosen vertex of the triangle
+</div>
+<p>The chaos game: start at any point, pick a random vertex of the triangle, and move halfway toward it. Repeating this simple rule millions of times produces the Sierpinski triangle — a fractal with Hausdorff dimension log(3)/log(2) ≈ 1.585.</p>`;
+  static tutorial = `<h3>How the Sierpinski Triangle is Computed</h3>
+<p>The chaos game is elegantly simple. Three vertices define a triangle. At each step, we randomly select one vertex and move our current point halfway toward it.</p>
+<pre><code class="language-js">const vertices = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]];
+let x = 0.1, y = 0.1;
+const density = new Uint32Array(width * height);
+
+for (let i = 0; i < iterations; i++) {
+  const v = vertices[Math.floor(Math.random() * 3)];
+  x = (x + v[0]) / 2;
+  y = (y + v[1]) / 2;
+
+  const px = Math.floor((x - xMin) / (xMax - xMin) * width);
+  const py = Math.floor((y - yMin) / (yMax - yMin) * height);
+  if (px >= 0 && px < width && py >= 0 && py < height) {
+    density[py * width + px]++;
+  }
+}</code></pre>
+<p>The resulting pattern is a perfect Sierpinski triangle — demonstrating how randomness and a simple rule can generate precise fractal structure.</p>`;
+
+  constructor(canvas, controlsContainer) {
+    super(canvas, controlsContainer);
+    this.params = {
+      iterations: 1000000,
+      colorScheme: 0,
+      resolution: 2000
+    };
+    this.densityRenderer = null;
+    this.worker = null;
+    this._debounceTimer = null;
+    this._densityWidth = 2000;
+    this._densityHeight = 1750;
+    this._lastDensity = null;
+    this._lastMaxDensity = 0;
+  }
+
+  getControls() {
+    return [
+      { type: 'slider', key: 'iterations', label: 'Iterations', min: 100000, max: 5000000, step: 100000, value: this.params.iterations },
+      { type: 'select', key: 'resolution', label: 'Resolution', options: [
+        { value: 800, label: '800 (Fast)' },
+        { value: 2000, label: '2000 (Medium)' },
+        { value: 4000, label: '4000 (High)' },
+        { value: 6000, label: '6000 (Very High)' },
+        { value: 8000, label: '8000 (Ultra)' }
+      ], value: this.params.resolution },
+      { type: 'select', key: 'colorScheme', label: 'Colors', options: [
+        { value: 0, label: 'Nebula' },
+        { value: 1, label: 'Fire' },
+        { value: 2, label: 'Ocean' },
+        { value: 3, label: 'Grayscale' }
+      ], value: 0 },
+      { type: 'separator' },
+      { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
+      { type: 'description', text: 'Sierpinski triangle via the chaos game. Pick a random vertex, move halfway.' },
+      { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
+    ];
+  }
+
+  activate() {
+    this.densityRenderer = new DensityRenderer(this.canvas);
+    this._startWorker();
+  }
+
+  deactivate() {
+    super.deactivate();
+    if (this._debounceTimer) clearTimeout(this._debounceTimer);
+    if (this.worker) { this.worker.terminate(); this.worker = null; }
+    if (this.densityRenderer) { this.densityRenderer.destroy(); this.densityRenderer = null; }
+  }
+
+  onParamChange(key, value) {
+    this.params[key] = value;
+    if (key === 'colorScheme') {
+      if (this._lastDensity) {
+        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+      }
+      return;
+    }
+    if (key === 'resolution') {
+      this._densityWidth = value;
+      this._densityHeight = Math.round(value * 0.875);
+    }
+    if (this._debounceTimer) clearTimeout(this._debounceTimer);
+    this._debounceTimer = setTimeout(() => this._startWorker(), 150);
+  }
+
+  reset() {
+    this.params.iterations = 1000000;
+    this._startWorker();
+  }
+
+  resize() {
+    if (this._lastDensity && this.densityRenderer) {
+      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+    }
+  }
+
+  _startWorker() {
+    if (this.worker) this.worker.terminate();
+    this._lastDensity = null;
+    this._lastMaxDensity = 0;
+    window.showOverlay('Computing fractal...');
+
+    this.worker = new Worker('js/workers/attractor-worker.js');
+    this.worker.onmessage = (e) => {
+      const { density, maxDensity, width, height, done } = e.data;
+      this._lastDensity = new Uint32Array(density);
+      this._lastMaxDensity = maxDensity;
+      this._densityWidth = width;
+      this._densityHeight = height;
+      if (this.densityRenderer) {
+        this.densityRenderer.render(this._lastDensity, width, height, maxDensity, this.params.colorScheme);
+      }
+      if (done) window.hideOverlay();
+    };
+
+    const scale = this.params.resolution / 800;
+    const iterations = Math.round(this.params.iterations * scale);
+
+    this.worker.postMessage({
+      type: 'sierpinski',
+      params: {},
+      width: this._densityWidth,
+      height: this._densityHeight,
+      iterations,
+      bounds: { xMin: -0.1, xMax: 1.1, yMin: -0.1, yMax: 1.0 }
+    });
+  }
+
+  render() {
+    if (this._lastDensity && this.densityRenderer) {
+      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+    }
+  }
+}
+
+register(SierpinskiExploration);
