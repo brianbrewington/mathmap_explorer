@@ -56,7 +56,8 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       transient: 500,
       samples: 200,
       rSteps: 2000,
-      resolution: 2000
+      resolution: 2000,
+      showLyapunov: 'hidden'
     };
     this._bounds = { xMin: 2.5, xMax: 4.0, yMin: 0, yMax: 1 };
     this._defaultBounds = { ...this._bounds };
@@ -65,6 +66,10 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     this.uniforms = null;
     this.texture = null;
     this.worker = null;
+    this._lyapunovWorker = null;
+    this._lyapunovData = null;
+    this._bifurcationPoints = null;
+    this._bifurcationCount = 0;
     this._debounceTimer = null;
     this._cleanupPanZoom = null;
     this._offscreen = null;
@@ -84,6 +89,10 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
         { value: 6000, label: '6000 (Very High)' },
         { value: 8000, label: '8000 (Ultra)' }
       ], value: this.params.resolution },
+      { type: 'select', key: 'showLyapunov', label: 'Lyapunov', options: [
+        { value: 'hidden', label: 'Hidden' },
+        { value: 'overlay', label: 'Overlay' }
+      ], value: this.params.showLyapunov },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
       { type: 'description', text: 'Drag to pan, scroll to zoom. Period-doubling route to chaos.' },
@@ -118,6 +127,7 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
+    if (this._lyapunovWorker) { this._lyapunovWorker.terminate(); this._lyapunovWorker = null; }
     if (this.texture && this.gl) { this.gl.deleteTexture(this.texture); this.texture = null; }
     if (this.program && this.gl) { this.gl.deleteProgram(this.program); this.program = null; }
     this._offscreen = null;
@@ -133,6 +143,14 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       this._bounds.xMin = this.params.rMin;
       this._bounds.xMax = this.params.rMax;
     }
+    if (key === 'showLyapunov') {
+      // Re-render with existing data
+      if (this._bifurcationPoints) {
+        this._renderToOffscreen(this._bifurcationPoints, this._bifurcationCount);
+        this._uploadAndRender();
+      }
+      return;
+    }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
   }
@@ -143,7 +161,9 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     this.params.transient = 500;
     this.params.samples = 200;
     this.params.rSteps = 2000;
+    this.params.showLyapunov = 'hidden';
     this._bounds = { ...this._defaultBounds };
+    this._lyapunovData = null;
     this._startWorker();
   }
 
@@ -153,23 +173,51 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 
   _startWorker() {
     if (this.worker) this.worker.terminate();
+    if (this._lyapunovWorker) this._lyapunovWorker.terminate();
+    this._lyapunovData = null;
     window.showOverlay('Computing bifurcation diagram...');
 
+    let bifDone = false;
+    let lyapDone = this.params.showLyapunov === 'hidden';
+
+    const checkDone = () => {
+      if (bifDone && lyapDone) {
+        this._renderToOffscreen(this._bifurcationPoints, this._bifurcationCount);
+        this._uploadAndRender();
+        window.hideOverlay();
+      }
+    };
+
+    // Bifurcation worker
     this.worker = new Worker('js/workers/bifurcation-worker.js');
     this.worker.onmessage = (e) => {
       const { points, count } = e.data;
-      this._renderToOffscreen(new Float32Array(points), count);
-      this._uploadAndRender();
-      window.hideOverlay();
+      this._bifurcationPoints = new Float32Array(points);
+      this._bifurcationCount = count;
+      bifDone = true;
+      checkDone();
     };
 
     this.worker.postMessage({
-      rMin: this.params.rMin,
-      rMax: this.params.rMax,
+      rMin: this.params.rMin, rMax: this.params.rMax,
       rSteps: this.params.rSteps,
-      transient: this.params.transient,
-      samples: this.params.samples
+      transient: this.params.transient, samples: this.params.samples
     });
+
+    // Lyapunov worker (parallel)
+    if (this.params.showLyapunov !== 'hidden') {
+      this._lyapunovWorker = new Worker('js/workers/lyapunov-worker.js');
+      this._lyapunovWorker.onmessage = (e) => {
+        this._lyapunovData = new Float32Array(e.data.lyapunov);
+        lyapDone = true;
+        checkDone();
+      };
+      this._lyapunovWorker.postMessage({
+        rMin: this.params.rMin, rMax: this.params.rMax,
+        rSteps: this.params.rSteps,
+        transient: this.params.transient, samples: this.params.samples
+      });
+    }
   }
 
   _renderToOffscreen(points, count) {
@@ -180,6 +228,29 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, w, h);
+
+    // Lyapunov overlay band (bottom 40px strip)
+    if (this.params.showLyapunov === 'overlay' && this._lyapunovData) {
+      const bandHeight = Math.round(h * 0.06);
+      const data = this._lyapunovData;
+      const rSteps = data.length;
+
+      for (let i = 0; i < rSteps; i++) {
+        const x = (i / (rSteps - 1)) * w;
+        const lambda = data[i];
+        // Blue for stable (λ<0), red for chaotic (λ>0), black at boundary
+        let r, g, b;
+        if (lambda < 0) {
+          const t = Math.min(1, -lambda / 2);
+          r = 0; g = Math.round(50 * t); b = Math.round(200 * t);
+        } else {
+          const t = Math.min(1, lambda / 2);
+          r = Math.round(200 * t); g = Math.round(30 * t); b = 0;
+        }
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.fillRect(x, h - bandHeight, Math.ceil(w / rSteps) + 1, bandHeight);
+      }
+    }
 
     ctx.fillStyle = 'rgba(107, 124, 255, 0.15)';
 

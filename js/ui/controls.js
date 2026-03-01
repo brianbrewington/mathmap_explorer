@@ -11,6 +11,7 @@ export function buildControls(container, descriptors, callbacks) {
 
     const wrapper = document.createElement('div');
     wrapper.className = 'control-group';
+    if (desc.key) wrapper.dataset.key = desc.key;
 
     if (desc.type === 'slider') {
       const label = document.createElement('label');
@@ -84,10 +85,110 @@ export function buildControls(container, descriptors, callbacks) {
       wrapper.className = 'control-error';
       wrapper.textContent = desc.text || '';
       wrapper.dataset.key = desc.key;
+    } else if (desc.type === 'animation') {
+      wrapper.className = 'control-group animation-controls';
+
+      // Parameter select
+      const paramLabel = document.createElement('label');
+      paramLabel.textContent = 'Animate';
+      const paramSelect = document.createElement('select');
+      paramSelect.className = 'anim-param-select';
+      (desc.params || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.key;
+        opt.textContent = p.label;
+        paramSelect.appendChild(opt);
+      });
+
+      // Speed slider
+      const speedLabel = document.createElement('label');
+      speedLabel.textContent = 'Speed';
+      const speedSpan = document.createElement('span');
+      speedSpan.className = 'value';
+      speedSpan.textContent = '0.50';
+      speedLabel.appendChild(speedSpan);
+      const speedSlider = document.createElement('input');
+      speedSlider.type = 'range';
+      speedSlider.min = '0.05';
+      speedSlider.max = '3';
+      speedSlider.step = '0.05';
+      speedSlider.value = '0.5';
+
+      // Mode select
+      const modeSelect = document.createElement('select');
+      modeSelect.className = 'anim-mode-select';
+      ['bounce', 'loop'].forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m.charAt(0).toUpperCase() + m.slice(1);
+        modeSelect.appendChild(opt);
+      });
+
+      // Buttons
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'anim-btn-group';
+      const playBtn = document.createElement('button');
+      playBtn.className = 'control-btn anim-play';
+      playBtn.textContent = 'Play';
+      const pauseBtn = document.createElement('button');
+      pauseBtn.className = 'control-btn anim-pause';
+      pauseBtn.textContent = 'Pause';
+      const stopBtn = document.createElement('button');
+      stopBtn.className = 'control-btn anim-stop';
+      stopBtn.textContent = 'Stop';
+      btnGroup.appendChild(playBtn);
+      btnGroup.appendChild(pauseBtn);
+      btnGroup.appendChild(stopBtn);
+
+      // Events
+      playBtn.addEventListener('click', () => {
+        if (callbacks.onAnimAction) {
+          callbacks.onAnimAction('play', {
+            paramKey: paramSelect.value,
+            speed: parseFloat(speedSlider.value),
+            mode: modeSelect.value
+          });
+        }
+      });
+      pauseBtn.addEventListener('click', () => {
+        if (callbacks.onAnimAction) callbacks.onAnimAction('pause');
+      });
+      stopBtn.addEventListener('click', () => {
+        if (callbacks.onAnimAction) callbacks.onAnimAction('stop');
+      });
+      speedSlider.addEventListener('input', () => {
+        speedSpan.textContent = parseFloat(speedSlider.value).toFixed(2);
+        if (callbacks.onAnimAction) callbacks.onAnimAction('speed', { speed: parseFloat(speedSlider.value) });
+      });
+      modeSelect.addEventListener('change', () => {
+        if (callbacks.onAnimAction) callbacks.onAnimAction('mode', { mode: modeSelect.value });
+      });
+
+      wrapper.appendChild(paramLabel);
+      wrapper.appendChild(paramSelect);
+      wrapper.appendChild(speedLabel);
+      wrapper.appendChild(speedSlider);
+      wrapper.appendChild(modeSelect);
+      wrapper.appendChild(btnGroup);
     }
 
     container.appendChild(wrapper);
   });
+}
+
+// Update a slider's display value externally (for animation)
+export function updateSliderDisplay(container, key, value) {
+  const group = container.querySelector(`.control-group[data-key="${key}"]`);
+  if (!group) return;
+  const input = group.querySelector('input[type="range"]');
+  const valueSpan = group.querySelector('.value');
+  if (input) {
+    input.value = value;
+    if (valueSpan) {
+      const step = parseFloat(input.step) || 0.01;
+      valueSpan.textContent = formatValue(value, step);
+    }
+  }
 }
 
 function formatValue(v, step) {

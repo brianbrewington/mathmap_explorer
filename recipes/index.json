@@ -1,0 +1,38 @@
+[
+  {
+    "id": "swirling-dragon",
+    "name": "Swirling Dragon",
+    "author": "System",
+    "date": "2026-02-28",
+    "mode": "real",
+    "exprX": "sin(a*y) - cos(b*x)",
+    "exprY": "sin(c*x) - cos(d*y)",
+    "a": 1.7, "b": 1.7, "c": 0.6, "d": 1.2,
+    "xMin": -3, "xMax": 3, "yMin": -3, "yMax": 3,
+    "iterations": 5000000, "resolution": 2000, "colorScheme": 0,
+    "transient": 100
+  },
+  {
+    "id": "feathered-vortex",
+    "name": "Feathered Vortex",
+    "author": "System",
+    "date": "2026-02-28",
+    "mode": "real",
+    "exprX": "sin(a*y) + c*cos(a*x)",
+    "exprY": "sin(b*x) + d*cos(b*y)",
+    "a": -1.24, "b": -1.25, "c": -1.81, "d": -1.91,
+    "xMin": -3, "xMax": 3, "yMin": -3, "yMax": 3,
+    "iterations": 5000000, "resolution": 2000, "colorScheme": 1,
+    "transient": 100
+  },
+  {
+    "id": "electric-julia",
+    "name": "Electric Julia",
+    "author": "System",
+    "date": "2026-02-28",
+    "mode": "escape_gpu",
+    "exprZ": "z^2 + a*z + c",
+    "a": 0.35, "b": 0, "c": 0, "d": 0,
+    "maxIter": 500, "gpuColorScheme": 2
+  }
+]

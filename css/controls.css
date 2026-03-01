@@ -26,6 +26,19 @@
 
 .control-error { color: var(--danger); font-size: 11px; line-height: 1.4; min-width: 200px; }
 
+/* Animation controls */
+.animation-controls { display: flex; flex-direction: row !important; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 300px; padding: 8px 12px; background: rgba(107, 124, 255, 0.05); border: 1px solid var(--border-color); border-radius: 6px; }
+.animation-controls label { font-size: 12px; color: var(--text-secondary); margin-bottom: 0; }
+.animation-controls select { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 6px; font-size: 12px; outline: none; cursor: pointer; }
+.animation-controls input[type="range"] { width: 80px; }
+.anim-btn-group { display: flex; gap: 4px; }
+.anim-btn-group .control-btn { padding: 4px 10px; font-size: 12px; }
+.anim-play { border-color: var(--success) !important; color: var(--success) !important; }
+.anim-play:hover { background: rgba(107, 255, 158, 0.1) !important; }
+.anim-pause { border-color: var(--accent) !important; color: var(--accent) !important; }
+.anim-stop { border-color: var(--danger) !important; color: var(--danger) !important; }
+.anim-stop:hover { background: rgba(255, 107, 107, 0.1) !important; }
+
 /* Syntax highlight colors */
 .sh-kw { color: #c792ea; }
 .sh-num { color: #f78c6c; }

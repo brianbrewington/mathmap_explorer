@@ -1,5 +1,6 @@
 self.onmessage = function(e) {
-  const { mode, funcBody, funcBodyY, params, width, height, iterations, bounds } = e.data;
+  const { mode, funcBody, funcBodyY, params, width, height, iterations, bounds, transient: transientParam } = e.data;
+  const transient = (transientParam !== undefined && transientParam !== null) ? transientParam : 100;
 
   const density = new Uint32Array(width * height);
   let maxDensity = 0;
@@ -40,7 +41,7 @@ self.onmessage = function(e) {
 
         x = nx; y = ny;
 
-        if (i < 100) continue;
+        if (i < transient) continue;
 
         const px = Math.floor((x - xMin) * xScale);
         const py = Math.floor((y - yMin) * yScale);
@@ -85,7 +86,7 @@ self.onmessage = function(e) {
 
         z_re = nr; z_im = ni;
 
-        if (i < 100) continue;
+        if (i < transient) continue;
 
         const px = Math.floor((z_re - xMin) * xScale);
         const py = Math.floor((z_im - yMin) * yScale);

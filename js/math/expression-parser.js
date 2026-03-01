@@ -6,7 +6,9 @@ const FUNCTIONS = new Set([
   'atan', 'asin', 'acos', 'sinh', 'cosh', 'tanh'
 ]);
 
-const CONSTANTS = { pi: Math.PI, e: Math.E };
+const CONSTANTS = { pi: Math.PI, e: Math.E, i: 0 };
+// Note: 'i' is the imaginary unit. Value 0 is a placeholder for real mode;
+// complex compilers handle 'i' specially as (0 + 1i).
 
 // --- Tokenizer ---
 
@@ -201,19 +203,40 @@ export function compileToJS(ast) {
 // --- Complex compiler ---
 // Compiles expression to JS code operating on _re/_im pairs.
 // Returns an object with { re: string, im: string } code expressions.
+//
+// All complex functions (exp, sin, cos, etc.) operate on both re and im parts.
+// The imaginary unit 'i' is handled as { re: 0, im: 1 }.
 
-export function compileToComplexJS(ast) {
+// Variables that are always purely real (scalar parameters) in complex mode.
+// These are passed as plain numbers to the worker, not as _re/_im pairs.
+const COMPLEX_REAL_VARS = new Set(['a', 'b', 'c_param', 'd']);
+
+let _complexTmpCounter = 0;
+
+export function compileToComplexJS(ast, realVars) {
+  _complexTmpCounter = 0;
+  _complexRealVars = realVars ? new Set(realVars) : COMPLEX_REAL_VARS;
+  return _compileComplexNode(ast);
+}
+
+let _complexRealVars = COMPLEX_REAL_VARS;
+
+function _compileComplexNode(ast) {
   switch (ast.type) {
     case 'number':
       return { re: String(ast.value), im: '0' };
 
     case 'variable':
-      if (ast.name in CONSTANTS) return { re: String(CONSTANTS[ast.name]), im: '0' };
+      if (ast.name === 'i') return { re: '0', im: '1' };
+      if (ast.name === 'pi') return { re: String(Math.PI), im: '0' };
+      if (ast.name === 'e') return { re: String(Math.E), im: '0' };
+      // Scalar parameters: treat as real (im = 0)
+      if (_complexRealVars.has(ast.name)) return { re: ast.name, im: '0' };
       return { re: ast.name + '_re', im: ast.name + '_im' };
 
     case 'binary': {
-      const l = compileToComplexJS(ast.left);
-      const r = compileToComplexJS(ast.right);
+      const l = _compileComplexNode(ast.left);
+      const r = _compileComplexNode(ast.right);
       switch (ast.op) {
         case '+': return { re: `(${l.re} + ${r.re})`, im: `(${l.im} + ${r.im})` };
         case '-': return { re: `(${l.re} - ${r.re})`, im: `(${l.im} - ${r.im})` };
@@ -222,14 +245,12 @@ export function compileToComplexJS(ast) {
           im: `(${l.re} * ${r.im} + ${l.im} * ${r.re})`
         };
         case '/': {
-          // (a+bi)/(c+di) = ((ac+bd) + (bc-ad)i) / (c²+d²)
           return {
             re: `((${l.re} * ${r.re} + ${l.im} * ${r.im}) / (${r.re} * ${r.re} + ${r.im} * ${r.im}))`,
             im: `((${l.im} * ${r.re} - ${l.re} * ${r.im}) / (${r.re} * ${r.re} + ${r.im} * ${r.im}))`
           };
         }
         case '^': {
-          // Only support integer powers for simplicity; use repeated multiplication for z^2, z^3, etc.
           if (ast.right.type === 'number' && Number.isInteger(ast.right.value) && ast.right.value >= 2 && ast.right.value <= 6) {
             let result = l;
             for (let i = 1; i < ast.right.value; i++) {
@@ -241,10 +262,21 @@ export function compileToComplexJS(ast) {
             }
             return result;
           }
-          // Fallback: use polar form
+          // General complex power: z^w = exp(w * log(z))
+          // For real exponent (common case), use polar form directly
+          if (_isRealExpr(ast.right)) {
+            const rVal = r.re;
+            return {
+              re: `(Math.pow(${l.re} * ${l.re} + ${l.im} * ${l.im}, (${rVal}) / 2) * Math.cos((${rVal}) * Math.atan2(${l.im}, ${l.re})))`,
+              im: `(Math.pow(${l.re} * ${l.re} + ${l.im} * ${l.im}, (${rVal}) / 2) * Math.sin((${rVal}) * Math.atan2(${l.im}, ${l.re})))`
+            };
+          }
+          // Full complex power: exp(w * log(z))
+          // log(z) = (log|z|, atan2(im,re))
+          // w*log(z) via complex mul, then exp
           return {
-            re: `(Math.pow(${l.re} * ${l.re} + ${l.im} * ${l.im}, ${r.re} / 2) * Math.cos(${r.re} * Math.atan2(${l.im}, ${l.re})))`,
-            im: `(Math.pow(${l.re} * ${l.re} + ${l.im} * ${l.im}, ${r.re} / 2) * Math.sin(${r.re} * Math.atan2(${l.im}, ${l.re})))`
+            re: `(Math.exp((${r.re})*Math.log(Math.sqrt(${l.re}*${l.re}+${l.im}*${l.im})) - (${r.im})*Math.atan2(${l.im},${l.re})) * Math.cos((${r.im})*Math.log(Math.sqrt(${l.re}*${l.re}+${l.im}*${l.im})) + (${r.re})*Math.atan2(${l.im},${l.re})))`,
+            im: `(Math.exp((${r.re})*Math.log(Math.sqrt(${l.re}*${l.re}+${l.im}*${l.im})) - (${r.im})*Math.atan2(${l.im},${l.re})) * Math.sin((${r.im})*Math.log(Math.sqrt(${l.re}*${l.re}+${l.im}*${l.im})) + (${r.re})*Math.atan2(${l.im},${l.re})))`
           };
         }
       }
@@ -253,21 +285,228 @@ export function compileToComplexJS(ast) {
 
     case 'unary':
       if (ast.op === '-') {
-        const o = compileToComplexJS(ast.operand);
+        const o = _compileComplexNode(ast.operand);
         return { re: `(-(${o.re}))`, im: `(-(${o.im}))` };
       }
       break;
 
     case 'call': {
-      // For complex mode, most functions just operate on the real part
-      // (use real function on magnitude or real component)
-      const arg = compileToComplexJS(ast.arg);
-      // Treat as real function applied to real part (simplified)
-      const realResult = `Math.${ast.name}(${arg.re})`;
-      return { re: realResult, im: '0' };
+      const arg = _compileComplexNode(ast.arg);
+      // Full complex implementations of all supported functions
+      switch (ast.name) {
+        case 'exp':
+          // exp(a+bi) = e^a * (cos(b) + i*sin(b))
+          return {
+            re: `(Math.exp(${arg.re}) * Math.cos(${arg.im}))`,
+            im: `(Math.exp(${arg.re}) * Math.sin(${arg.im}))`
+          };
+        case 'log':
+          // log(a+bi) = log|z| + i*atan2(b,a)
+          return {
+            re: `(Math.log(Math.sqrt(${arg.re} * ${arg.re} + ${arg.im} * ${arg.im})))`,
+            im: `(Math.atan2(${arg.im}, ${arg.re}))`
+          };
+        case 'sin':
+          // sin(a+bi) = sin(a)*cosh(b) + i*cos(a)*sinh(b)
+          return {
+            re: `(Math.sin(${arg.re}) * Math.cosh(${arg.im}))`,
+            im: `(Math.cos(${arg.re}) * Math.sinh(${arg.im}))`
+          };
+        case 'cos':
+          // cos(a+bi) = cos(a)*cosh(b) - i*sin(a)*sinh(b)
+          return {
+            re: `(Math.cos(${arg.re}) * Math.cosh(${arg.im}))`,
+            im: `(-(Math.sin(${arg.re}) * Math.sinh(${arg.im})))`
+          };
+        case 'tan': {
+          // tan(z) = sin(z)/cos(z) — use the complex division
+          const s = _compileComplexNode({ type: 'call', name: 'sin', arg: ast.arg });
+          const c = _compileComplexNode({ type: 'call', name: 'cos', arg: ast.arg });
+          return {
+            re: `((${s.re} * ${c.re} + ${s.im} * ${c.im}) / (${c.re} * ${c.re} + ${c.im} * ${c.im}))`,
+            im: `((${s.im} * ${c.re} - ${s.re} * ${c.im}) / (${c.re} * ${c.re} + ${c.im} * ${c.im}))`
+          };
+        }
+        case 'sinh':
+          // sinh(a+bi) = sinh(a)*cos(b) + i*cosh(a)*sin(b)
+          return {
+            re: `(Math.sinh(${arg.re}) * Math.cos(${arg.im}))`,
+            im: `(Math.cosh(${arg.re}) * Math.sin(${arg.im}))`
+          };
+        case 'cosh':
+          // cosh(a+bi) = cosh(a)*cos(b) + i*sinh(a)*sin(b)
+          return {
+            re: `(Math.cosh(${arg.re}) * Math.cos(${arg.im}))`,
+            im: `(Math.sinh(${arg.re}) * Math.sin(${arg.im}))`
+          };
+        case 'tanh': {
+          const sh = _compileComplexNode({ type: 'call', name: 'sinh', arg: ast.arg });
+          const ch = _compileComplexNode({ type: 'call', name: 'cosh', arg: ast.arg });
+          return {
+            re: `((${sh.re} * ${ch.re} + ${sh.im} * ${ch.im}) / (${ch.re} * ${ch.re} + ${ch.im} * ${ch.im}))`,
+            im: `((${sh.im} * ${ch.re} - ${sh.re} * ${ch.im}) / (${ch.re} * ${ch.re} + ${ch.im} * ${ch.im}))`
+          };
+        }
+        case 'sqrt':
+          // sqrt(z) via polar: sqrt(r) * (cos(θ/2) + i*sin(θ/2))
+          return {
+            re: `(Math.sqrt(Math.sqrt(${arg.re}*${arg.re}+${arg.im}*${arg.im})) * Math.cos(Math.atan2(${arg.im},${arg.re})/2))`,
+            im: `(Math.sqrt(Math.sqrt(${arg.re}*${arg.re}+${arg.im}*${arg.im})) * Math.sin(Math.atan2(${arg.im},${arg.re})/2))`
+          };
+        case 'abs':
+          // |z| as a real (complex with im=0)
+          return {
+            re: `(Math.sqrt(${arg.re} * ${arg.re} + ${arg.im} * ${arg.im}))`,
+            im: '0'
+          };
+        case 'asin': {
+          // asin(z) = -i * log(iz + sqrt(1-z^2))
+          // Simplified inline for practical use
+          const re = arg.re, im = arg.im;
+          return {
+            re: `(Math.atan2(${re}, Math.sqrt(Math.max(0, 1 - ${re}*${re} + ${im}*${im}))))`,
+            im: `(Math.log(Math.sqrt((Math.sqrt(Math.max(0,1-${re}*${re}+${im}*${im})))*(Math.sqrt(Math.max(0,1-${re}*${re}+${im}*${im}))) + (-(${im}))*(-(${im})))) ))`
+          };
+        }
+        case 'acos': {
+          const as = _compileComplexNode({ type: 'call', name: 'asin', arg: ast.arg });
+          return {
+            re: `(${Math.PI / 2} - (${as.re}))`,
+            im: `(-(${as.im}))`
+          };
+        }
+        case 'atan': {
+          // Simplified: use real atan for real part, approximate for imaginary
+          return {
+            re: `(Math.atan2(${arg.re}, 1))`,
+            im: `(${arg.im} / (1 + ${arg.re}*${arg.re}))`
+          };
+        }
+        default:
+          throw new Error(`Unsupported complex function: ${ast.name}`);
+      }
     }
   }
   throw new Error('Unsupported complex expression');
+}
+
+// Check if an AST node produces a purely real result (no imaginary component)
+function _isRealExpr(ast) {
+  if (ast.type === 'number') return true;
+  if (ast.type === 'variable') {
+    return ast.name !== 'z' && ast.name !== 'c' && ast.name !== 'i';
+  }
+  if (ast.type === 'unary') return _isRealExpr(ast.operand);
+  if (ast.type === 'binary') return _isRealExpr(ast.left) && _isRealExpr(ast.right);
+  return false;
+}
+
+// --- GLSL Compiler (float) ---
+// Produces GLSL float code from an AST.
+
+export function compileToGLSL(ast) {
+  switch (ast.type) {
+    case 'number': {
+      const s = String(ast.value);
+      // Ensure float literal in GLSL
+      return s.includes('.') || s.includes('e') || s.includes('E') ? s : s + '.0';
+    }
+    case 'variable':
+      if (ast.name === 'i') return '0.0';
+      if (ast.name === 'pi') return '3.14159265358979';
+      if (ast.name === 'e') return '2.71828182845905';
+      return ast.name;
+    case 'call': {
+      const arg = compileToGLSL(ast.arg);
+      // Map JS math functions to GLSL equivalents
+      const glslFn = ast.name === 'log' ? 'log' : ast.name;
+      return `${glslFn}(${arg})`;
+    }
+    case 'binary': {
+      const l = compileToGLSL(ast.left);
+      const r = compileToGLSL(ast.right);
+      if (ast.op === '^') return `pow(${l}, ${r})`;
+      return `(${l} ${ast.op} ${r})`;
+    }
+    case 'unary':
+      return `(-(${compileToGLSL(ast.operand)}))`;
+    default:
+      throw new Error('Unknown AST node type');
+  }
+}
+
+// --- Complex GLSL Compiler ---
+// Produces vec2 GLSL code using complex math helper functions (cmul, cdiv, etc.)
+
+export function compileToComplexGLSL(ast) {
+  switch (ast.type) {
+    case 'number': {
+      const s = String(ast.value);
+      const lit = s.includes('.') || s.includes('e') || s.includes('E') ? s : s + '.0';
+      return `vec2(${lit}, 0.0)`;
+    }
+
+    case 'variable':
+      if (ast.name === 'i') return 'vec2(0.0, 1.0)';
+      if (ast.name === 'pi') return 'vec2(3.14159265358979, 0.0)';
+      if (ast.name === 'e') return 'vec2(2.71828182845905, 0.0)';
+      return ast.name; // assumes variable is already vec2
+
+    case 'binary': {
+      const l = compileToComplexGLSL(ast.left);
+      const r = compileToComplexGLSL(ast.right);
+      switch (ast.op) {
+        case '+': return `(${l} + ${r})`;
+        case '-': return `(${l} - ${r})`;
+        case '*': return `cmul(${l}, ${r})`;
+        case '/': return `cdiv(${l}, ${r})`;
+        case '^': {
+          // Integer powers 2-6: unroll to repeated cmul
+          if (ast.right.type === 'number' && Number.isInteger(ast.right.value) && ast.right.value >= 2 && ast.right.value <= 6) {
+            const n = ast.right.value;
+            if (n === 2) return `csquare(${l})`;
+            let expr = `csquare(${l})`;
+            for (let i = 2; i < n; i++) {
+              expr = `cmul(${expr}, ${l})`;
+            }
+            return expr;
+          }
+          // General power via cpow (real exponent) or full complex power
+          if (_isRealExpr(ast.right)) {
+            // Extract float from the vec2 exponent
+            const rVal = ast.right.type === 'number'
+              ? (String(ast.right.value).includes('.') ? String(ast.right.value) : String(ast.right.value) + '.0')
+              : `(${r}).x`;
+            return `cpow(${l}, ${rVal})`;
+          }
+          // Full complex power: z^w via exp(w*log(z))
+          return `cexp(cmul(${r}, clog(${l})))`;
+        }
+      }
+      break;
+    }
+
+    case 'unary':
+      if (ast.op === '-') {
+        return `(-(${compileToComplexGLSL(ast.operand)}))`;
+      }
+      break;
+
+    case 'call': {
+      const arg = compileToComplexGLSL(ast.arg);
+      // Map function names to complex GLSL helpers
+      const fnMap = {
+        sin: 'csin', cos: 'ccos', tan: 'ctan',
+        sinh: 'csinh', cosh: 'ccosh', tanh: 'ctanh',
+        asin: 'casin', acos: 'cacos', atan: 'catan',
+        sqrt: 'csqrt', exp: 'cexp', log: 'clog', abs: 'cabs_vec'
+      };
+      const glslFn = fnMap[ast.name];
+      if (glslFn) return `${glslFn}(${arg})`;
+      throw new Error(`Unsupported complex function: ${ast.name}`);
+    }
+  }
+  throw new Error('Unsupported complex GLSL expression');
 }
 
 // --- Public API ---
