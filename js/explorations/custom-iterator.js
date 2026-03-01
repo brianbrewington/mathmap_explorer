@@ -259,7 +259,8 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
         { type: 'slider', key: 'mapRSteps', label: 'r Steps', min: 500, max: 50000, step: 500, value: this.params.mapRSteps },
         { type: 'select', key: 'mapResolution', label: 'Resolution', options: [
           { value: 800, label: '800 (Fast)' }, { value: 2000, label: '2000 (Medium)' },
-          { value: 4000, label: '4000 (High)' }
+          { value: 4000, label: '4000 (High)' }, { value: 6000, label: '6000 (Very High)' },
+          { value: 8000, label: '8000 (Ultra)' }
         ], value: this.params.mapResolution }
       );
     }
