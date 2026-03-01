@@ -4,6 +4,7 @@ import { getGL } from '../renderer/webgl-context.js';
 import { createProgram, getUniforms } from '../renderer/shader-utils.js';
 import { drawFullscreenQuad } from '../renderer/fullscreen-quad.js';
 import { fullscreenQuadVert } from '../shaders/fullscreen-quad.vert.js';
+import { setupPanZoom } from '../ui/pan-zoom.js';
 
 const textureCopyFrag = `#version 300 es
 precision highp float;
@@ -57,12 +58,15 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       rSteps: 2000,
       resolution: 2000
     };
+    this._bounds = { xMin: 2.5, xMax: 4.0, yMin: 0, yMax: 1 };
+    this._defaultBounds = { ...this._bounds };
     this.gl = null;
     this.program = null;
     this.uniforms = null;
     this.texture = null;
     this.worker = null;
     this._debounceTimer = null;
+    this._cleanupPanZoom = null;
     this._offscreen = null;
   }
 
@@ -82,7 +86,7 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       ], value: this.params.resolution },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
-      { type: 'description', text: 'Bifurcation diagram: x_{n+1} = r * x_n * (1 - x_n). Shows period-doubling route to chaos.' },
+      { type: 'description', text: 'Drag to pan, scroll to zoom. Period-doubling route to chaos.' },
       { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
     ];
   }
@@ -94,11 +98,24 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     this.texture = this.gl.createTexture();
     const res = this.params.resolution;
     this._offscreen = new OffscreenCanvas(res, Math.round(res * 2 / 3));
+    this._cleanupPanZoom = setupPanZoom(this.canvas, {
+      getBounds: () => this._bounds,
+      setBounds: (b) => {
+        this._bounds = b;
+        this.params.rMin = b.xMin;
+        this.params.rMax = b.xMax;
+      },
+      onUpdate: () => {
+        if (this._debounceTimer) clearTimeout(this._debounceTimer);
+        this._debounceTimer = setTimeout(() => this._startWorker(), 250);
+      }
+    });
     this._startWorker();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
     if (this.texture && this.gl) { this.gl.deleteTexture(this.texture); this.texture = null; }
@@ -112,6 +129,10 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       const res = value;
       this._offscreen = new OffscreenCanvas(res, Math.round(res * 2 / 3));
     }
+    if (key === 'rMin' || key === 'rMax') {
+      this._bounds.xMin = this.params.rMin;
+      this._bounds.xMax = this.params.rMax;
+    }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
   }
@@ -122,6 +143,7 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     this.params.transient = 500;
     this.params.samples = 200;
     this.params.rSteps = 2000;
+    this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
@@ -164,12 +186,15 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     const rMin = this.params.rMin;
     const rMax = this.params.rMax;
     const rRange = rMax - rMin;
+    const yMin = this._bounds.yMin;
+    const yMax = this._bounds.yMax;
+    const yRange = yMax - yMin;
 
     for (let i = 0; i < count; i++) {
       const r = points[i * 2];
       const x = points[i * 2 + 1];
       const px = ((r - rMin) / rRange) * w;
-      const py = h - x * h;
+      const py = h - ((x - yMin) / yRange) * h;
       ctx.fillRect(px, py, 1.5, 1.5);
     }
   }

@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { DensityRenderer } from '../renderer/density-renderer.js';
+import { setupPanZoom } from '../ui/pan-zoom.js';
 
 class SierpinskiExploration extends BaseExploration {
   static id = 'sierpinski';
@@ -40,9 +41,12 @@ for (let i = 0; i < iterations; i++) {
       colorScheme: 0,
       resolution: 2000
     };
+    this._bounds = { xMin: -0.1, xMax: 1.1, yMin: -0.1, yMax: 1.0 };
+    this._defaultBounds = { ...this._bounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
+    this._cleanupPanZoom = null;
     this._densityWidth = 2000;
     this._densityHeight = 1750;
     this._lastDensity = null;
@@ -67,18 +71,27 @@ for (let i = 0; i < iterations; i++) {
       ], value: 0 },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
-      { type: 'description', text: 'Sierpinski triangle via the chaos game. Pick a random vertex, move halfway.' },
+      { type: 'description', text: 'Drag to pan, scroll to zoom. Chaos game fractal.' },
       { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
     ];
   }
 
   activate() {
     this.densityRenderer = new DensityRenderer(this.canvas);
+    this._cleanupPanZoom = setupPanZoom(this.canvas, {
+      getBounds: () => this._bounds,
+      setBounds: (b) => { this._bounds = b; },
+      onUpdate: () => {
+        if (this._debounceTimer) clearTimeout(this._debounceTimer);
+        this._debounceTimer = setTimeout(() => this._startWorker(), 250);
+      }
+    });
     this._startWorker();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
     if (this.densityRenderer) { this.densityRenderer.destroy(); this.densityRenderer = null; }
@@ -102,6 +115,7 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.iterations = 1000000;
+    this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
@@ -139,7 +153,7 @@ for (let i = 0; i < iterations; i++) {
       width: this._densityWidth,
       height: this._densityHeight,
       iterations,
-      bounds: { xMin: -0.1, xMax: 1.1, yMin: -0.1, yMax: 1.0 }
+      bounds: this._bounds
     });
   }
 

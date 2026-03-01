@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { DensityRenderer } from '../renderer/density-renderer.js';
+import { setupPanZoom } from '../ui/pan-zoom.js';
 
 class HenonExploration extends BaseExploration {
   static id = 'henon';
@@ -41,9 +42,12 @@ for (let i = 0; i < iterations; i++) {
       colorScheme: 0,
       resolution: 2000
     };
+    this._bounds = { xMin: -1.5, xMax: 1.5, yMin: -0.5, yMax: 0.5 };
+    this._defaultBounds = { ...this._bounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
+    this._cleanupPanZoom = null;
     this._densityWidth = 2000;
     this._densityHeight = 1000;
     this._lastDensity = null;
@@ -69,18 +73,27 @@ for (let i = 0; i < iterations; i++) {
       ], value: 0 },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
-      { type: 'description', text: "Henon strange attractor. Classic chaotic map." },
+      { type: 'description', text: "Drag to pan, scroll to zoom. Classic chaotic map." },
       { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
     ];
   }
 
   activate() {
     this.densityRenderer = new DensityRenderer(this.canvas);
+    this._cleanupPanZoom = setupPanZoom(this.canvas, {
+      getBounds: () => this._bounds,
+      setBounds: (b) => { this._bounds = b; },
+      onUpdate: () => {
+        if (this._debounceTimer) clearTimeout(this._debounceTimer);
+        this._debounceTimer = setTimeout(() => this._startWorker(), 250);
+      }
+    });
     this._startWorker();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
     if (this.densityRenderer) { this.densityRenderer.destroy(); this.densityRenderer = null; }
@@ -104,6 +117,7 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.a = 1.4; this.params.b = 0.3;
+    this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
@@ -141,7 +155,7 @@ for (let i = 0; i < iterations; i++) {
       width: this._densityWidth,
       height: this._densityHeight,
       iterations,
-      bounds: { xMin: -1.5, xMax: 1.5, yMin: -0.5, yMax: 0.5 }
+      bounds: this._bounds
     });
   }
 

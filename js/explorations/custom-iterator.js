@@ -2,6 +2,7 @@ import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { DensityRenderer } from '../renderer/density-renderer.js';
 import { parseExpression, validate, compileToJS, compileToComplexJS } from '../math/expression-parser.js';
+import { setupPanZoom } from '../ui/pan-zoom.js';
 
 const PRESETS = {
   dejong: {
@@ -101,6 +102,7 @@ for (let i = 0; i < iterations; i++) {
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
+    this._cleanupPanZoom = null;
     this._densityWidth = 2000;
     this._densityHeight = 2000;
     this._lastDensity = null;
@@ -178,11 +180,26 @@ for (let i = 0; i < iterations; i++) {
 
   activate() {
     this.densityRenderer = new DensityRenderer(this.canvas);
+    this._cleanupPanZoom = setupPanZoom(this.canvas, {
+      getBounds: () => ({
+        xMin: this.params.xMin, xMax: this.params.xMax,
+        yMin: this.params.yMin, yMax: this.params.yMax
+      }),
+      setBounds: (b) => {
+        this.params.xMin = b.xMin; this.params.xMax = b.xMax;
+        this.params.yMin = b.yMin; this.params.yMax = b.yMax;
+      },
+      onUpdate: () => {
+        if (this._debounceTimer) clearTimeout(this._debounceTimer);
+        this._debounceTimer = setTimeout(() => this._startWorker(), 250);
+      }
+    });
     this._startWorker();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
     if (this.densityRenderer) { this.densityRenderer.destroy(); this.densityRenderer = null; }

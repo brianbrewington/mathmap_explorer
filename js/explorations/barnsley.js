@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { DensityRenderer } from '../renderer/density-renderer.js';
+import { setupPanZoom } from '../ui/pan-zoom.js';
 
 class BarnsleyExploration extends BaseExploration {
   static id = 'barnsley';
@@ -49,9 +50,12 @@ for (let i = 0; i < iterations; i++) {
       colorScheme: 0,
       resolution: 2000
     };
+    this._bounds = { xMin: -2.5, xMax: 2.5, yMin: -0.5, yMax: 10.5 };
+    this._defaultBounds = { ...this._bounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
+    this._cleanupPanZoom = null;
     this._densityWidth = 1000;
     this._densityHeight = 2000;
     this._lastDensity = null;
@@ -76,18 +80,27 @@ for (let i = 0; i < iterations; i++) {
       ], value: 0 },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
-      { type: 'description', text: 'Barnsley fern. An IFS with 4 affine transformations chosen probabilistically.' },
+      { type: 'description', text: 'Drag to pan, scroll to zoom. IFS with 4 affine transforms.' },
       { type: 'button', key: 'showInfo', label: 'Show Math', action: 'showInfo' }
     ];
   }
 
   activate() {
     this.densityRenderer = new DensityRenderer(this.canvas);
+    this._cleanupPanZoom = setupPanZoom(this.canvas, {
+      getBounds: () => this._bounds,
+      setBounds: (b) => { this._bounds = b; },
+      onUpdate: () => {
+        if (this._debounceTimer) clearTimeout(this._debounceTimer);
+        this._debounceTimer = setTimeout(() => this._startWorker(), 250);
+      }
+    });
     this._startWorker();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._cleanupPanZoom) { this._cleanupPanZoom(); this._cleanupPanZoom = null; }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     if (this.worker) { this.worker.terminate(); this.worker = null; }
     if (this.densityRenderer) { this.densityRenderer.destroy(); this.densityRenderer = null; }
@@ -111,6 +124,7 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.iterations = 2000000;
+    this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
@@ -148,7 +162,7 @@ for (let i = 0; i < iterations; i++) {
       width: this._densityWidth,
       height: this._densityHeight,
       iterations,
-      bounds: { xMin: -2.5, xMax: 2.5, yMin: -0.5, yMax: 10.5 }
+      bounds: this._bounds
     });
   }
 
