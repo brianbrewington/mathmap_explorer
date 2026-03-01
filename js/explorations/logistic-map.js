@@ -54,8 +54,8 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       rMin: 2.5,
       rMax: 4.0,
       transient: 500,
-      samples: 200,
-      rSteps: 2000,
+      samples: 4000,
+      rSteps: 10000,
       resolution: 2000,
       showLyapunov: 'hidden'
     };
@@ -80,8 +80,8 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       { type: 'slider', key: 'rMin', label: 'r Min', min: 0, max: 4, step: 0.01, value: this.params.rMin },
       { type: 'slider', key: 'rMax', label: 'r Max', min: 0, max: 4, step: 0.01, value: this.params.rMax },
       { type: 'slider', key: 'transient', label: 'Transient', min: 100, max: 2000, step: 100, value: this.params.transient },
-      { type: 'slider', key: 'samples', label: 'Samples', min: 50, max: 500, step: 50, value: this.params.samples },
-      { type: 'slider', key: 'rSteps', label: 'r Steps', min: 500, max: 5000, step: 500, value: this.params.rSteps },
+      { type: 'slider', key: 'samples', label: 'Samples', min: 50, max: 10000, step: 50, value: this.params.samples },
+      { type: 'slider', key: 'rSteps', label: 'r Steps', min: 500, max: 50000, step: 500, value: this.params.rSteps },
       { type: 'select', key: 'resolution', label: 'Resolution', options: [
         { value: 800, label: '800 (Fast)' },
         { value: 2000, label: '2000 (Medium)' },
@@ -159,8 +159,8 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     this.params.rMin = 2.5;
     this.params.rMax = 4.0;
     this.params.transient = 500;
-    this.params.samples = 200;
-    this.params.rSteps = 2000;
+    this.params.samples = 4000;
+    this.params.rSteps = 10000;
     this.params.showLyapunov = 'hidden';
     this._bounds = { ...this._defaultBounds };
     this._lyapunovData = null;
