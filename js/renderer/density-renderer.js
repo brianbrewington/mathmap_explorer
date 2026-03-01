@@ -9,7 +9,7 @@ export class DensityRenderer {
     this.canvas = canvas;
     this.gl = getGL(canvas);
     this.program = createProgram(this.gl, fullscreenQuadVert, densityColormapFrag);
-    this.uniforms = getUniforms(this.gl, this.program, ['u_density', 'u_maxDensity', 'u_colorScheme']);
+    this.uniforms = getUniforms(this.gl, this.program, ['u_density', 'u_maxDensity', 'u_colorScheme', 'u_brightness']);
     this.texture = this.gl.createTexture();
     this.texWidth = 0;
     this.texHeight = 0;
@@ -22,7 +22,7 @@ export class DensityRenderer {
     return gl.getParameter(gl.MAX_TEXTURE_SIZE);
   }
 
-  render(densityData, width, height, maxDensity, colorScheme) {
+  render(densityData, width, height, maxDensity, colorScheme, brightness) {
     const gl = this.gl;
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
@@ -53,6 +53,7 @@ export class DensityRenderer {
     gl.uniform1i(this.uniforms.u_density, 0);
     gl.uniform1f(this.uniforms.u_maxDensity, maxDensity);
     gl.uniform1i(this.uniforms.u_colorScheme, colorScheme);
+    gl.uniform1f(this.uniforms.u_brightness, brightness !== undefined ? brightness : 1.0);
     drawFullscreenQuad(gl);
   }
 

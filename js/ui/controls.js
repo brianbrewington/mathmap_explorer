@@ -81,6 +81,25 @@ export function buildControls(container, descriptors, callbacks) {
       wrapper.appendChild(label);
       wrapper.appendChild(input);
       wrapper.style.minWidth = (desc.minWidth || 200) + 'px';
+    } else if (desc.type === 'textarea') {
+      const label = document.createElement('label');
+      label.textContent = desc.label;
+      const textarea = document.createElement('textarea');
+      textarea.className = 'control-textarea';
+      textarea.value = desc.value || '';
+      if (desc.placeholder) textarea.placeholder = desc.placeholder;
+      textarea.rows = desc.rows || 6;
+      textarea.spellcheck = false;
+      let timer = null;
+      textarea.addEventListener('input', () => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          callbacks.onChange(desc.key, textarea.value);
+        }, 600);
+      });
+      wrapper.appendChild(label);
+      wrapper.appendChild(textarea);
+      wrapper.style.minWidth = (desc.minWidth || 250) + 'px';
     } else if (desc.type === 'error') {
       wrapper.className = 'control-error';
       wrapper.textContent = desc.text || '';

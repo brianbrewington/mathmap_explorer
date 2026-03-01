@@ -41,7 +41,8 @@ for (let i = 0; i < iterations; i++) {
       a: 1.4, b: -2.3, c: 2.4, d: -2.1,
       iterations: 5000000,
       colorScheme: 0,
-      resolution: 2000
+      resolution: 2000,
+      brightness: 1.0
     };
     this._bounds = { xMin: -3, xMax: 3, yMin: -3, yMax: 3 };
     this._defaultBounds = { ...this._bounds };
@@ -70,8 +71,11 @@ for (let i = 0; i < iterations; i++) {
         { value: 0, label: 'Nebula' },
         { value: 1, label: 'Fire' },
         { value: 2, label: 'Ocean' },
-        { value: 3, label: 'Grayscale' }
+        { value: 3, label: 'Grayscale' },
+        { value: 4, label: 'Viridis' },
+        { value: 5, label: 'Plasma' }
       ], value: 0 },
+      { type: 'slider', key: 'brightness', label: 'Brightness', min: 0.2, max: 3.0, step: 0.1, value: this.params.brightness },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
       { type: 'description', text: "Drag to pan, scroll to zoom. Sliders adjust attractor parameters." },
@@ -102,9 +106,9 @@ for (let i = 0; i < iterations; i++) {
 
   onParamChange(key, value) {
     this.params[key] = value;
-    if (key === 'colorScheme') {
+    if (key === 'colorScheme' || key === 'brightness') {
       if (this._lastDensity) {
-        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
       }
       return;
     }
@@ -125,7 +129,7 @@ for (let i = 0; i < iterations; i++) {
 
   resize() {
     if (this._lastDensity) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
     }
   }
 
@@ -143,7 +147,7 @@ for (let i = 0; i < iterations; i++) {
       this._densityWidth = width;
       this._densityHeight = height;
       if (this.densityRenderer) {
-        this.densityRenderer.render(this._lastDensity, width, height, maxDensity, this.params.colorScheme);
+        this.densityRenderer.render(this._lastDensity, width, height, maxDensity, this.params.colorScheme, this.params.brightness);
       }
       if (done) window.hideOverlay();
     };
@@ -163,7 +167,7 @@ for (let i = 0; i < iterations; i++) {
 
   render() {
     if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
     }
   }
 }

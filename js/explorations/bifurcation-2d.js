@@ -62,7 +62,10 @@ Supported maps: Henon, Tinkerbell, Ikeda
       transient: 500,
       samples: 200,
       sweepSteps: 2000,
-      resolution: 2000
+      resolution: 2000,
+      dotAlpha: 0.15,
+      dotSize: 1.5,
+      bifColor: 0
     };
     // Copy fixed params from config
     this._fixedParams = { ...MAP_CONFIGS.henon.params };
@@ -76,6 +79,8 @@ Supported maps: Henon, Tinkerbell, Ikeda
     this._debounceTimer = null;
     this._cleanupPanZoom = null;
     this._offscreen = null;
+    this._cachedPoints = null;
+    this._cachedCount = 0;
   }
 
   shouldRebuildControls(key) {
@@ -115,6 +120,12 @@ Supported maps: Henon, Tinkerbell, Ikeda
         { value: 800, label: '800 (Fast)' }, { value: 2000, label: '2000 (Medium)' },
         { value: 4000, label: '4000 (High)' }
       ], value: this.params.resolution },
+      { type: 'slider', key: 'dotAlpha', label: 'Dot Alpha', min: 0.02, max: 1.0, step: 0.01, value: this.params.dotAlpha },
+      { type: 'slider', key: 'dotSize', label: 'Dot Size', min: 0.5, max: 4.0, step: 0.25, value: this.params.dotSize },
+      { type: 'select', key: 'bifColor', label: 'Dot Color', options: [
+        { value: 0, label: 'Blue' }, { value: 1, label: 'White' },
+        { value: 2, label: 'Green' }, { value: 3, label: 'Fire Gradient' }
+      ], value: this.params.bifColor },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
       { type: 'description', text: 'Drag to pan, scroll to zoom.' },
@@ -173,6 +184,14 @@ Supported maps: Henon, Tinkerbell, Ikeda
       this._bounds = { xMin: cfg.defaultMin, xMax: cfg.defaultMax, ...cfg.plotRange };
     }
 
+    if (key === 'dotAlpha' || key === 'dotSize' || key === 'bifColor') {
+      if (this._cachedPoints) {
+        this._renderToOffscreen(this._cachedPoints, this._cachedCount);
+        this._uploadAndRender();
+      }
+      return;
+    }
+
     if (key === 'resolution') {
       this._offscreen = new OffscreenCanvas(value, Math.round(value * 2 / 3));
     }
@@ -205,7 +224,9 @@ Supported maps: Henon, Tinkerbell, Ikeda
     this.worker = new Worker('js/workers/bifurcation-2d-worker.js');
     this.worker.onmessage = (e) => {
       const { points, count } = e.data;
-      this._renderToOffscreen(new Float32Array(points), count);
+      this._cachedPoints = new Float32Array(points);
+      this._cachedCount = count;
+      this._renderToOffscreen(this._cachedPoints, count);
       this._uploadAndRender();
       window.hideOverlay();
     };
@@ -236,18 +257,31 @@ Supported maps: Henon, Tinkerbell, Ikeda
     const w = oc.width, h = oc.height;
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = 'rgba(107, 124, 255, 0.15)';
+    const alpha = this.params.dotAlpha;
+    const dotSize = this.params.dotSize;
+    const colorScheme = this.params.bifColor;
 
     const { xMin, xMax, yMin, yMax } = this._bounds;
     const xRange = xMax - xMin;
     const yRange = yMax - yMin;
+
+    if (colorScheme === 0) ctx.fillStyle = `rgba(107, 124, 255, ${alpha})`;
+    else if (colorScheme === 1) ctx.fillStyle = `rgba(220, 220, 230, ${alpha})`;
+    else if (colorScheme === 2) ctx.fillStyle = `rgba(80, 200, 120, ${alpha})`;
 
     for (let i = 0; i < count; i++) {
       const sv = points[i * 2];
       const cv = points[i * 2 + 1];
       const px = ((sv - xMin) / xRange) * w;
       const py = h - ((cv - yMin) / yRange) * h;
-      ctx.fillRect(px, py, 1.5, 1.5);
+      if (colorScheme === 3) {
+        const t = (cv - yMin) / yRange;
+        const cr = Math.round(255 * Math.min(1, t * 2));
+        const cg = Math.round(255 * Math.max(0, Math.min(1, (t - 0.3) * 2)));
+        const cb = Math.round(100 * Math.max(0, t - 0.7));
+        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+      }
+      ctx.fillRect(px, py, dotSize, dotSize);
     }
   }
 

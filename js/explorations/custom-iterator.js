@@ -129,6 +129,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       iterations: 5000000,
       resolution: 2000,
       colorScheme: 0,
+      brightness: 1.0,
       transient: 100,
       // GPU escape-time params
       maxIter: 300,
@@ -136,7 +137,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       // 1D map params
       rMin: 2.5, rMax: 4.0,
       mapTransient: 1000, mapSamples: 500, mapRSteps: 5000,
-      mapResolution: 2000
+      mapResolution: 2000,
+      mapDotAlpha: 0.15,
+      mapDotSize: 1.5
     };
     this._parseError = '';
     this.densityRenderer = null;
@@ -165,6 +168,8 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     this._mapTexture = null;
     this._offscreen = null;
     this._mapBounds = { xMin: 2.5, xMax: 4.0, yMin: 0, yMax: 1 };
+    this._mapCachedPoints = null;
+    this._mapCachedCount = 0;
   }
 
   shouldRebuildControls(key) {
@@ -237,8 +242,10 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
         ], value: this.params.resolution },
         { type: 'select', key: 'colorScheme', label: 'Colors', options: [
           { value: 0, label: 'Nebula' }, { value: 1, label: 'Fire' },
-          { value: 2, label: 'Ocean' }, { value: 3, label: 'Grayscale' }
-        ], value: this.params.colorScheme }
+          { value: 2, label: 'Ocean' }, { value: 3, label: 'Grayscale' },
+          { value: 4, label: 'Viridis' }, { value: 5, label: 'Plasma' }
+        ], value: this.params.colorScheme },
+        { type: 'slider', key: 'brightness', label: 'Brightness', min: 0.2, max: 3.0, step: 0.1, value: this.params.brightness }
       );
     } else if (this.params.mode === 'escape_gpu') {
       controls.push(
@@ -261,7 +268,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
           { value: 800, label: '800 (Fast)' }, { value: 2000, label: '2000 (Medium)' },
           { value: 4000, label: '4000 (High)' }, { value: 6000, label: '6000 (Very High)' },
           { value: 8000, label: '8000 (Ultra)' }
-        ], value: this.params.mapResolution }
+        ], value: this.params.mapResolution },
+        { type: 'slider', key: 'mapDotAlpha', label: 'Dot Alpha', min: 0.02, max: 1.0, step: 0.01, value: this.params.mapDotAlpha },
+        { type: 'slider', key: 'mapDotSize', label: 'Dot Size', min: 0.5, max: 4.0, step: 0.25, value: this.params.mapDotSize }
       );
     }
 
@@ -484,7 +493,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
         return;
       }
       const { points, count } = e.data;
-      this._renderMapToOffscreen(new Float32Array(points), count);
+      this._mapCachedPoints = new Float32Array(points);
+      this._mapCachedCount = count;
+      this._renderMapToOffscreen(this._mapCachedPoints, count);
       this._uploadMapAndRender();
       window.hideOverlay();
     };
@@ -505,7 +516,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     const w = oc.width, h = oc.height;
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = 'rgba(107, 124, 255, 0.15)';
+    const alpha = this.params.mapDotAlpha;
+    const dotSize = this.params.mapDotSize;
+    ctx.fillStyle = `rgba(107, 124, 255, ${alpha})`;
 
     const { xMin: rMin, xMax: rMax, yMin, yMax } = this._mapBounds;
     const rRange = rMax - rMin;
@@ -516,7 +529,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       const x = points[i * 2 + 1];
       const px = ((r - rMin) / rRange) * w;
       const py = h - ((x - yMin) / yRange) * h;
-      ctx.fillRect(px, py, 1.5, 1.5);
+      ctx.fillRect(px, py, dotSize, dotSize);
     }
   }
 
@@ -606,6 +619,13 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     }
 
     if (this.params.mode === 'map_1d') {
+      if (key === 'mapDotAlpha' || key === 'mapDotSize') {
+        if (this._mapCachedPoints) {
+          this._renderMapToOffscreen(this._mapCachedPoints, this._mapCachedCount);
+          this._uploadMapAndRender();
+        }
+        return;
+      }
       if (key === 'exprMap') this.params.preset = 'custom';
       if (key === 'rMin' || key === 'rMax') {
         this._mapBounds.xMin = this.params.rMin;
@@ -619,9 +639,9 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       return;
     }
 
-    if (key === 'colorScheme') {
+    if (key === 'colorScheme' || key === 'brightness') {
       if (this._lastDensity) {
-        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
       }
       return;
     }
@@ -688,7 +708,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       this._renderMap1D();
     } else {
       if (this._lastDensity && this.densityRenderer) {
-        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme);
+        this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
       }
     }
   }
@@ -768,7 +788,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       this._densityWidth = width;
       this._densityHeight = height;
       if (this.densityRenderer) {
-        this.densityRenderer.render(this._lastDensity, width, height, maxDensity, this.params.colorScheme);
+        this.densityRenderer.render(this._lastDensity, width, height, maxDensity, this.params.colorScheme, this.params.brightness);
       }
       if (done) window.hideOverlay();
     };

@@ -2,7 +2,7 @@ import { getAll, getById } from './explorations/registry.js';
 import { buildSidebar, setActive } from './ui/sidebar.js';
 import { buildControls, updateSliderDisplay } from './ui/controls.js';
 import { setupCanvasResize } from './ui/layout.js';
-import { initInfoPanel, showInfoPanel, updateInfoPanel } from './ui/info-panel.js';
+import { initInfoPanel, showInfoPanel, updateInfoPanel, setTourCallback } from './ui/info-panel.js';
 import { AnimationController } from './ui/animation-controller.js';
 import { RecipeManager } from './ui/recipe-manager.js';
 
@@ -15,8 +15,12 @@ import './explorations/bifurcation-2d.js';
 import './explorations/sierpinski.js';
 import './explorations/barnsley.js';
 import './explorations/henon.js';
+import './explorations/affine-ifs.js';
 import './explorations/custom-iterator.js';
 import './explorations/l-system.js';
+import './explorations/mandelbrot-logistic-3d.js';
+import './explorations/julia-set.js';
+import './explorations/kleinian.js';
 
 const canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
@@ -64,6 +68,14 @@ const ANIM_PARAMS = {
   'l-system': [
     { key: 'angle', label: 'Angle', min: 1, max: 180 },
     { key: 'iterations', label: 'Iterations', min: 1, max: 12 }
+  ],
+  'julia-set': [
+    { key: 'c_re', label: 'c (real)', min: -2, max: 2 },
+    { key: 'c_im', label: 'c (imag)', min: -2, max: 2 }
+  ],
+  'mandelbrot-logistic-3d': [
+    { key: 'azimuth', label: 'Azimuth', min: -3.14, max: 3.14 },
+    { key: 'elevation', label: 'Elevation', min: 0.1, max: 1.5 }
   ]
 };
 
@@ -237,6 +249,20 @@ function selectExploration(id) {
   rebuildControls();
   updateInfoPanel(ExplClass);
 
+  // Wire up tour callback for logistic map
+  if (id === 'logistic-map') {
+    setTourCallback((rmin, rmax) => {
+      currentInstance.params.rMin = rmin;
+      currentInstance.params.rMax = rmax;
+      currentInstance._bounds.xMin = rmin;
+      currentInstance._bounds.xMax = rmax;
+      currentInstance._startWorker();
+      rebuildControls();
+    });
+  } else {
+    setTourCallback(null);
+  }
+
   currentInstance.activate();
   currentInstance.resize(canvas.width, canvas.height);
   currentInstance.render();
@@ -257,7 +283,7 @@ window.hideOverlay = () => { overlay.classList.add('hidden'); };
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'r' || e.key === 'R') {
     if (currentInstance) { animator.stop(); currentInstance.reset(); }
   }

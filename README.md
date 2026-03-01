@@ -6,16 +6,29 @@ A web-based exploration tool for visualizing Iterated Function Systems (IFS), fr
 
 ## Features
 
-This codebase contains real-time renderers for several classic fractals and attractors:
+This codebase contains real-time renderers for 14 explorations across fractals, attractors, maps, and custom sandboxes:
 
+**Fractals:**
 *   **Sierpinski Triangle:** The classic example of an Iterated Function System and the Chaos Game.
 *   **Barnsley Fern:** A stunningly realistic fractal fern generated using an affine transformation IFS.
 *   **Mandelbrot Set:** The famous escape-time fractal that exhibits infinite complexity.
-*   **Strange Attractors:**
-    *   **Peter de Jong Attractor:** A system of trigonometric equations producing elegant, flowing shapes.
-    *   **Hénon Map:** A discrete-time dynamical system showing chaotic behavior in a butterfly-like shape.
-    *   **Logistic Map:** A classic demographic model demonstrating how complex, chaotic behavior arises from simple non-linear equations.
+*   **Newton Fractal:** Root-finding in the complex plane, revealing fractal basin boundaries.
+*   **Julia Set:** The companion to the Mandelbrot set — fixed-parameter escape-time fractals with endless variety.
+*   **Affine IFS:** A general-purpose affine Iterated Function System renderer for building your own fractals.
+*   **Kleinian Group:** Limit sets of Möbius transformations producing intricate fractal dust and curves.
+*   **Mandelbrot ↔ Logistic 3D:** A 3D visualization connecting the Mandelbrot set to the logistic map's bifurcation diagram.
+
+**Attractors:**
+*   **Peter de Jong Attractor:** A system of trigonometric equations producing elegant, flowing shapes.
+*   **Hénon Map:** A discrete-time dynamical system showing chaotic behavior in a butterfly-like shape.
+
+**Maps:**
+*   **Logistic Map:** A classic demographic model demonstrating how complex, chaotic behavior arises from simple non-linear equations.
+*   **2D Map Bifurcation:** Bifurcation analysis for two-dimensional iterated maps.
+
+**Custom:**
 *   **Custom Iterator:** A sandbox for writing your own iterative functions.
+*   **L-System:** A string-rewriting system for generating plant-like structures and space-filling curves.
 
 ## Getting Started
 
@@ -62,3 +75,13 @@ A strange attractor is a complex, often fractal set of points toward which a cha
 *   **Mandelbrot Set:**
     *   [Wikipedia: Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set)
     *   [Numberphile: The Mandelbrot Set (YouTube)](https://www.youtube.com/watch?v=NGMRB4O922I)
+*   **Newton Fractal:**
+    *   [Wikipedia: Newton fractal](https://en.wikipedia.org/wiki/Newton_fractal)
+*   **Julia Set:**
+    *   [Wikipedia: Julia set](https://en.wikipedia.org/wiki/Julia_set)
+
+### 4. Kleinian Groups & Möbius Transformations
+*   [Wikipedia: Kleinian group](https://en.wikipedia.org/wiki/Kleinian_group)
+
+### 5. L-Systems
+*   [Wikipedia: L-system](https://en.wikipedia.org/wiki/L-system)

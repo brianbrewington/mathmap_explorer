@@ -24,6 +24,9 @@
 .control-text-input:focus { border-color: var(--accent); }
 .control-text-input.has-error { border-color: var(--danger); }
 
+.control-textarea { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 12px; line-height: 1.5; outline: none; width: 100%; min-width: 240px; resize: vertical; }
+.control-textarea:focus { border-color: var(--accent); }
+
 .control-error { color: var(--danger); font-size: 11px; line-height: 1.4; min-width: 200px; }
 
 /* Animation controls */

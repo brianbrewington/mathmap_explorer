@@ -27,7 +27,19 @@ class LogisticMapExploration extends BaseExploration {
 x<sub>n+1</sub> = r · x<sub>n</sub> · (1 − x<sub>n</sub>)<br>
 r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 </div>
-<p>The logistic map is a polynomial mapping of degree 2 that exhibits the period-doubling route to chaos. The bifurcation diagram shows the long-term values of x as a function of r, revealing fixed points, periodic orbits, and chaotic bands.</p>`;
+<p>The logistic map is a polynomial mapping of degree 2 that exhibits the period-doubling route to chaos. The bifurcation diagram shows the long-term values of x as a function of r, revealing fixed points, periodic orbits, and chaotic bands.</p>
+<h3>Lyapunov Exponent</h3>
+<div class="formula-block">
+λ(r) = lim<sub>N→∞</sub> (1/N) Σ ln|f'(x<sub>n</sub>)|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= lim<sub>N→∞</sub> (1/N) Σ ln|r(1 − 2x<sub>n</sub>)|
+</div>
+<p>The Lyapunov exponent measures the rate of separation of infinitesimally close trajectories:</p>
+<p><strong>λ &lt; 0</strong>: Stable — nearby orbits converge (periodic attractor)<br>
+<strong>λ = 0</strong>: Marginally stable — bifurcation boundary<br>
+<strong>λ &gt; 0</strong>: Chaotic — nearby orbits diverge exponentially</p>
+<p>Enable the Lyapunov overlay to see the blue (stable) and red (chaotic) regions.</p>
+<h3>Feigenbaum Constants</h3>
+<p>The ratio of successive bifurcation intervals converges to the <strong>Feigenbaum constant</strong> δ ≈ 4.6692..., a universal constant that appears in all period-doubling systems, from fluid dynamics to electronic circuits.</p>`;
   static tutorial = `<h3>How the Bifurcation Diagram is Computed</h3>
 <p>For each value of r, we iterate the logistic map many times. After discarding transient iterations (to reach the attractor), we plot the remaining x values vertically at that r position.</p>
 <pre><code class="language-js">for (let step = 0; step < rSteps; step++) {
@@ -46,7 +58,20 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     points.push(r, x);
   }
 }</code></pre>
-<p>The resulting diagram reveals Feigenbaum's universal constants in the spacing of period-doubling bifurcations.</p>`;
+<h3>Guided Tour</h3>
+<p>Click to zoom into notable regions of the bifurcation diagram:</p>
+<div class="tour-buttons">
+  <button class="tour-btn" data-rmin="2.8" data-rmax="3.2">r ≈ 3.0 — First bifurcation (period-1 → period-2)</button>
+  <button class="tour-btn" data-rmin="3.4" data-rmax="3.5">r ≈ 3.449 — Period-4 onset</button>
+  <button class="tour-btn" data-rmin="3.5" data-rmax="3.6">r ≈ 3.57 — Onset of chaos</button>
+  <button class="tour-btn" data-rmin="3.82" data-rmax="3.86">r ≈ 3.83 — Period-3 window (Li-Yorke: "period 3 implies chaos")</button>
+  <button class="tour-btn" data-rmin="3.845" data-rmax="3.865">r ≈ 3.856 — Period-6 within period-3</button>
+  <button class="tour-btn" data-rmin="2.5" data-rmax="4.0">Full view (reset)</button>
+</div>
+<h3>Lyapunov Overlay Explained</h3>
+<p>When enabled, the colored band at the bottom shows the Lyapunov exponent λ(r). <strong>Blue</strong> regions (λ &lt; 0) indicate stable periodic orbits. <strong>Red</strong> regions (λ &gt; 0) indicate chaos. The boundary (λ = 0) marks where bifurcations occur.</p>
+<h3>Feigenbaum's Universality</h3>
+<p>The ratios of successive bifurcation intervals converge to δ ≈ 4.6692... and the scaling of the attractor converges to α ≈ 2.5029... These constants are <em>universal</em> — they appear in any system undergoing period-doubling, regardless of the specific function. This is one of the most remarkable discoveries in chaos theory.</p>`;
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -57,7 +82,10 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       samples: 4000,
       rSteps: 10000,
       resolution: 2000,
-      showLyapunov: 'hidden'
+      showLyapunov: 'hidden',
+      dotAlpha: 0.15,
+      dotSize: 1.5,
+      bifColor: 0
     };
     this._bounds = { xMin: 2.5, xMax: 4.0, yMin: 0, yMax: 1 };
     this._defaultBounds = { ...this._bounds };
@@ -93,6 +121,14 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
         { value: 'hidden', label: 'Hidden' },
         { value: 'overlay', label: 'Overlay' }
       ], value: this.params.showLyapunov },
+      { type: 'slider', key: 'dotAlpha', label: 'Dot Alpha', min: 0.02, max: 1.0, step: 0.01, value: this.params.dotAlpha },
+      { type: 'slider', key: 'dotSize', label: 'Dot Size', min: 0.5, max: 4.0, step: 0.25, value: this.params.dotSize },
+      { type: 'select', key: 'bifColor', label: 'Dot Color', options: [
+        { value: 0, label: 'Blue' },
+        { value: 1, label: 'White' },
+        { value: 2, label: 'Green' },
+        { value: 3, label: 'Fire Gradient' }
+      ], value: this.params.bifColor },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
       { type: 'description', text: 'Drag to pan, scroll to zoom. Period-doubling route to chaos.' },
@@ -143,8 +179,8 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       this._bounds.xMin = this.params.rMin;
       this._bounds.xMax = this.params.rMax;
     }
-    if (key === 'showLyapunov') {
-      // Re-render with existing data
+    if (key === 'showLyapunov' || key === 'dotAlpha' || key === 'dotSize' || key === 'bifColor') {
+      // Re-render with existing data (fast-path, no worker re-run)
       if (this._bifurcationPoints) {
         this._renderToOffscreen(this._bifurcationPoints, this._bifurcationCount);
         this._uploadAndRender();
@@ -252,7 +288,9 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
       }
     }
 
-    ctx.fillStyle = 'rgba(107, 124, 255, 0.15)';
+    const alpha = this.params.dotAlpha;
+    const dotSize = this.params.dotSize;
+    const colorScheme = this.params.bifColor;
 
     const rMin = this.params.rMin;
     const rMax = this.params.rMax;
@@ -261,12 +299,25 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
     const yMax = this._bounds.yMax;
     const yRange = yMax - yMin;
 
+    // Set base fill color
+    if (colorScheme === 0) ctx.fillStyle = `rgba(107, 124, 255, ${alpha})`;
+    else if (colorScheme === 1) ctx.fillStyle = `rgba(220, 220, 230, ${alpha})`;
+    else if (colorScheme === 2) ctx.fillStyle = `rgba(80, 200, 120, ${alpha})`;
+
     for (let i = 0; i < count; i++) {
       const r = points[i * 2];
       const x = points[i * 2 + 1];
       const px = ((r - rMin) / rRange) * w;
       const py = h - ((x - yMin) / yRange) * h;
-      ctx.fillRect(px, py, 1.5, 1.5);
+      if (colorScheme === 3) {
+        // Fire gradient based on y value
+        const t = (x - yMin) / yRange;
+        const cr = Math.round(255 * Math.min(1, t * 2));
+        const cg = Math.round(255 * Math.max(0, Math.min(1, (t - 0.3) * 2)));
+        const cb = Math.round(100 * Math.max(0, t - 0.7));
+        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+      }
+      ctx.fillRect(px, py, dotSize, dotSize);
     }
   }
 

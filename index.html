@@ -25,16 +25,19 @@
           <div class="spinner"></div>
           <span id="overlay-text">Computing...</span>
         </div>
-      </div>
-      <div id="info-panel" class="collapsed">
-        <div class="info-panel-tabs">
-          <button class="info-tab active" data-tab="formula">Formula</button>
-          <button class="info-tab" data-tab="tutorial">How It Works</button>
-          <button class="info-panel-close">&times;</button>
-        </div>
-        <div class="info-panel-content">
-          <div id="formula-content" class="info-section active"></div>
-          <div id="tutorial-content" class="info-section"></div>
+        <!-- Info tray: slides in from right -->
+        <div id="info-panel" class="collapsed">
+          <button id="info-panel-toggle" title="Math & Info">&#x25C0;</button>
+          <div class="info-panel-inner">
+            <div class="info-panel-tabs">
+              <button class="info-tab active" data-tab="formula">Formula</button>
+              <button class="info-tab" data-tab="tutorial">How It Works</button>
+            </div>
+            <div class="info-panel-content">
+              <div id="formula-content" class="info-section active"></div>
+              <div id="tutorial-content" class="info-section"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="controls-panel"></div>
