@@ -15,6 +15,9 @@ export const FACETS = {
       'fractals', 'dynamical-systems', 'parametric-curves',
       'complex-analysis', 'physics', 'series-transforms', 'signal-processing',
       'pde-simulation',
+      'probability-statistics',
+      'combinatorics',
+      'calculus',
     ],
     values: {
       'fractals':           { label: 'Fractals' },
@@ -25,6 +28,9 @@ export const FACETS = {
       'series-transforms':  { label: 'Series & Transforms' },
       'signal-processing':  { label: 'Signal Processing' },
       'pde-simulation':     { label: 'PDEs & Simulation' },
+      'probability-statistics': { label: 'Probability & Statistics' },
+      'combinatorics':      { label: 'Combinatorics' },
+      'calculus':             { label: 'Calculus' },
     },
   },
   technique: {
@@ -33,6 +39,8 @@ export const FACETS = {
       'escape-time', 'iteration', 'chaos-game', 'affine-transform',
       'parametric', 'ode-integration', 'fourier-transform',
       'string-rewriting', 'numerical-methods',
+      'convolution',
+      'simulation',
     ],
     values: {
       'escape-time':        { label: 'Escape-Time' },
@@ -44,6 +52,8 @@ export const FACETS = {
       'fourier-transform':  { label: 'Fourier Transform' },
       'string-rewriting':   { label: 'String Rewriting' },
       'numerical-methods':  { label: 'Numerical Methods' },
+      'convolution':        { label: 'Convolution' },
+      'simulation':         { label: 'Simulation' },
     },
   },
   level: {

@@ -35,7 +35,7 @@ for (let i = 0; i &lt; n; i++) {
 <p>Increase the resolution slider to see the numerical result converge toward the exact
 analytical answer (shown as the dashed overlay).</p>`;
   static foundations = ['sine-cosine', 'taylor-series'];
-  static extensions = [];
+  static extensions = ['derivative-definition'];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

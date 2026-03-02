@@ -124,3 +124,62 @@ void main() {
   }
   fragColor = vec4(col, 1.0);
 }`;
+
+export const fluidObstacleFrag = `#version 300 es
+precision highp float;
+uniform sampler2D u_velocity;
+uniform sampler2D u_obstacle;
+in vec2 v_uv;
+out vec4 fragColor;
+void main() {
+  vec2 vel = texture(u_velocity, v_uv).xy;
+  float obs = texture(u_obstacle, v_uv).r;
+  // Zero velocity inside obstacle
+  vel *= (1.0 - step(0.5, obs));
+  fragColor = vec4(vel, 0.0, 1.0);
+}`;
+
+export const fluidInflowFrag = `#version 300 es
+precision highp float;
+uniform sampler2D u_velocity;
+uniform float u_inflowSpeed;
+uniform float u_inflowWidth;
+in vec2 v_uv;
+out vec4 fragColor;
+void main() {
+  vec2 vel = texture(u_velocity, v_uv).xy;
+  // Apply inflow on left boundary
+  float inflow = smoothstep(u_inflowWidth, 0.0, v_uv.x);
+  vel.x = mix(vel.x, u_inflowSpeed, inflow);
+  vel.y *= (1.0 - inflow); // dampen vertical velocity at inflow
+  fragColor = vec4(vel, 0.0, 1.0);
+}`;
+
+export const fluidVorticityRenderFrag = `#version 300 es
+precision highp float;
+uniform sampler2D u_velocity;
+uniform sampler2D u_obstacle;
+uniform vec2 u_texelSize;
+in vec2 v_uv;
+out vec4 fragColor;
+void main() {
+  // Compute curl(v) = dv_y/dx - dv_x/dy
+  float vR = texture(u_velocity, v_uv + vec2(u_texelSize.x, 0.0)).y;
+  float vL = texture(u_velocity, v_uv - vec2(u_texelSize.x, 0.0)).y;
+  float vT = texture(u_velocity, v_uv + vec2(0.0, u_texelSize.y)).x;
+  float vB = texture(u_velocity, v_uv - vec2(0.0, u_texelSize.y)).x;
+  float curl = (vR - vL) * 0.5 / u_texelSize.x - (vT - vB) * 0.5 / u_texelSize.y;
+
+  // Normalize and color: blue = clockwise, red = counter-clockwise
+  float intensity = clamp(curl * 0.05, -1.0, 1.0);
+  vec3 neg = vec3(0.2, 0.4, 1.0); // blue
+  vec3 pos = vec3(1.0, 0.3, 0.2); // red
+  vec3 zero = vec3(0.05, 0.05, 0.08);
+  vec3 col = intensity > 0.0 ? mix(zero, pos, intensity) : mix(zero, neg, -intensity);
+
+  // Darken obstacle regions
+  float obs = texture(u_obstacle, v_uv).r;
+  col = mix(col, vec3(0.3), step(0.5, obs));
+
+  fragColor = vec4(col, 1.0);
+}`;

@@ -56,6 +56,31 @@ import './explorations/heart-curve.js';
 import './explorations/butterfly-curve.js';
 import './explorations/phasor-diagrams.js';
 
+// PDEs, probability & combinatorics (batch 3)
+import './explorations/reaction-diffusion.js';
+import './explorations/wave-packet.js';
+import './explorations/pascals-triangle.js';
+import './explorations/central-limit-theorem.js';
+import './explorations/power-laws.js';
+
+// Calculus explorations (batch 4)
+import './explorations/epsilon-delta.js';
+import './explorations/derivative-definition.js';
+import './explorations/chain-rule.js';
+import './explorations/taylor-approximation.js';
+import './explorations/integration-riemann.js';
+
+// Probability & statistics (batch 4)
+import './explorations/random-walk.js';
+import './explorations/law-of-large-numbers.js';
+import './explorations/bayes-theorem.js';
+import './explorations/markov-chain.js';
+import './explorations/normal-distribution.js';
+
+// PDE & turbulence (batch 4)
+import './explorations/wave-equation.js';
+import './explorations/vortex-shedding.js';
+
 let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
 const listEl = document.getElementById('exploration-list');
@@ -201,6 +226,63 @@ const ANIM_PARAMS = {
   'phasor-diagrams': [
     { key: 'freq1', label: 'Frequency 1 (ω₁)', min: 0.1, max: 10.0 },
     { key: 'phase', label: 'Phase Difference (Δφ)', min: 0, max: 6.283 }
+  ],
+  'reaction-diffusion': [
+    { key: 'feed', label: 'Feed (F)', min: 0.01, max: 0.10 },
+    { key: 'kill', label: 'Kill (k)', min: 0.03, max: 0.07 }
+  ],
+  'wave-packet': [
+    { key: 'carrierK', label: 'Carrier Wave Number (k)', min: 1, max: 20 }
+  ],
+  'pascals-triangle': [
+    { key: 'rows', label: 'Rows', min: 10, max: 128 }
+  ],
+  'central-limit-theorem': [
+    { key: 'numSums', label: 'Number of Sums (N)', min: 1, max: 20 }
+  ],
+  'power-laws': [
+    { key: 'alpha', label: 'Exponent (α)', min: 1.1, max: 5.0 }
+  ],
+  'epsilon-delta': [
+    { key: 'epsilon', label: 'Epsilon (ε)', min: 0.01, max: 2.0 }
+  ],
+  'derivative-definition': [
+    { key: 'h', label: 'Step size (h)', min: 0.01, max: 3.0 },
+    { key: 'x0', label: 'Point (x₀)', min: -3, max: 3 }
+  ],
+  'chain-rule': [
+    { key: 'a', label: 'Point (a)', min: -2, max: 2 }
+  ],
+  'taylor-approximation': [
+    { key: 'numTerms', label: 'Terms (N)', min: 1, max: 15 },
+    { key: 'center', label: 'Center (a)', min: -3, max: 3 }
+  ],
+  'integration-riemann': [
+    { key: 'n', label: 'Subdivisions (n)', min: 1, max: 200 }
+  ],
+  'random-walk': [
+    { key: 'numSteps', label: 'Steps', min: 10, max: 2000 }
+  ],
+  'law-of-large-numbers': [
+    { key: 'maxN', label: 'Max samples (N)', min: 100, max: 10000 }
+  ],
+  'bayes-theorem': [
+    { key: 'trueTheta', label: 'True θ', min: 0.01, max: 0.99 }
+  ],
+  'markov-chain': [
+    { key: 'speed', label: 'Speed', min: 1, max: 50 }
+  ],
+  'normal-distribution': [
+    { key: 'mu', label: 'Mean (μ)', min: -5, max: 5 },
+    { key: 'sigma', label: 'Std Dev (σ)', min: 0.1, max: 3.0 }
+  ],
+  'wave-equation': [
+    { key: 'c', label: 'Wave Speed (c)', min: 0.1, max: 5.0 },
+    { key: 'damping', label: 'Damping', min: 0, max: 0.01 }
+  ],
+  'vortex-shedding': [
+    { key: 'inflowSpeed', label: 'Inflow Speed', min: 0.5, max: 5.0 },
+    { key: 'viscosity', label: 'Viscosity (ν)', min: 0.00005, max: 0.01 }
   ],
 };
 

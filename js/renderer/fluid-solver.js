@@ -5,7 +5,8 @@ import { fullscreenQuadVert } from '../shaders/fullscreen-quad.vert.js';
 import {
   fluidAdvectFrag, fluidDiffuseFrag, fluidDivergenceFrag,
   fluidGradientSubFrag, fluidForceFrag, fluidDyeForceFrag,
-  fluidBuoyancyFrag, fluidRenderFrag
+  fluidBuoyancyFrag, fluidRenderFrag,
+  fluidObstacleFrag, fluidInflowFrag, fluidVorticityRenderFrag
 } from '../shaders/fluid.frag.js';
 
 function createDoubleFBO(gl, w, h, internalFormat, format, type, filter) {
@@ -91,6 +92,12 @@ export class FluidSolver {
 
     this._mouse = { x: 0, y: 0, dx: 0, dy: 0, down: false };
     this._dyeHue = 0;
+
+    this.obstacle = null;  // R8 texture for obstacle mask
+    this._inflowSpeed = 0;
+    this._obstacleProgram = null;
+    this._inflowProgram = null;
+    this._vorticityRenderProgram = null;
   }
 
   _getActiveUniforms(gl, program) {
@@ -151,6 +158,14 @@ export class FluidSolver {
         this._jacobi(this.pressure, this.divergence, alpha, rBeta);
       }
       this._subtractGradient();
+    }
+
+    // Obstacle enforcement + inflow (only when obstacle is set)
+    if (this.obstacle) {
+      this._applyObstacle();
+      if (this._inflowSpeed > 0) {
+        this._applyInflow();
+      }
     }
   }
 
@@ -213,6 +228,96 @@ export class FluidSolver {
     gl.uniform1f(u.u_ambientTemp, 0.0);
     drawFullscreenQuad(gl);
     this.velocity.swap();
+  }
+
+  setObstacle(maskData) {
+    const gl = this.gl;
+    const w = this.simWidth, h = this.simHeight;
+
+    if (!this.obstacle) {
+      this.obstacle = gl.createTexture();
+    }
+    gl.bindTexture(gl.TEXTURE_2D, this.obstacle);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, w, h, 0, gl.RED, gl.UNSIGNED_BYTE, maskData);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // Lazy-compile obstacle/inflow programs
+    if (!this._obstacleProgram) {
+      this._obstacleProgram = createProgram(gl, fullscreenQuadVert, fluidObstacleFrag);
+      this._obstacleUniforms = getUniforms(gl, this._obstacleProgram, this._getActiveUniforms(gl, this._obstacleProgram));
+    }
+    if (!this._inflowProgram) {
+      this._inflowProgram = createProgram(gl, fullscreenQuadVert, fluidInflowFrag);
+      this._inflowUniforms = getUniforms(gl, this._inflowProgram, this._getActiveUniforms(gl, this._inflowProgram));
+    }
+  }
+
+  setInflow(speed) {
+    this._inflowSpeed = speed;
+  }
+
+  clearObstacle() {
+    if (this.obstacle) {
+      this.gl.deleteTexture(this.obstacle);
+      this.obstacle = null;
+    }
+  }
+
+  _applyObstacle() {
+    const gl = this.gl;
+    gl.viewport(0, 0, this.simWidth, this.simHeight);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.velocity.write.fbo);
+    gl.useProgram(this._obstacleProgram);
+    const u = this._obstacleUniforms;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.velocity.read.texture);
+    gl.uniform1i(u.u_velocity, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, this.obstacle);
+    gl.uniform1i(u.u_obstacle, 1);
+    drawFullscreenQuad(gl);
+    this.velocity.swap();
+  }
+
+  _applyInflow() {
+    const gl = this.gl;
+    gl.viewport(0, 0, this.simWidth, this.simHeight);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.velocity.write.fbo);
+    gl.useProgram(this._inflowProgram);
+    const u = this._inflowUniforms;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.velocity.read.texture);
+    gl.uniform1i(u.u_velocity, 0);
+    gl.uniform1f(u.u_inflowSpeed, this._inflowSpeed);
+    gl.uniform1f(u.u_inflowWidth, 0.03);
+    drawFullscreenQuad(gl);
+    this.velocity.swap();
+  }
+
+  renderVorticity() {
+    if (!this._vorticityRenderProgram) {
+      this._vorticityRenderProgram = createProgram(this.gl, fullscreenQuadVert, fluidVorticityRenderFrag);
+      this._vorticityRenderUniforms = getUniforms(this.gl, this._vorticityRenderProgram,
+        this._getActiveUniforms(this.gl, this._vorticityRenderProgram));
+    }
+    const gl = this.gl;
+    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(this._vorticityRenderProgram);
+    const u = this._vorticityRenderUniforms;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.velocity.read.texture);
+    gl.uniform1i(u.u_velocity, 0);
+    gl.uniform2f(u.u_texelSize, 1.0 / this.simWidth, 1.0 / this.simHeight);
+    if (this.obstacle) {
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, this.obstacle);
+      gl.uniform1i(u.u_obstacle, 1);
+    }
+    drawFullscreenQuad(gl);
   }
 
   _advect(target, velocityFBO, dt) {
@@ -339,5 +444,9 @@ export class FluidSolver {
     this.temperature.destroy();
     const gl = this.gl;
     for (const prog of Object.values(this.programs)) gl.deleteProgram(prog);
+    if (this.obstacle) gl.deleteTexture(this.obstacle);
+    if (this._obstacleProgram) gl.deleteProgram(this._obstacleProgram);
+    if (this._inflowProgram) gl.deleteProgram(this._inflowProgram);
+    if (this._vorticityRenderProgram) gl.deleteProgram(this._vorticityRenderProgram);
   }
 }

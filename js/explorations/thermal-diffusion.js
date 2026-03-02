@@ -46,7 +46,7 @@ with the exponential envelope ±T₀ e<sup>−x/δ</sup> drawn as dashed curves.
 <li>Watch the phase lag: when the surface is at peak temperature, where is the peak underground?</li>
 </ul>`;
   static foundations = ['simple-harmonic'];
-  static extensions = ['fluid-dynamics'];
+  static extensions = ['fluid-dynamics', 'wave-equation'];
 
   static guidedSteps = [
     {

@@ -57,6 +57,24 @@ import '../js/explorations/calculus-of-trig.js';
 import '../js/explorations/heart-curve.js';
 import '../js/explorations/butterfly-curve.js';
 import '../js/explorations/phasor-diagrams.js';
+import '../js/explorations/thermal-diffusion.js';
+import '../js/explorations/reaction-diffusion.js';
+import '../js/explorations/wave-packet.js';
+import '../js/explorations/pascals-triangle.js';
+import '../js/explorations/central-limit-theorem.js';
+import '../js/explorations/power-laws.js';
+import '../js/explorations/epsilon-delta.js';
+import '../js/explorations/derivative-definition.js';
+import '../js/explorations/chain-rule.js';
+import '../js/explorations/taylor-approximation.js';
+import '../js/explorations/integration-riemann.js';
+import '../js/explorations/random-walk.js';
+import '../js/explorations/law-of-large-numbers.js';
+import '../js/explorations/bayes-theorem.js';
+import '../js/explorations/markov-chain.js';
+import '../js/explorations/normal-distribution.js';
+import '../js/explorations/wave-equation.js';
+import '../js/explorations/vortex-shedding.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -78,8 +96,8 @@ const REQUIRED_METHODS = [
 const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
-  it('has exactly 36 registered explorations', () => {
-    expect(explorations.length).toBe(36);
+  it('has exactly 54 registered explorations', () => {
+    expect(explorations.length).toBe(54);
   });
 
   it('all ids are unique', () => {

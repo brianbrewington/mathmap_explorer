@@ -32,7 +32,7 @@ For <em>e<sup>x</sup></em>: T(x) = 1 + x + x&sup2;/2! + x&sup3;/3! + &hellip;</p
 <p>Increase the number of terms and watch the polynomial hug the true curve over an
 ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0.</p>`;
   static foundations = ['unit-circle'];
-  static extensions = ['fourier-synthesis'];
+  static extensions = ['fourier-synthesis', 'taylor-approximation'];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -48,6 +48,7 @@ for (let i = 0; i < 20; i++)
 v -= 0.5 * gradient(pressure);</code></pre>
 <p><b>Rayleigh-B\u00E9nard mode:</b> Heat rises from the bottom. At low heat, steady convection cells form. Increase buoyancy to see the transition to turbulence \u2014 the same transition Lorenz studied when he discovered the butterfly attractor.</p>`;
   static foundations = ['coupled-systems'];
+  static extensions = ['vortex-shedding'];
 
   static guidedSteps = [
     {

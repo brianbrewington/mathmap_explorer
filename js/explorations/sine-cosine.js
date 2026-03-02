@@ -31,7 +31,7 @@ const yCos = A * Math.cos(omega * t);</code></pre>
 <p>An animated dot traverses the sine curve. A dashed connecting line to the cosine
 dot reveals the constant &pi;/2 phase relationship between the two functions.</p>`;
   static foundations = [];
-  static extensions = ['simple-harmonic', 'trig-identities-circle'];
+  static extensions = ['simple-harmonic', 'trig-identities-circle', 'wave-packet'];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
