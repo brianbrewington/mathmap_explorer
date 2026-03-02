@@ -39,6 +39,23 @@ import './explorations/unit-circle.js';
 import './explorations/phase-space.js';
 import './explorations/simple-harmonic.js';
 
+// Trig & math explorations (batch 2)
+import './explorations/sine-cosine.js';
+import './explorations/complex-spiral.js';
+import './explorations/archimedean-spiral.js';
+import './explorations/roots-of-unity.js';
+import './explorations/cycloid.js';
+import './explorations/rose-curves.js';
+import './explorations/epitrochoid.js';
+import './explorations/taylor-series.js';
+import './explorations/damped-oscillation.js';
+import './explorations/trig-identities-circle.js';
+import './explorations/wave-identities.js';
+import './explorations/calculus-of-trig.js';
+import './explorations/heart-curve.js';
+import './explorations/butterfly-curve.js';
+import './explorations/phasor-diagrams.js';
+
 let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
 const listEl = document.getElementById('exploration-list');
@@ -130,7 +147,61 @@ const ANIM_PARAMS = {
     { key: 'epsilon', label: 'Coupling ε', min: 0, max: 0.5 },
     { key: 'rA', label: 'r (A)', min: 0.5, max: 4.0 },
     { key: 'rB', label: 'r (B)', min: 0.5, max: 4.0 }
-  ]
+  ],
+  'sine-cosine': [
+    { key: 'frequency', label: 'Frequency (ω)', min: 0.1, max: 10 },
+    { key: 'phase', label: 'Phase (φ)', min: 0, max: 6.28 }
+  ],
+  'complex-spiral': [
+    { key: 'sigma', label: 'Growth/Decay (σ)', min: -2.0, max: 2.0 },
+    { key: 'omega', label: 'Angular Frequency (ω)', min: -10, max: 10 }
+  ],
+  'archimedean-spiral': [
+    { key: 'growthRate', label: 'Growth Rate (b)', min: 0.1, max: 2.0 },
+    { key: 'startOffset', label: 'Start Offset (a)', min: 0.0, max: 3.0 }
+  ],
+  'roots-of-unity': [
+    { key: 'n', label: 'Number of roots (n)', min: 2, max: 24 }
+  ],
+  'cycloid': [
+    { key: 'radius', label: 'Wheel Radius (r)', min: 0.5, max: 3.0 },
+    { key: 'penRatio', label: 'Pen Offset (d/r)', min: 0.0, max: 2.0 }
+  ],
+  'rose-curves': [
+    { key: 'k', label: 'Petals (k)', min: 0.5, max: 12.0 },
+    { key: 'amplitude', label: 'Amplitude (A)', min: 0.5, max: 3.0 }
+  ],
+  'epitrochoid': [
+    { key: 'penOffset', label: 'Pen Offset (d)', min: 0.5, max: 8.0 },
+    { key: 'rollingRadius', label: 'Rolling Radius (r)', min: 0.5, max: 8.0 }
+  ],
+  'taylor-series': [
+    { key: 'numTerms', label: 'Number of terms (N)', min: 1, max: 20 }
+  ],
+  'damped-oscillation': [
+    { key: 'damping', label: 'Damping (b)', min: 0, max: 5 }
+  ],
+  'trig-identities-circle': [
+    { key: 'angle', label: 'Angle (θ)', min: 0, max: 6.28 }
+  ],
+  'wave-identities': [
+    { key: 'constantA', label: 'Constant (a)', min: 0, max: 6.28 }
+  ],
+  'calculus-of-trig': [
+    { key: 'resolution', label: 'Resolution (n)', min: 4, max: 200 }
+  ],
+  'heart-curve': [
+    { key: 'scale', label: 'Scale', min: 0.5, max: 3.0 },
+    { key: 'harmonics', label: 'Harmonics', min: 1, max: 4 }
+  ],
+  'butterfly-curve': [
+    { key: 'scale', label: 'Scale', min: 0.5, max: 3.0 },
+    { key: 'rotations', label: 'Rotations', min: 1, max: 12 }
+  ],
+  'phasor-diagrams': [
+    { key: 'freq1', label: 'Frequency 1 (ω₁)', min: 0.1, max: 10.0 },
+    { key: 'phase', label: 'Phase Difference (Δφ)', min: 0, max: 6.283 }
+  ],
 };
 
 function getAnimParamsForExploration(id) {

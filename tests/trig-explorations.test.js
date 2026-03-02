@@ -11,8 +11,29 @@ import '../js/explorations/fourier-synthesis.js';
 import '../js/explorations/unit-circle.js';
 import '../js/explorations/phase-space.js';
 import '../js/explorations/simple-harmonic.js';
+import '../js/explorations/sine-cosine.js';
+import '../js/explorations/complex-spiral.js';
+import '../js/explorations/archimedean-spiral.js';
+import '../js/explorations/roots-of-unity.js';
+import '../js/explorations/cycloid.js';
+import '../js/explorations/rose-curves.js';
+import '../js/explorations/epitrochoid.js';
+import '../js/explorations/taylor-series.js';
+import '../js/explorations/damped-oscillation.js';
+import '../js/explorations/trig-identities-circle.js';
+import '../js/explorations/wave-identities.js';
+import '../js/explorations/calculus-of-trig.js';
+import '../js/explorations/heart-curve.js';
+import '../js/explorations/butterfly-curve.js';
+import '../js/explorations/phasor-diagrams.js';
 
-const TRIG_IDS = ['lissajous', 'fourier-synthesis', 'unit-circle', 'phase-space', 'simple-harmonic'];
+const TRIG_IDS = [
+  'lissajous', 'fourier-synthesis', 'unit-circle', 'phase-space', 'simple-harmonic',
+  'sine-cosine', 'complex-spiral', 'archimedean-spiral', 'roots-of-unity', 'cycloid',
+  'rose-curves', 'epitrochoid', 'taylor-series', 'damped-oscillation',
+  'trig-identities-circle', 'wave-identities', 'calculus-of-trig',
+  'heart-curve', 'butterfly-curve', 'phasor-diagrams'
+];
 const explorations = getAll().filter(E => TRIG_IDS.includes(E.id));
 
 function makeMockCanvas() {
@@ -52,15 +73,15 @@ function makeMockContainer() {
 }
 
 describe('Trig Explorations Registration', () => {
-  it('all 5 trig explorations are registered', () => {
+  it('all 20 trig explorations are registered', () => {
     for (const id of TRIG_IDS) {
       expect(getById(id)).toBeDefined();
     }
   });
 
-  it('all 5 have unique ids', () => {
+  it('all 20 have unique ids', () => {
     const ids = explorations.map(E => E.id);
-    expect(new Set(ids).size).toBe(5);
+    expect(new Set(ids).size).toBe(20);
   });
 });
 
@@ -290,6 +311,44 @@ describe('Faceted grouping includes trig explorations', () => {
     const dynSys = byTopic.get('dynamical-systems') || [];
     expect(physics.some(E => E.id === 'phase-space')).toBe(true);
     expect(dynSys.some(E => E.id === 'phase-space')).toBe(true);
+  });
+
+  it('Sine-Cosine appears in Physics', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const physics = byTopic.get('physics') || [];
+    expect(physics.some(E => E.id === 'sine-cosine')).toBe(true);
+  });
+
+  it('Complex Spiral appears in Complex Analysis', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const complex = byTopic.get('complex-analysis') || [];
+    expect(complex.some(E => E.id === 'complex-spiral')).toBe(true);
+  });
+
+  it('Rose Curves appears in Parametric Curves', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const parametric = byTopic.get('parametric-curves') || [];
+    expect(parametric.some(E => E.id === 'rose-curves')).toBe(true);
+  });
+
+  it('Taylor Series appears in Series & Transforms', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const series = byTopic.get('series-transforms') || [];
+    expect(series.some(E => E.id === 'taylor-series')).toBe(true);
+  });
+
+  it('Damped Oscillation appears in Physics', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const physics = byTopic.get('physics') || [];
+    expect(physics.some(E => E.id === 'damped-oscillation')).toBe(true);
+  });
+
+  it('Phasor Diagrams appears in both Complex Analysis and Physics', () => {
+    const byTopic = groupByFacet(all, 'topic');
+    const complex = byTopic.get('complex-analysis') || [];
+    const physics = byTopic.get('physics') || [];
+    expect(complex.some(E => E.id === 'phasor-diagrams')).toBe(true);
+    expect(physics.some(E => E.id === 'phasor-diagrams')).toBe(true);
   });
 
   it('grouping by level places trig demos correctly', () => {

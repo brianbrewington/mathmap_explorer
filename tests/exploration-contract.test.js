@@ -42,6 +42,21 @@ import '../js/explorations/fourier-synthesis.js';
 import '../js/explorations/unit-circle.js';
 import '../js/explorations/phase-space.js';
 import '../js/explorations/simple-harmonic.js';
+import '../js/explorations/sine-cosine.js';
+import '../js/explorations/complex-spiral.js';
+import '../js/explorations/archimedean-spiral.js';
+import '../js/explorations/roots-of-unity.js';
+import '../js/explorations/cycloid.js';
+import '../js/explorations/rose-curves.js';
+import '../js/explorations/epitrochoid.js';
+import '../js/explorations/taylor-series.js';
+import '../js/explorations/damped-oscillation.js';
+import '../js/explorations/trig-identities-circle.js';
+import '../js/explorations/wave-identities.js';
+import '../js/explorations/calculus-of-trig.js';
+import '../js/explorations/heart-curve.js';
+import '../js/explorations/butterfly-curve.js';
+import '../js/explorations/phasor-diagrams.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -63,8 +78,8 @@ const REQUIRED_METHODS = [
 const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
-  it('has exactly 21 registered explorations', () => {
-    expect(explorations.length).toBe(21);
+  it('has exactly 36 registered explorations', () => {
+    expect(explorations.length).toBe(36);
   });
 
   it('all ids are unique', () => {
