@@ -7,7 +7,7 @@ class DerivativeDefinitionExploration extends BaseExploration {
   static description = 'Watch the secant line become the tangent as h\u21920 \u2014 the visual definition of the derivative';
   static category = 'map';
   static tags = [
-    'series-transforms', 'numerical-methods', 'beginner',
+    'calculus', 'numerical-methods', 'beginner',
   ];
   static formulaShort = "f'(x) = lim<sub>h\u21920</sub> [f(x+h)\u2212f(x)]/h";
   static formula = `<h3>Definition of the Derivative</h3>

@@ -64,6 +64,7 @@ import '../js/explorations/pascals-triangle.js';
 import '../js/explorations/central-limit-theorem.js';
 import '../js/explorations/power-laws.js';
 import '../js/explorations/epsilon-delta.js';
+import '../js/explorations/limit-game.js';
 import '../js/explorations/derivative-definition.js';
 import '../js/explorations/chain-rule.js';
 import '../js/explorations/taylor-approximation.js';
@@ -97,7 +98,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has exactly 54 registered explorations', () => {
-    expect(explorations.length).toBe(54);
+    expect(explorations.length).toBe(55);
   });
 
   it('all ids are unique', () => {

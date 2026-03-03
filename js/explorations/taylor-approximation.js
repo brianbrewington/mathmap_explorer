@@ -261,36 +261,37 @@ function error(a, R, N) {
     const xMin = a - xRange / 2;
     const xMax = a + xRange / 2;
 
-    // Determine Y range by sampling the true function
-    let yLo = Infinity, yHi = -Infinity;
+    // Determine Y range — always show the full true function, allow Taylor
+    // polynomial to stretch the view but limited to 2× the true function span
+    let trueLo = Infinity, trueHi = -Infinity;
     const steps = 400;
     for (let i = 0; i <= steps; i++) {
       const x = xMin + (i / steps) * (xMax - xMin);
       if (!this._inDomain(x)) continue;
       const y = this._trueFunc(x);
       if (isFinite(y)) {
-        if (y < yLo) yLo = y;
-        if (y > yHi) yHi = y;
+        if (y < trueLo) trueLo = y;
+        if (y > trueHi) trueHi = y;
       }
     }
-    // Also sample the Taylor polynomial for y range
+    if (!isFinite(trueLo)) { trueLo = -2; trueHi = 2; }
+    const trueSpan = (trueHi - trueLo) || 1;
+
+    let yLo = trueLo, yHi = trueHi;
+    // Allow Taylor polynomial to extend the view, but cap at 2× true span
+    const maxExtend = trueSpan * 2;
     for (let i = 0; i <= steps; i++) {
       const x = xMin + (i / steps) * (xMax - xMin);
       const y = this._taylorFunc(x, N, a);
       if (isFinite(y)) {
-        const clamped = Math.max(yLo - 10, Math.min(yHi + 10, y));
+        const clamped = Math.max(trueLo - maxExtend, Math.min(trueHi + maxExtend, y));
         if (clamped < yLo) yLo = clamped;
         if (clamped > yHi) yHi = clamped;
       }
     }
-    // Clamp y range to something reasonable
-    if (!isFinite(yLo) || !isFinite(yHi)) { yLo = -2; yHi = 2; }
-    const ySpan = yHi - yLo || 1;
+    const ySpan = (yHi - yLo) || 1;
     yLo -= ySpan * 0.1;
     yHi += ySpan * 0.1;
-    // Hard limit to avoid extreme ranges
-    yLo = Math.max(yLo, -50);
-    yHi = Math.min(yHi, 50);
 
     const toX = v => pad.l + ((v - xMin) / (xMax - xMin)) * plotW;
     const toY = v => pad.t + plotH - ((v - yLo) / (yHi - yLo)) * plotH;

@@ -7,7 +7,7 @@ class EpsilonDeltaExploration extends BaseExploration {
   static description = 'Interactive visualization of the epsilon-delta definition of limits';
   static category = 'map';
   static tags = [
-    'series-transforms', 'numerical-methods', 'beginner',
+    'calculus', 'numerical-methods', 'beginner',
   ];
   static formulaShort = '|x\u2212a| < \u03B4 \u27F9 |f(x)\u2212L| < \u03B5';
   static formula = `<h3>\u03B5-\u03B4 Definition of a Limit</h3>
@@ -45,7 +45,7 @@ function findDelta(f, a, L, epsilon) {
 \u03B4&nbsp;=&nbsp;0 for any \u03B5 &lt; 2. Use the <em>Animate \u03B5\u21920</em> button to watch the
 \u03B4-band shrink in tandem with \u03B5 for continuous functions.</p>`;
   static foundations = [];
-  static extensions = [];
+  static extensions = ['limit-game'];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -213,12 +213,27 @@ function findDelta(f, a, L, epsilon) {
     const plotW = W - pad.l - pad.r;
     const plotH = H - pad.t - pad.b;
 
-    // Determine axis ranges
+    // Determine axis ranges — auto-scale Y to always show the point + ε band
     const xMin = -4, xMax = 4;
-    let yMin = -1, yMax = 5;
-    if (func === 'sinc') { yMin = -0.5; yMax = 1.5; }
-    if (func === 'abs') { yMin = -0.5; yMax = 4; }
-    if (func === 'piecewise') { yMin = -0.5; yMax = 5; }
+    let yMin, yMax;
+    {
+      // Sample the function across the x range to find natural bounds
+      let lo = Infinity, hi = -Infinity;
+      for (let i = 0; i <= 200; i++) {
+        const x = xMin + (i / 200) * (xMax - xMin);
+        const y = this._f(x);
+        if (isFinite(y)) { lo = Math.min(lo, y); hi = Math.max(hi, y); }
+      }
+      // Ensure L ± ε is visible
+      const L_ = this._limitAt(a);
+      if (!isNaN(L_)) {
+        lo = Math.min(lo, L_ - epsilon - 0.5);
+        hi = Math.max(hi, L_ + epsilon + 0.5);
+      }
+      const margin = (hi - lo) * 0.1 || 1;
+      yMin = lo - margin;
+      yMax = hi + margin;
+    }
 
     const toX = v => pad.l + ((v - xMin) / (xMax - xMin)) * plotW;
     const toY = v => pad.t + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
@@ -278,7 +293,7 @@ function findDelta(f, a, L, epsilon) {
 
     // Axis tick labels
     ctx.fillStyle = '#6b7080';
-    ctx.font = this._font(9);
+    ctx.font = this._font(11);
     ctx.textAlign = 'center';
     for (let xv = Math.ceil(xMin); xv <= xMax; xv++) {
       if (Math.abs(xv) < 0.01) continue;
@@ -380,66 +395,66 @@ function findDelta(f, a, L, epsilon) {
     }
 
     // ── Readout panel ──
-    ctx.fillStyle = '#c8cad0';
-    ctx.font = this._monoFont(12);
     ctx.textAlign = 'left';
-    const rx = pad.l + 8;
-    let ry = pad.t + 16;
+    const rx = pad.l + 10;
+    let ry = pad.t + 22;
 
-    ctx.fillStyle = '#8b8fa3';
-    ctx.font = this._font(11);
+    ctx.fillStyle = '#c8cad0';
+    ctx.font = this._font(14, undefined, 'bold');
     ctx.fillText(this._funcLabel(), rx, ry);
-    ry += 18;
+    ry += 26;
 
-    ctx.font = this._monoFont(11);
+    ctx.font = this._monoFont(14);
     ctx.fillStyle = '#facc15';
     ctx.fillText(`a = ${a.toFixed(2)}`, rx, ry);
-    ry += 16;
+    ry += 22;
 
     if (!isNaN(L)) {
       ctx.fillStyle = '#22d3ee';
       ctx.fillText(`L = ${L.toFixed(4)}`, rx, ry);
-      ry += 16;
+      ry += 22;
       ctx.fillStyle = '#22d3ee';
-      ctx.fillText(`\u03B5 = ${epsilon.toFixed(4)}`, rx, ry);
-      ry += 16;
+      ctx.fillText(`ε = ${epsilon.toFixed(4)}`, rx, ry);
+      ry += 22;
       ctx.fillStyle = '#facc15';
-      ctx.fillText(`\u03B4 = ${delta.toFixed(4)}`, rx, ry);
-      ry += 20;
+      ctx.fillText(`δ = ${delta.toFixed(4)}`, rx, ry);
+      ry += 26;
     } else {
       ctx.fillStyle = '#f87171';
+      ctx.font = this._font(14, undefined, 'bold');
       ctx.fillText('Limit DNE', rx, ry);
-      ry += 16;
-      ctx.fillText(`\u03B4 = 0`, rx, ry);
-      ry += 20;
+      ry += 22;
+      ctx.font = this._monoFont(14);
+      ctx.fillText(`δ = 0`, rx, ry);
+      ry += 26;
     }
 
     // Formula at bottom
-    ctx.fillStyle = '#6b7080';
-    ctx.font = this._font(11);
+    ctx.font = this._font(13);
     ctx.textAlign = 'center';
     if (limitExists) {
-      ctx.fillText('|x \u2212 a| < \u03B4  \u27F9  |f(x) \u2212 L| < \u03B5', W / 2, H - 10);
+      ctx.fillStyle = '#8b8fa3';
+      ctx.fillText('|x − a| < δ  ⟹  |f(x) − L| < ε', W / 2, H - 12);
     } else if (isNaN(L)) {
       ctx.fillStyle = '#f87171';
-      ctx.fillText('Jump discontinuity: no single limit exists', W / 2, H - 10);
+      ctx.fillText('Jump discontinuity: no single limit exists', W / 2, H - 12);
     } else {
       ctx.fillStyle = '#f87171';
-      ctx.fillText('\u03B4 = 0 \u2014 limit condition fails', W / 2, H - 10);
+      ctx.fillText('δ = 0 — limit condition fails', W / 2, H - 12);
     }
 
     // Legend
-    ctx.font = this._font(10);
+    ctx.font = this._font(11);
     ctx.textAlign = 'right';
     ctx.fillStyle = 'rgba(34, 211, 238, 0.6)';
-    ctx.fillRect(W - pad.r - 130, pad.t + 8, 14, 8);
+    ctx.fillRect(W - pad.r - 140, pad.t + 8, 16, 10);
     ctx.fillStyle = '#8b8fa3';
-    ctx.fillText('\u03B5-band', W - pad.r - 4, pad.t + 16);
+    ctx.fillText('ε-band', W - pad.r - 4, pad.t + 18);
 
     ctx.fillStyle = 'rgba(250, 204, 21, 0.5)';
-    ctx.fillRect(W - pad.r - 130, pad.t + 24, 14, 8);
+    ctx.fillRect(W - pad.r - 140, pad.t + 26, 16, 10);
     ctx.fillStyle = '#8b8fa3';
-    ctx.fillText('\u03B4-band', W - pad.r - 4, pad.t + 32);
+    ctx.fillText('δ-band', W - pad.r - 4, pad.t + 36);
   }
 }
 

@@ -65,6 +65,7 @@ import './explorations/power-laws.js';
 
 // Calculus explorations (batch 4)
 import './explorations/epsilon-delta.js';
+import './explorations/limit-game.js';
 import './explorations/derivative-definition.js';
 import './explorations/chain-rule.js';
 import './explorations/taylor-approximation.js';
@@ -246,6 +247,9 @@ const ANIM_PARAMS = {
   'epsilon-delta': [
     { key: 'epsilon', label: 'Epsilon (ε)', min: 0.01, max: 2.0 }
   ],
+  'limit-game': [
+    { key: 'epsilon', label: 'Your ε challenge', min: 0.001, max: 2.0 }
+  ],
   'derivative-definition': [
     { key: 'h', label: 'Step size (h)', min: 0.01, max: 3.0 },
     { key: 'x0', label: 'Point (x₀)', min: -3, max: 3 }
@@ -324,6 +328,7 @@ function rebuildControls() {
       else if (action === 'stop') currentInstance.stop();
       else if (action === 'reset') { animator.stop(); currentInstance.reset(); }
       else if (action === 'regrow' && currentInstance.onAction) { currentInstance.onAction('regrow'); }
+      else if (action === 'challenge' && currentInstance.onAction) { currentInstance.onAction('challenge'); }
       else if (action === 'showInfo') showInfoPanel();
       else if (action === 'saveSnapshot') {
         const now = new Date();

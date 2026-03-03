@@ -7,7 +7,7 @@ class ChainRuleExploration extends BaseExploration {
   static description = 'See how derivatives multiply through function composition \u2014 the chain rule in action';
   static category = 'map';
   static tags = [
-    'series-transforms', 'numerical-methods', 'intermediate',
+    'calculus', 'numerical-methods', 'intermediate',
   ];
   static formulaShort = "(g\u2218f)'(a) = g'(f(a))\u00B7f'(a)";
   static formula = `<h3>The Chain Rule</h3>
