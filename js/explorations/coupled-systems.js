@@ -151,6 +151,7 @@ xB_next = f(xB) + epsilon * (xA - xB);
 
   static foundations = ['logistic-map', 'henon'];
   static extensions = ['fluid-dynamics', 'reaction-diffusion'];
+  static teaserQuestion = 'What happens when oscillators talk to each other?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -87,6 +87,9 @@ const controlsPanel = document.getElementById('controls-panel');
 const listEl = document.getElementById('exploration-list');
 const overlay = document.getElementById('canvas-overlay');
 const overlayText = document.getElementById('overlay-text');
+const teaserOverlay = document.getElementById('teaser-overlay');
+const teaserText = document.getElementById('teaser-text');
+const teaserClose = document.getElementById('teaser-close');
 
 /**
  * Replace the canvas element with a fresh one so the new exploration can
@@ -106,6 +109,36 @@ function resetCanvas() {
 let currentExploration = null;
 let currentInstance = null;
 let currentExplClass = null;
+
+let teaserTimerId = null;
+let teaserFadeTimerId = null;
+
+function showTeaser(question) {
+  if (!question || !teaserOverlay) return;
+  hideTeaser();
+  teaserText.textContent = question;
+  teaserOverlay.classList.remove('teaser-hidden', 'teaser-fading');
+  teaserTimerId = setTimeout(() => {
+    teaserOverlay.classList.add('teaser-fading');
+    teaserFadeTimerId = setTimeout(() => {
+      teaserOverlay.classList.add('teaser-hidden');
+      teaserOverlay.classList.remove('teaser-fading');
+    }, 4000);
+  }, 10000);
+}
+
+function hideTeaser() {
+  if (teaserTimerId) { clearTimeout(teaserTimerId); teaserTimerId = null; }
+  if (teaserFadeTimerId) { clearTimeout(teaserFadeTimerId); teaserFadeTimerId = null; }
+  if (teaserOverlay) {
+    teaserOverlay.classList.add('teaser-hidden');
+    teaserOverlay.classList.remove('teaser-fading');
+  }
+}
+
+if (teaserClose) {
+  teaserClose.addEventListener('click', () => hideTeaser());
+}
 
 const audioEngine = new AudioEngine();
 const muteBtn = document.getElementById('mute-toggle');
@@ -461,6 +494,7 @@ function showRecipeLoader() {
 
 function selectExploration(id) {
   animator.stop();
+  hideTeaser();
 
   if (currentInstance) {
     currentInstance.teardownAudio();
@@ -531,6 +565,7 @@ function selectExploration(id) {
   currentInstance.activate();
   currentInstance.resize(canvas.width, canvas.height);
   currentInstance.render();
+  showTeaser(ExplClass.teaserQuestion);
 
   if (!audioEngine.isMuted) {
     currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);

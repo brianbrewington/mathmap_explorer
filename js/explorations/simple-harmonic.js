@@ -31,6 +31,7 @@ const x = A * Math.cos(omega * t + phi);</code></pre>
 it down. The derived &omega; is shown as a readout beneath the sliders.</p>`;
   static foundations = [];
   static extensions = ['phase-space'];
+  static teaserQuestion = 'Why does everything vibrate like a spring?';
 
   static guidedSteps = [
     {

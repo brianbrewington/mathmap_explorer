@@ -74,6 +74,7 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 <h3>Feigenbaum's Universality</h3>
 <p>The ratios of successive bifurcation intervals converge to δ ≈ 4.6692... and the scaling of the attractor converges to α ≈ 2.5029... These constants are <em>universal</em> — they appear in any system undergoing period-doubling, regardless of the specific function. This is one of the most remarkable discoveries in chaos theory.</p>`;
   static extensions = ['bifurcation-2d', 'henon', 'mandelbrot-logistic-3d', 'coupled-systems'];
+  static teaserQuestion = 'Where exactly does a simple equation break into chaos?';
 
   static guidedSteps = [
     {

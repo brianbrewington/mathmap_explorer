@@ -34,6 +34,7 @@ each successive term to watch the dip at the top deepen into the characteristic
 heart shape.</p>`;
   static foundations = ['unit-circle', 'fourier-synthesis'];
   static extensions = ['rose-curves'];
+  static teaserQuestion = 'What does love look like in polar coordinates?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

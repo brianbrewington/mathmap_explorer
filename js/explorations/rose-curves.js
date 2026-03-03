@@ -35,6 +35,7 @@ appear throughout nature in flower petal arrangements and phyllotaxis.</p>`;
 integers to watch the curve morph continuously.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['heart-curve'];
+  static teaserQuestion = 'How many petals does sin(n\u03B8) draw?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

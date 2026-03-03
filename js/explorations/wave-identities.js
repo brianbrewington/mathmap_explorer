@@ -35,6 +35,7 @@ const part2 = Math.cos(omega * t) * Math.sin(a);
 double-angle and power-reduction identities the same way.</p>`;
   static foundations = ['sine-cosine', 'trig-identities-circle'];
   static extensions = ['fourier-synthesis'];
+  static teaserQuestion = 'What happens when two waves collide?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

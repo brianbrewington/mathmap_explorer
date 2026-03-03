@@ -32,6 +32,7 @@ const yCos = A * Math.cos(omega * t);</code></pre>
 dot reveals the constant &pi;/2 phase relationship between the two functions.</p>`;
   static foundations = [];
   static extensions = ['simple-harmonic', 'trig-identities-circle', 'wave-packet'];
+  static teaserQuestion = 'What makes sine and cosine the most fundamental curves?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -9,6 +9,7 @@ class IntegrationRiemannExploration extends BaseExploration {
   static tags = ['calculus', 'numerical-methods', 'beginner'];
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = 'What if you measured area with infinitely many rectangles?';
   static formulaShort = '\u222B<sub>a</sub><sup>b</sup> f(x)dx \u2248 \u03A3 f(x\u1D62)\u0394x';
   static formula = `<h3>Riemann Sums &amp; Numerical Integration</h3>
 <div class="formula-block">

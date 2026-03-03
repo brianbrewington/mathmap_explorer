@@ -9,6 +9,7 @@ class RandomWalkExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'beginner'];
   static foundations = ['central-limit-theorem'];
   static extensions = [];
+  static teaserQuestion = 'How far does a random walker drift from where they started?';
   static formulaShort = '\u27E8x\u00B2\u27E9 = N (1D), \u27E8r\u00B2\u27E9 = N (2D)';
   static formula = `<h3>Random Walk</h3>
 <div class="formula-block">

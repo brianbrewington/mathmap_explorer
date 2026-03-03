@@ -9,6 +9,7 @@ class CentralLimitTheoremExploration extends BaseExploration {
   static tags = ['probability-statistics', 'convolution', 'beginner'];
   static foundations = [];
   static extensions = ['random-walk'];
+  static teaserQuestion = 'Why does everything in nature end up looking like a bell curve?';
   static formulaShort = 'f<sub>X+Y</sub> = f<sub>X</sub> * f<sub>Y</sub>';
   static formula = `<h3>Central Limit Theorem</h3>
 <div class="formula-block">

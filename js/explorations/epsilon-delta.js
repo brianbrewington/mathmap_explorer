@@ -46,6 +46,7 @@ function findDelta(f, a, L, epsilon) {
 \u03B4-band shrink in tandem with \u03B5 for continuous functions.</p>`;
   static foundations = [];
   static extensions = ['limit-game'];
+  static teaserQuestion = 'How close is close enough to prove a limit exists?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

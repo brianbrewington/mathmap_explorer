@@ -33,6 +33,7 @@ polygon. Labels show each root&rsquo;s index and coordinates. Use the <em>zoom</
 to scale the view.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
+  static teaserQuestion = 'Why do the solutions of z\u207F = 1 form a perfect polygon?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

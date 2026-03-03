@@ -9,6 +9,7 @@ class MarkovChainExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = 'Does a random process always forget where it came from?';
   static formulaShort = '\u03C0 = \u03C0P (stationary distribution)';
   static formula = `<h3>Markov Chain</h3>
 <div class="formula-block">

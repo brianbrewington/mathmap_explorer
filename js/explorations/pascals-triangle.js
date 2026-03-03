@@ -9,6 +9,7 @@ class PascalsTriangleExploration extends BaseExploration {
   static tags = ['fractals', 'iteration', 'beginner'];
   static foundations = ['sierpinski'];
   static extensions = [];
+  static teaserQuestion = 'How much structure is hiding in a triangle of numbers?';
   static formulaShort = 'C(n,k) = C(n\u22121,k\u22121) + C(n\u22121,k)';
   static formula = `<h3>Pascal's Triangle</h3>
 <div class="formula-block">

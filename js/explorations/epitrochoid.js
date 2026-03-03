@@ -33,6 +33,7 @@ for (let i = 0; i &lt;= steps; i++) {
 patterns, or set r to an irrational fraction of R for space-filling paths.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['rose-curves'];
+  static teaserQuestion = 'What happens when a circle rolls around another circle?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

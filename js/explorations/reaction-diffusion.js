@@ -11,6 +11,7 @@ class ReactionDiffusionExploration extends BaseExploration {
   ];
   static foundations = ['coupled-systems'];
   static extensions = [];
+  static teaserQuestion = 'How do leopard spots and zebra stripes form themselves?';
   static formulaShort = '∂u/∂t = D<sub>u</sub>∇²u − uv² + F(1−u)';
   static formula = `<h3>Gray-Scott Reaction-Diffusion</h3>
 <div class="formula-block">

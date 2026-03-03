@@ -11,6 +11,7 @@ class WavePacketExploration extends BaseExploration {
   ];
   static foundations = ['sine-cosine'];
   static extensions = ['fourier-synthesis'];
+  static teaserQuestion = 'What happens when you add infinitely many waves together?';
   static formulaShort = 'y = e<sup>−(x−v<sub>g</sub>t)²/2σ²</sup> cos(kx − ωt)';
   static formula = `<h3>Wave Packet</h3>
 <div class="formula-block">

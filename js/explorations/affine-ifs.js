@@ -157,6 +157,7 @@ for (let i = 0; i < iterations; i++) {
 where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p is the selection probability.</p>`;
   static foundations = ['sierpinski'];
   static extensions = ['barnsley'];
+  static teaserQuestion = 'How many transformations does it take to build a fractal?';
 
   static guidedSteps = [
     {

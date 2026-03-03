@@ -34,6 +34,7 @@ collapses to a line segment; at &delta;&nbsp;=&nbsp;&pi;/2 with a&nbsp;=&nbsp;b 
 classic "figure-8" variant, or a=5, b=4 for a more complex knot.</p>`;
   static foundations = [];
   static extensions = ['unit-circle'];
+  static teaserQuestion = 'What shapes emerge when two vibrations meet?';
 
   static guidedSteps = [
     {

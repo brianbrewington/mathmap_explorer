@@ -53,6 +53,7 @@ Supported maps: Henon, Tinkerbell, Ikeda
 <p>For each value of the swept parameter, iterate the 2D map. After discarding transient iterations, plot the x (or y) coordinate vertically. This reveals the attractor structure as the parameter changes.</p>`;
   static foundations = ['logistic-map'];
   static extensions = ['coupled-systems'];
+  static teaserQuestion = 'What does chaos look like in two dimensions?';
 
   static guidedSteps = [
     {

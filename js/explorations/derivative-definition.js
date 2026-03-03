@@ -30,6 +30,7 @@ domain. The dashed cyan curve shows the exact analytical derivative for comparis
 Change the function to clear and start a new derivative trace.</p>`;
   static foundations = ['epsilon-delta'];
   static extensions = [];
+  static teaserQuestion = 'What does "instantaneous speed" actually mean?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -39,6 +39,7 @@ for (let i = 0; i < maxIter; i++) {
 }</code></pre>
 <p>In this app, the iteration runs entirely on the GPU in a fragment shader for real-time interaction.</p>`;
   static extensions = ['julia-set', 'mandelbrot-logistic-3d', 'newton-fractal'];
+  static teaserQuestion = 'What happens at the boundary between order and chaos?';
 
   static guidedSteps = [
     {

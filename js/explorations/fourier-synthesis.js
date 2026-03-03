@@ -31,6 +31,7 @@ y = sum * amplitude * (4 / Math.PI);</code></pre>
 harmonics are shown as faint curves so you can see each contribution.</p>`;
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = 'Can you build any shape from pure sine waves?';
 
   static guidedSteps = [
     {

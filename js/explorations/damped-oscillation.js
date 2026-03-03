@@ -44,6 +44,7 @@ if (disc > 0) {
 update in real time.</p>`;
   static foundations = ['simple-harmonic'];
   static extensions = ['phase-space'];
+  static teaserQuestion = 'How does friction steal energy from a pendulum?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

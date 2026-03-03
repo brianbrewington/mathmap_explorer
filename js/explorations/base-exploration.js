@@ -22,6 +22,7 @@ export class BaseExploration {
   static guidedSteps = [];
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = '';
 
   constructor(canvas, controlsContainer) {
     this.canvas = canvas;

@@ -32,6 +32,7 @@ where n is the number of rotations. The trail colour is mapped to the current an
 section gets a distinct hue.</p>`;
   static foundations = ['rose-curves'];
   static extensions = ['heart-curve'];
+  static teaserQuestion = 'Can one equation draw a butterfly?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

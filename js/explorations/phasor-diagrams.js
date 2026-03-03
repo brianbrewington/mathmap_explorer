@@ -34,6 +34,7 @@ Re(z<sub>total</sub>) as a time-domain waveform, revealing beats or standing-wav
 depending on the frequency relationship.</p>`;
   static foundations = ['unit-circle', 'complex-spiral'];
   static extensions = [];
+  static teaserQuestion = 'Why do engineers represent waves as spinning arrows?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

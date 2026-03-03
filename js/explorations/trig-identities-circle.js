@@ -33,6 +33,7 @@ The <strong>Reciprocal</strong> mode draws sec&theta; and csc&theta; as full seg
 through P to the axes.</p>`;
   static foundations = ['sine-cosine'];
   static extensions = ['wave-identities'];
+  static teaserQuestion = 'Can you see a trig identity?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

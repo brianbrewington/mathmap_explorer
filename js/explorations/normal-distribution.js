@@ -9,6 +9,7 @@ class NormalDistributionExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'beginner'];
   static foundations = [];
   static extensions = ['central-limit-theorem'];
+  static teaserQuestion = 'What makes the bell curve so universal?';
   static formulaShort = 'f(x) = (1/\u03C3\u221A2\u03C0) e<sup>\u2212(x\u2212\u03BC)\u00B2/2\u03C3\u00B2</sup>';
   static formula = `<h3>Normal (Gaussian) Distribution</h3>
 <div class="formula-block">

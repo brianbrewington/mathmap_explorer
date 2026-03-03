@@ -36,6 +36,7 @@ for (let i = 0; i < iterations; i++) {
 <p>The quadratic term (−ax²) creates the folding that leads to chaos, while the linear term (by) provides the stretching.</p>`;
   static foundations = ['dejong'];
   static extensions = ['logistic-map', 'coupled-systems'];
+  static teaserQuestion = 'Can a simple map create structure that never repeats?';
 
   static guidedSteps = [
     {

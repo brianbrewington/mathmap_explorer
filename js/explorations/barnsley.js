@@ -45,6 +45,7 @@ for (let i = 0; i < iterations; i++) {
 <p>The f<sub>2</sub> transform (85% probability) generates the self-similar copies of the whole fern, giving it its recursive structure.</p>`;
   static foundations = ['sierpinski', 'affine-ifs'];
   static extensions = ['l-system'];
+  static teaserQuestion = 'How does pure randomness grow a perfect fern?';
 
   static guidedSteps = [
     {

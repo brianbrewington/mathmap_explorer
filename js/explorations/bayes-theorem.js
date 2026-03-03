@@ -9,6 +9,7 @@ class BayesTheoremExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = 'How should you update your beliefs when new evidence arrives?';
   static formulaShort = 'P(\u03B8|data) \u221D P(data|\u03B8)\u00B7P(\u03B8)';
   static formula = `<h3>Bayesian Updating (Beta-Binomial)</h3>
 <div class="formula-block">

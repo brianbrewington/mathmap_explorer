@@ -138,6 +138,7 @@ F(0.1) = F
 // After 2 iterations:
 // F+F-F-F+F + F+F-F-F+F - ...</code></pre>`;
   static foundations = ['sierpinski'];
+  static teaserQuestion = 'Can a grammar grow a tree?';
 
   static guidedSteps = [
     {

@@ -29,6 +29,7 @@ reference, and envelope circles at <code>e<sup>&sigma;t</sup></code> show how th
 magnitude grows or shrinks.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['roots-of-unity'];
+  static teaserQuestion = 'What does multiplication look like in the complex plane?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

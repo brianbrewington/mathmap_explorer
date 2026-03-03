@@ -11,6 +11,7 @@ class VortexSheddingExploration extends BaseExploration {
   static tags = ['pde-simulation', 'numerical-methods', 'advanced'];
   static foundations = ['fluid-dynamics'];
   static extensions = [];
+  static teaserQuestion = 'Why do flags flutter and bridges sway in the wind?';
   static formulaShort = 'Re = UD/\u03BD (Reynolds number)';
   static formula = `<h3>K\u00E1rm\u00E1n Vortex Street</h3>
 <div class="formula-block">

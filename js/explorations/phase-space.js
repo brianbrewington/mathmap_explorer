@@ -32,6 +32,7 @@ const v = A * Math.exp(-b * t) * (
 ellipse collapse into a spiral.</p>`;
   static foundations = ['simple-harmonic'];
   static extensions = [];
+  static teaserQuestion = 'Can you see the future of a system in a single picture?';
 
   static guidedSteps = [
     {

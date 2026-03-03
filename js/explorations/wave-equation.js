@@ -9,6 +9,7 @@ class WaveEquationExploration extends BaseExploration {
   static tags = ['pde-simulation', 'numerical-methods', 'intermediate'];
   static foundations = ['thermal-diffusion'];
   static extensions = [];
+  static teaserQuestion = 'What law governs every ripple, every sound, every vibration?';
   static formulaShort = '\u2202\u00B2u/\u2202t\u00B2 = c\u00B2\u2202\u00B2u/\u2202x\u00B2';
   static formula = `<h3>1D Wave Equation</h3>
 <div class="formula-block">

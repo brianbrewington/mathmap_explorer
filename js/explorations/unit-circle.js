@@ -30,6 +30,7 @@ sin(&theta;). Together they demonstrate that circular motion and sinusoidal osci
 views of the same phenomenon.</p>`;
   static foundations = [];
   static extensions = ['lissajous'];
+  static teaserQuestion = 'Why does going in circles create waves?';
 
   static guidedSteps = [
     {

@@ -59,6 +59,7 @@ for (let i = 0; i < maxIter; i++) {
 <p>Try the presets to see famous examples, or adjust c<sub>re</sub> and c<sub>im</sub> to explore on your own.</p>`;
   static foundations = ['mandelbrot'];
   static extensions = ['newton-fractal'];
+  static teaserQuestion = 'How does one tiny number reshape an entire fractal?';
 
   static guidedSteps = [
     {

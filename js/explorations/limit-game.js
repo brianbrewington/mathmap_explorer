@@ -43,6 +43,7 @@ class LimitGameExploration extends BaseExploration {
   static tags = ['calculus', 'numerical-methods', 'beginner'];
   static foundations = ['epsilon-delta'];
   static extensions = [];
+  static teaserQuestion = 'Can the computer always find a response to your challenge?';
   static formulaShort = '∀ε > 0, ∃δ > 0';
   static formula = `<h3>The ε-δ Game</h3>
 <div class="formula-block">

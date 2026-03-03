@@ -9,6 +9,7 @@ class PowerLawsExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
   static foundations = [];
   static extensions = [];
+  static teaserQuestion = 'Why do cities, earthquakes, and words all follow the same law?';
   static formulaShort = 'f(x) = C \u00b7 x<sup>\u2212\u03b1</sup>';
   static formula = `<h3>Power Law Distribution</h3>
 <div class="formula-block">
@@ -84,6 +85,7 @@ differ on log-log axes.</li>
     if (value === 'true') value = true;
     if (value === 'false') value = false;
     super.onParamChange(key, value);
+    if (key === 'dataset') this._cachedData = null;
     this.render();
   }
 
@@ -249,10 +251,16 @@ differ on log-log axes.</li>
     ctx.textAlign = 'center';
     ctx.fillText('Log-Log Axes', plotL + plotW / 2, plotT - 6);
 
-    // Log range
+    // Log range — expand axes to fit dataset if selected
+    let effectiveXmax = xRange;
+    if (dataset !== 'none') {
+      const data = this._cachedData || this._generateDataset(dataset);
+      this._cachedData = data;
+      effectiveXmax = Math.max(xRange, data[0] * 1.5);
+    }
     const logXmin = 0; // log10(1)
-    const logXmax = Math.log10(xRange);
-    const logYmin = Math.log10(this._powerLaw(xRange));
+    const logXmax = Math.log10(effectiveXmax);
+    const logYmin = Math.log10(this._powerLaw(effectiveXmax));
     const logYmax = Math.log10(this._powerLaw(1)) + 0.5;
 
     const toX = lx => plotL + ((lx - logXmin) / (logXmax - logXmin)) * plotW;
@@ -311,20 +319,20 @@ differ on log-log axes.</li>
 
     // Power law: straight line on log-log
     const steps = 400;
-    this._drawLogCurve(ctx, steps, 1, xRange, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
+    this._drawLogCurve(ctx, steps, 1, effectiveXmax, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
       x => this._powerLaw(x), '#60a5fa', 2.5);
 
     // Comparisons
     if (showComparisons) {
-      this._drawLogCurve(ctx, steps, 1, xRange, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
+      this._drawLogCurve(ctx, steps, 1, effectiveXmax, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
         x => this._exponential(x), '#f97316', 1.5);
-      this._drawLogCurve(ctx, steps, 1, xRange, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
+      this._drawLogCurve(ctx, steps, 1, effectiveXmax, logXmin, logXmax, logYmin, logYmax, plotL, plotR, plotT, plotB, plotW, plotH,
         x => this._gaussian(x), '#4ade80', 1.5);
     }
 
     // Dataset overlay — empirical density from rank-size data
     if (dataset !== 'none') {
-      const data = this._generateDataset(dataset);
+      const data = this._cachedData || this._generateDataset(dataset);
       const n = data.length;
       // Convert rank-size to empirical density: bin the sorted values
       // and estimate f(x) ≈ (count in bin) / (n * bin_width)

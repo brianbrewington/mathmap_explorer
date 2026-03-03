@@ -9,6 +9,7 @@ class LawOfLargeNumbersExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'beginner'];
   static foundations = [];
   static extensions = ['central-limit-theorem'];
+  static teaserQuestion = 'Why do averages always stabilize?';
   static formulaShort = 'X\u0304<sub>n</sub> \u2192 E[X] as n \u2192 \u221E';
   static formula = `<h3>Law of Large Numbers</h3>
 <div class="formula-block">

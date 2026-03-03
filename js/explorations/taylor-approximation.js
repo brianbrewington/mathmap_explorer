@@ -9,6 +9,7 @@ class TaylorApproximationExploration extends BaseExploration {
   static tags = ['calculus', 'numerical-methods', 'intermediate'];
   static foundations = ['taylor-series', 'derivative-definition'];
   static extensions = [];
+  static teaserQuestion = 'How many terms does it take to approximate a function?';
   static formulaShort = 'E(N) = \u222B|f(x)\u2212T<sub>N</sub>(x)|\u00B2 dx';
   static formula = `<h3>Taylor Approximation Error</h3>
 <div class="formula-block">

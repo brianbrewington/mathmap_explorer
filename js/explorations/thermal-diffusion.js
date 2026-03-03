@@ -47,6 +47,7 @@ with the exponential envelope ±T₀ e<sup>−x/δ</sup> drawn as dashed curves.
 </ul>`;
   static foundations = ['simple-harmonic'];
   static extensions = ['fluid-dynamics', 'wave-equation'];
+  static teaserQuestion = 'How does heat know where to flow?';
 
   static guidedSteps = [
     {

@@ -36,6 +36,7 @@ for (let i = 0; i &lt; n; i++) {
 analytical answer (shown as the dashed overlay).</p>`;
   static foundations = ['sine-cosine', 'taylor-series'];
   static extensions = ['derivative-definition'];
+  static teaserQuestion = 'What do you get when you differentiate a wave?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

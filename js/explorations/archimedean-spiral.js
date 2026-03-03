@@ -31,6 +31,7 @@ to change the spacing, <em>startOffset</em> (a) to push the spiral away from the
 center, and <em>turns</em> to control how many revolutions are drawn.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
+  static teaserQuestion = 'What curve does a point make moving steadily along a spinning arm?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

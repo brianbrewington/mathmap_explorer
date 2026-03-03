@@ -31,6 +31,7 @@ radian of rotation. The pen point (shown as a dot) draws the trail behind it.
 Adjust <em>penRatio</em> to switch between curtate, standard, and prolate cycloids.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['epitrochoid'];
+  static teaserQuestion = 'What path does a point on a rolling wheel trace?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

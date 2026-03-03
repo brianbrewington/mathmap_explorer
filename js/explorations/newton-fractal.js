@@ -32,6 +32,7 @@ for (let i = 0; i < maxIter; i++) {
 }
 // Color by angle of z (which root)</code></pre>`;
   static foundations = ['mandelbrot', 'julia-set'];
+  static teaserQuestion = "What happens when Newton's method meets the complex plane?";
 
   static guidedSteps = [
     {

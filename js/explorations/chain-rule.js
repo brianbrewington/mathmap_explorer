@@ -33,6 +33,7 @@ The final bar length equals the chain rule product.</p>
 Notice that when either f' or g' is zero, the composition's derivative is also zero.</p>`;
   static foundations = ['derivative-definition'];
   static extensions = [];
+  static teaserQuestion = 'Why do rates of change multiply when functions compose?';
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
