@@ -336,6 +336,53 @@ from every trial. Its shape reveals the underlying distribution.</p>
       ctx.stroke();
     }
 
+    // Legend
+    const legFont = this._font(9);
+    ctx.font = legFont;
+    const lineLen = 16;
+    const legPad = 6;
+    const legRowH = 14;
+    const legRows = this.trials.length + 1; // +1 for E[X]
+    const legH = legRows * legRowH + legPad * 2;
+    const legW = 80;
+    const legX = plotR - legW - 4;
+    const legY = plotT + 4;
+
+    // Background
+    ctx.fillStyle = 'rgba(15, 17, 23, 0.8)';
+    ctx.fillRect(legX, legY, legW, legH);
+    ctx.strokeStyle = '#2a2d3a';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(legX, legY, legW, legH);
+
+    // E[X] entry
+    let ly = legY + legPad + 10;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(legX + legPad, ly - 4);
+    ctx.lineTo(legX + legPad + lineLen, ly - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#c8cad4';
+    ctx.textAlign = 'left';
+    ctx.fillText('E[X]', legX + legPad + lineLen + 4, ly);
+
+    // Trial entries
+    for (let t = 0; t < this.trials.length; t++) {
+      ly += legRowH;
+      const trial = this.trials[t];
+      ctx.strokeStyle = `hsla(${trial.hue}, 75%, 60%, 0.9)`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(legX + legPad, ly - 4);
+      ctx.lineTo(legX + legPad + lineLen, ly - 4);
+      ctx.stroke();
+      ctx.fillStyle = '#c8cad4';
+      ctx.fillText(`Trial ${t + 1}`, legX + legPad + lineLen + 4, ly);
+    }
+
     ctx.restore();
   }
 
