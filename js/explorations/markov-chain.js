@@ -387,10 +387,10 @@ the stationary distribution within a few hundred steps.</li>
     // Probability label along the curve
     const labelX = midX;
     const labelY = midY;
-    ctx.fillStyle = 'rgba(139, 143, 163, 0.7)';
-    ctx.font = this._font(7);
+    ctx.fillStyle = 'rgba(226, 228, 234, 0.85)';
+    ctx.font = this._font(11, undefined, 'bold');
     ctx.textAlign = 'center';
-    ctx.fillText(prob.toFixed(2), labelX, labelY - 4);
+    ctx.fillText(prob.toFixed(2), labelX, labelY - 5);
   }
 
   _drawSelfLoop(ctx, node, nodeRadius, prob, idx, total) {
@@ -408,11 +408,11 @@ the stationary distribution within a few hundred steps.</li>
     ctx.stroke();
 
     // Label
-    ctx.fillStyle = 'rgba(139, 143, 163, 0.7)';
-    ctx.font = this._font(7);
+    ctx.fillStyle = 'rgba(226, 228, 234, 0.85)';
+    ctx.font = this._font(11, undefined, 'bold');
     ctx.textAlign = 'center';
-    const lblX = loopCx + Math.cos(angle) * (loopR + 8);
-    const lblY = loopCy + Math.sin(angle) * (loopR + 8);
+    const lblX = loopCx + Math.cos(angle) * (loopR + 10);
+    const lblY = loopCy + Math.sin(angle) * (loopR + 10);
     ctx.fillText(prob.toFixed(2), lblX, lblY);
   }
 
