@@ -34,8 +34,10 @@ When the 68-95-99.7 rule is enabled, the sigma bands are shaded:
 <span style="color:#facc15">3&sigma; (99.7%)</span>.</p>
 <p>A semi-transparent histogram of random samples is overlaid to show how
 empirical data matches the theoretical curve.</p>
-<p>The <strong>right panel</strong> shows the cumulative distribution function (CDF),
-with Z-score labels at key points.</p>
+<p>The <strong>right panel</strong> shows the theoretical CDF (cyan sigmoid) alongside the
+<strong>empirical CDF</strong> (purple staircase) &mdash; the sorted samples plotted from
+0 to 1. As the number of samples grows, the staircase converges to the
+smooth theoretical curve.</p>
 <h4>Things to Try</h4>
 <ul>
 <li>Move <strong>&mu;</strong> to shift the distribution left or right.</li>
@@ -397,7 +399,7 @@ with Z-score labels at key points.</p>
     ctx.fillStyle = '#8b8fa3';
     ctx.font = this._font(11);
     ctx.textAlign = 'center';
-    ctx.fillText('CDF: \u03A6(x)', plotL + plotW / 2, plotT - 8);
+    ctx.fillText('CDF: \u03A6(x)  vs  Empirical CDF', plotL + plotW / 2, plotT - 8);
 
     // Axes
     ctx.strokeStyle = '#3a3d4a';
@@ -453,7 +455,30 @@ with Z-score labels at key points.</p>
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // CDF curve (cyan)
+    // Empirical CDF (sorted samples as staircase)
+    if (this.samples.length > 0) {
+      const sorted = [...this.samples].sort((a, b) => a - b);
+      const n = sorted.length;
+      ctx.strokeStyle = 'rgba(167, 139, 250, 0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      // Start at (leftmost sample, 0)
+      ctx.moveTo(toX(sorted[0]), toY(0));
+      for (let i = 0; i < n; i++) {
+        const x = sorted[i];
+        const yPrev = i / n;
+        const yNext = (i + 1) / n;
+        const px = toX(x);
+        // Horizontal to this sample, then step up
+        ctx.lineTo(px, toY(yPrev));
+        ctx.lineTo(px, toY(yNext));
+      }
+      // Extend to right edge
+      ctx.lineTo(toX(sorted[n - 1] + 1), toY(1));
+      ctx.stroke();
+    }
+
+    // Theoretical CDF curve (cyan, on top)
     ctx.strokeStyle = '#22d3ee';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
@@ -507,6 +532,30 @@ with Z-score labels at key points.</p>
     ctx.lineTo(meanPx, toY(0.5));
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Legend
+    ctx.font = this._font(9);
+    ctx.textAlign = 'left';
+    const legX = plotR - 130;
+    const legY = plotB - 28;
+
+    ctx.strokeStyle = '#22d3ee';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY);
+    ctx.lineTo(legX + 16, legY);
+    ctx.stroke();
+    ctx.fillStyle = '#8b8fa3';
+    ctx.fillText('Theoretical CDF', legX + 22, legY + 3);
+
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 16);
+    ctx.lineTo(legX + 16, legY + 16);
+    ctx.stroke();
+    ctx.fillStyle = '#8b8fa3';
+    ctx.fillText('Empirical CDF', legX + 22, legY + 19);
 
     ctx.restore();
   }
