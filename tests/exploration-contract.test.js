@@ -36,6 +36,10 @@ import '../js/explorations/mandelbrot-logistic-3d.js';
 import '../js/explorations/julia-set.js';
 import '../js/explorations/kleinian.js';
 import '../js/explorations/coupled-systems.js';
+import '../js/explorations/double-pendulum.js';
+import '../js/explorations/firefly-synchrony.js';
+import '../js/explorations/coupled-metronomes.js';
+import '../js/explorations/lorenz-attractor.js';
 import '../js/explorations/fluid-dynamics.js';
 import '../js/explorations/lissajous.js';
 import '../js/explorations/fourier-synthesis.js';
@@ -76,6 +80,7 @@ import '../js/explorations/markov-chain.js';
 import '../js/explorations/normal-distribution.js';
 import '../js/explorations/wave-equation.js';
 import '../js/explorations/vortex-shedding.js';
+import '../js/explorations/perceptron-bifurcation.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -97,8 +102,8 @@ const REQUIRED_METHODS = [
 const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
-  it('has exactly 54 registered explorations', () => {
-    expect(explorations.length).toBe(55);
+  it('has the expected number of registered explorations', () => {
+    expect(explorations.length).toBe(60);
   });
 
   it('all ids are unique', () => {

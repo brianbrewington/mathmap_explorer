@@ -198,6 +198,12 @@ update in real time.</p>`;
     const steps = 800;
     const regime = this._getRegime();
 
+    // Clip all curves to the plot area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, pad.t, plotW, plotH);
+    ctx.clip();
+
     // Envelope (underdamped only)
     if (regime === 'Underdamped') {
       ctx.strokeStyle = 'rgba(250, 204, 21, 0.3)';
@@ -209,9 +215,8 @@ update in real time.</p>`;
       for (let i = 0; i <= steps; i++) {
         const t = (i / steps) * tMax;
         const { upper } = this._envelope(t);
-        const clamped = Math.max(yMin, Math.min(yMax, upper));
         const px = toX(t);
-        const py = toY(clamped);
+        const py = toY(upper);
         i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
       ctx.stroke();
@@ -221,9 +226,8 @@ update in real time.</p>`;
       for (let i = 0; i <= steps; i++) {
         const t = (i / steps) * tMax;
         const { lower } = this._envelope(t);
-        const clamped = Math.max(yMin, Math.min(yMax, lower));
         const px = toX(t);
-        const py = toY(clamped);
+        const py = toY(lower);
         i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
       ctx.stroke();
@@ -241,9 +245,8 @@ update in real time.</p>`;
     for (let i = 0; i <= steps; i++) {
       const t = (i / steps) * tMax;
       const x = this._displacement(t);
-      const clamped = Math.max(yMin, Math.min(yMax, x));
       const px = toX(t);
-      const py = toY(clamped);
+      const py = toY(x);
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.stroke();
@@ -253,7 +256,7 @@ update in real time.</p>`;
       const dotT = this.time % tMax;
       const dotVal = this._displacement(dotT);
       const dotX = toX(dotT);
-      const dotY = toY(Math.max(yMin, Math.min(yMax, dotVal)));
+      const dotY = toY(dotVal);
 
       ctx.beginPath();
       ctx.arc(dotX, dotY, 5, 0, 2 * Math.PI);
@@ -263,6 +266,8 @@ update in real time.</p>`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }
+
+    ctx.restore();
 
     // Regime label
     ctx.fillStyle = color;

@@ -263,7 +263,17 @@ Notice that when either f' or g' is zero, the composition's derivative is also z
       }
       ctx.stroke();
 
-      // Function curve
+      // Clip region for this panel
+      const clipLeft = px0 + innerPad;
+      const clipRight = px0 + innerPad + innerW;
+      const clipTop = py0 + innerPad;
+      const clipBottom = py0 + innerPad + innerH;
+
+      // Function curve — clipped to panel
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clipLeft, clipTop, innerW, innerH);
+      ctx.clip();
       ctx.strokeStyle = colors[pi];
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -273,11 +283,11 @@ Notice that when either f' or g' is zero, the composition's derivative is also z
         const y = p.fn(x);
         if (!isFinite(y) || y < yMin - 5 || y > yMax + 5) { started = false; continue; }
         const sx = toXP(x);
-        const sy = toYP(Math.max(yMin, Math.min(yMax, y)));
-        if (sx < px0 + innerPad || sx > px0 + innerPad + innerW) { started = false; continue; }
+        const sy = toYP(y);
         if (!started) { ctx.moveTo(sx, sy); started = true; } else { ctx.lineTo(sx, sy); }
       }
       ctx.stroke();
+      ctx.restore();
 
       // Tangent line at the point
       const tangentExtent = (xMax - xMin) * 0.25;
@@ -288,12 +298,6 @@ Notice that when either f' or g' is zero, the composition's derivative is also z
       const ty1 = p.yVal + p.slope * (tx1 - p.xVal);
       const tx2 = p.xVal + tangentExtent;
       const ty2 = p.yVal + p.slope * (tx2 - p.xVal);
-
-      // Clip tangent line to panel
-      const clipLeft = px0 + innerPad;
-      const clipRight = px0 + innerPad + innerW;
-      const clipTop = py0 + innerPad;
-      const clipBottom = py0 + innerPad + innerH;
 
       ctx.save();
       ctx.beginPath();

@@ -190,12 +190,13 @@ Change the function to clear and start a new derivative trace.</p>`;
     if (!ctx) return;
     const { width: W, height: H } = this.canvas;
     const { func, x0, h } = this.params;
+    const px = n => this._px(n);
 
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, W, H);
 
-    const pad = { l: 60, r: 20, t: 30, b: 10 };
-    const gap = 20;
+    const pad = { l: px(60), r: px(20), t: px(30), b: px(10) };
+    const gap = px(20);
     const upperH = (H - pad.t - pad.b - gap) * 0.6;
     const lowerH = (H - pad.t - pad.b - gap) * 0.4;
     const plotW = W - pad.l - pad.r;
@@ -224,7 +225,7 @@ Change the function to clear and start a new derivative trace.</p>`;
 
     // Axes
     ctx.strokeStyle = '#3a3d4a';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = px(1);
     ctx.beginPath();
     const uAxisY = toYUpper(0);
     if (uAxisY >= pad.t && uAxisY <= pad.t + upperH) {
@@ -242,23 +243,28 @@ Change the function to clear and start a new derivative trace.</p>`;
     ctx.textAlign = 'center';
     for (let xv = Math.ceil(xMin); xv <= xMax; xv++) {
       if (Math.abs(xv) < 0.01) continue;
-      ctx.fillText(xv.toFixed(0), toX(xv), Math.min(uAxisY + 13, pad.t + upperH + 13));
+      ctx.fillText(xv.toFixed(0), toX(xv), Math.min(uAxisY + px(13), pad.t + upperH + px(13)));
     }
 
-    // Function curve (white)
+    // Function curve (white) — clipped to plot area
     const steps = 600;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, pad.t, plotW, upperH);
+    ctx.clip();
     ctx.strokeStyle = '#e2e4e9';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = px(2);
     ctx.beginPath();
     let started = false;
     for (let i = 0; i <= steps; i++) {
       const x = xMin + (i / steps) * (xMax - xMin);
       const y = this._f(x);
       if (y < uyMin - 5 || y > uyMax + 5) { started = false; continue; }
-      const px = toX(x), py = toYUpper(Math.max(uyMin, Math.min(uyMax, y)));
-      if (!started) { ctx.moveTo(px, py); started = true; } else { ctx.lineTo(px, py); }
+      const sx = toX(x), sy = toYUpper(y);
+      if (!started) { ctx.moveTo(sx, sy); started = true; } else { ctx.lineTo(sx, sy); }
     }
     ctx.stroke();
+    ctx.restore();
 
     // Secant / tangent line
     const fx0 = this._f(x0);
@@ -266,42 +272,47 @@ Change the function to clear and start a new derivative trace.</p>`;
     const slope = (fxh - fx0) / h;
     const trueSlope = this._fPrime(x0);
 
-    // Draw extended secant line
+    // Draw extended secant line (use canvas clipping to avoid y-clamping distortion)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, pad.t, plotW, upperH);
+    ctx.clip();
     ctx.strokeStyle = '#f97316';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = px(2);
     const lineExtent = 3;
     const lx1 = x0 - lineExtent;
     const ly1 = fx0 + slope * (lx1 - x0);
     const lx2 = x0 + lineExtent;
     const ly2 = fx0 + slope * (lx2 - x0);
     ctx.beginPath();
-    ctx.moveTo(toX(lx1), toYUpper(Math.max(uyMin, Math.min(uyMax, ly1))));
-    ctx.lineTo(toX(lx2), toYUpper(Math.max(uyMin, Math.min(uyMax, ly2))));
+    ctx.moveTo(toX(lx1), toYUpper(ly1));
+    ctx.lineTo(toX(lx2), toYUpper(ly2));
     ctx.stroke();
+    ctx.restore();
 
     // Dot at (x0, f(x0))
     ctx.beginPath();
-    ctx.arc(toX(x0), toYUpper(fx0), 5, 0, 2 * Math.PI);
+    ctx.arc(toX(x0), toYUpper(fx0), px(5), 0, 2 * Math.PI);
     ctx.fillStyle = '#facc15';
     ctx.fill();
     ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = px(1.5);
     ctx.stroke();
 
     // Dot at (x0+h, f(x0+h))
     ctx.beginPath();
-    ctx.arc(toX(x0 + h), toYUpper(Math.max(uyMin, Math.min(uyMax, fxh))), 5, 0, 2 * Math.PI);
+    ctx.arc(toX(x0 + h), toYUpper(fxh), px(5), 0, 2 * Math.PI);
     ctx.fillStyle = '#f97316';
     ctx.fill();
     ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = px(1.5);
     ctx.stroke();
 
     // Rise/run bracket
     if (h > 0.1) {
       ctx.strokeStyle = 'rgba(249, 115, 22, 0.4)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = px(1);
+      ctx.setLineDash([px(3), px(3)]);
       // Horizontal (run)
       ctx.beginPath();
       ctx.moveTo(toX(x0), toYUpper(fx0));
@@ -318,31 +329,31 @@ Change the function to clear and start a new derivative trace.</p>`;
       ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
       ctx.font = this._font(9);
       ctx.textAlign = 'center';
-      ctx.fillText('h', (toX(x0) + toX(x0 + h)) / 2, toYUpper(fx0) + 12);
+      ctx.fillText('h', (toX(x0) + toX(x0 + h)) / 2, toYUpper(fx0) + px(12));
       ctx.textAlign = 'left';
-      ctx.fillText('\u0394f', toX(x0 + h) + 5, (toYUpper(fx0) + toYUpper(fxh)) / 2 + 3);
+      ctx.fillText('\u0394f', toX(x0 + h) + px(5), (toYUpper(fx0) + toYUpper(fxh)) / 2 + px(3));
     }
 
     // Slope readout (upper panel)
     ctx.fillStyle = '#f97316';
     ctx.font = this._monoFont(11);
     ctx.textAlign = 'left';
-    ctx.fillText(`slope = ${slope.toFixed(4)}`, pad.l + 8, pad.t + 16);
+    ctx.fillText(`slope = ${slope.toFixed(4)}`, pad.l + px(8), pad.t + px(16));
     ctx.fillStyle = '#8b8fa3';
-    ctx.fillText(`f'(x\u2080) = ${trueSlope.toFixed(4)}`, pad.l + 8, pad.t + 32);
-    ctx.fillText(`h = ${h.toFixed(3)}`, pad.l + 8, pad.t + 48);
+    ctx.fillText(`f'(x\u2080) = ${trueSlope.toFixed(4)}`, pad.l + px(8), pad.t + px(32));
+    ctx.fillText(`h = ${h.toFixed(3)}`, pad.l + px(8), pad.t + px(48));
 
     // Function label
     ctx.fillStyle = '#8b8fa3';
     ctx.font = this._font(11);
     ctx.textAlign = 'right';
-    ctx.fillText(this._funcLabel(), W - pad.r - 4, pad.t + 16);
+    ctx.fillText(this._funcLabel(), W - pad.r - px(4), pad.t + px(16));
 
     // ═══════════ LOWER PANEL ═══════════
 
     // Divider line
     ctx.strokeStyle = '#2a2d3a';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = px(1);
     ctx.beginPath();
     ctx.moveTo(pad.l, lowerTop - gap / 2);
     ctx.lineTo(pad.l + plotW, lowerTop - gap / 2);
@@ -350,7 +361,7 @@ Change the function to clear and start a new derivative trace.</p>`;
 
     // Lower axes
     ctx.strokeStyle = '#3a3d4a';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = px(1);
     ctx.beginPath();
     const lAxisY = toYLower(0);
     if (lAxisY >= lowerTop && lAxisY <= lowerTop + lowerH) {
@@ -362,46 +373,51 @@ Change the function to clear and start a new derivative trace.</p>`;
     }
     ctx.stroke();
 
-    // Exact derivative curve (dashed cyan)
+    // Exact derivative curve (dashed cyan) — clipped to plot area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, lowerTop, plotW, lowerH);
+    ctx.clip();
     ctx.strokeStyle = '#22d3ee';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = px(1.5);
+    ctx.setLineDash([px(4), px(4)]);
     ctx.beginPath();
     started = false;
     for (let i = 0; i <= steps; i++) {
       const x = xMin + (i / steps) * (xMax - xMin);
       const y = this._fPrime(x);
       if (y < dyMin - 5 || y > dyMax + 5) { started = false; continue; }
-      const px = toX(x), py = toYLower(Math.max(dyMin, Math.min(dyMax, y)));
-      if (!started) { ctx.moveTo(px, py); started = true; } else { ctx.lineTo(px, py); }
+      const sx = toX(x), sy = toYLower(y);
+      if (!started) { ctx.moveTo(sx, sy); started = true; } else { ctx.lineTo(sx, sy); }
     }
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.restore();
 
     // Accumulated derivative points (green dots)
     ctx.fillStyle = '#4ade80';
     for (const pt of this._derivPoints) {
-      const px = toX(pt.x);
-      const py = toYLower(Math.max(dyMin, Math.min(dyMax, pt.slope)));
-      if (px < pad.l || px > pad.l + plotW) continue;
-      if (py < lowerTop || py > lowerTop + lowerH) continue;
+      const dpx = toX(pt.x);
+      const dpy = toYLower(pt.slope);
+      if (dpx < pad.l || dpx > pad.l + plotW) continue;
+      if (dpy < lowerTop || dpy > lowerTop + lowerH) continue;
       ctx.beginPath();
-      ctx.arc(px, py, 3, 0, 2 * Math.PI);
+      ctx.arc(dpx, dpy, px(3), 0, 2 * Math.PI);
       ctx.fill();
     }
 
     // Current derivative point (larger, highlighted)
     {
       const curSlope = slope;
-      const px = toX(x0);
-      const py = toYLower(Math.max(dyMin, Math.min(dyMax, curSlope)));
-      if (px >= pad.l && px <= pad.l + plotW && py >= lowerTop && py <= lowerTop + lowerH) {
+      const cpx = toX(x0);
+      const cpy = toYLower(curSlope);
+      if (cpx >= pad.l && cpx <= pad.l + plotW && cpy >= lowerTop && cpy <= lowerTop + lowerH) {
         ctx.beginPath();
-        ctx.arc(px, py, 5, 0, 2 * Math.PI);
+        ctx.arc(cpx, cpy, px(5), 0, 2 * Math.PI);
         ctx.fillStyle = '#facc15';
         ctx.fill();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = px(1.5);
         ctx.stroke();
       }
     }
@@ -410,29 +426,29 @@ Change the function to clear and start a new derivative trace.</p>`;
     ctx.fillStyle = '#8b8fa3';
     ctx.font = this._font(11);
     ctx.textAlign = 'left';
-    ctx.fillText(this._derivLabel() + ' (exact, dashed)', pad.l + 8, lowerTop + 14);
+    ctx.fillText(this._derivLabel() + ' (exact, dashed)', pad.l + px(8), lowerTop + px(14));
 
     // Legend
     ctx.font = this._font(10);
     ctx.textAlign = 'right';
 
     ctx.fillStyle = '#4ade80';
-    ctx.fillRect(W - pad.r - 140, lowerTop + 6, 10, 10);
+    ctx.fillRect(W - pad.r - px(140), lowerTop + px(6), px(10), px(10));
     ctx.fillStyle = '#8b8fa3';
-    ctx.fillText('Sampled slopes', W - pad.r - 4, lowerTop + 16);
+    ctx.fillText('Sampled slopes', W - pad.r - px(4), lowerTop + px(16));
 
     ctx.fillStyle = '#22d3ee';
-    ctx.fillRect(W - pad.r - 140, lowerTop + 22, 10, 2);
+    ctx.fillRect(W - pad.r - px(140), lowerTop + px(22), px(10), px(2));
     ctx.fillStyle = '#8b8fa3';
-    ctx.fillText('Exact derivative', W - pad.r - 4, lowerTop + 28);
+    ctx.fillText('Exact derivative', W - pad.r - px(4), lowerTop + px(28));
 
     // Bottom formula
     ctx.fillStyle = '#6b7080';
     ctx.font = this._font(11);
     ctx.textAlign = 'center';
-    ctx.fillText("f'(x\u2080) = lim  [f(x\u2080+h) \u2212 f(x\u2080)] / h", W / 2, H - 6);
+    ctx.fillText("f'(x\u2080) = lim  [f(x\u2080+h) \u2212 f(x\u2080)] / h", W / 2, H - px(6));
     ctx.font = this._font(8);
-    ctx.fillText('h\u21920', W / 2 - 38, H - 2);
+    ctx.fillText('h\u21920', W / 2 - px(38), H - px(2));
   }
 }
 

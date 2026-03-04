@@ -199,6 +199,12 @@ ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0
 
     const steps = 600;
 
+    // Clip all curves to the plot area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, pad.t, plotW, plotH);
+    ctx.clip();
+
     // Error shading between true and Taylor
     ctx.fillStyle = 'rgba(34, 211, 238, 0.08)';
     ctx.beginPath();
@@ -206,15 +212,14 @@ ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0
       const x = xMin + (i / steps) * (xMax - xMin);
       const yTrue = this._trueFunc(x);
       const px = toX(x);
-      const py = toY(Math.max(yMin, Math.min(yMax, yTrue)));
+      const py = toY(yTrue);
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     for (let i = steps; i >= 0; i--) {
       const x = xMin + (i / steps) * (xMax - xMin);
       const yApprox = this._taylorFunc(x, N);
-      const clamped = Math.max(yMin, Math.min(yMax, yApprox));
       const px = toX(x);
-      const py = toY(clamped);
+      const py = toY(yApprox);
       ctx.lineTo(px, py);
     }
     ctx.closePath();
@@ -230,7 +235,7 @@ ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0
       const y = this._trueFunc(x);
       if (y < yMin - 5 || y > yMax + 5) { started = false; continue; }
       const px = toX(x);
-      const py = toY(Math.max(yMin, Math.min(yMax, y)));
+      const py = toY(y);
       if (!started) { ctx.moveTo(px, py); started = true; } else { ctx.lineTo(px, py); }
     }
     ctx.stroke();
@@ -258,7 +263,7 @@ ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0
         }
         if (term < yMin - 5 || term > yMax + 5) { termStarted = false; continue; }
         const px = toX(x);
-        const py = toY(Math.max(yMin, Math.min(yMax, term)));
+        const py = toY(term);
         if (!termStarted) { ctx.moveTo(px, py); termStarted = true; } else { ctx.lineTo(px, py); }
       }
       ctx.stroke();
@@ -274,10 +279,12 @@ ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0
       const y = this._taylorFunc(x, N);
       if (y < yMin - 5 || y > yMax + 5) { started = false; continue; }
       const px = toX(x);
-      const py = toY(Math.max(yMin, Math.min(yMax, y)));
+      const py = toY(y);
       if (!started) { ctx.moveTo(px, py); started = true; } else { ctx.lineTo(px, py); }
     }
     ctx.stroke();
+
+    ctx.restore();
 
     // Legend
     ctx.font = this._font(11);

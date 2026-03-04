@@ -354,16 +354,23 @@ function findDelta(f, a, L, epsilon) {
       ctx.fillStyle = '#a78bfa';
       ctx.fill();
     } else {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.l, pad.t, plotW, plotH);
+      ctx.clip();
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       let started = false;
       for (let i = 0; i <= steps; i++) {
         const x = xMin + (i / steps) * (xMax - xMin);
         const y = this._f(x);
         if (y < yMin - 2 || y > yMax + 2) { started = false; continue; }
-        const px = toX(x), py = toY(Math.max(yMin, Math.min(yMax, y)));
+        const px = toX(x), py = toY(y);
         if (!started) { ctx.moveTo(px, py); started = true; } else { ctx.lineTo(px, py); }
       }
       ctx.stroke();
+      ctx.restore();
     }
 
     // ── Point at (a, L) ──

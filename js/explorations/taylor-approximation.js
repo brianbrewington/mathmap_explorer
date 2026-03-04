@@ -354,6 +354,12 @@ function error(a, R, N) {
       ctx.fillText(xv.toFixed(1), px, labelY);
     }
 
+    // Clip all curves to the plot area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad.l, pad.t, plotW, plotH);
+    ctx.clip();
+
     // Error shading between true function and Taylor (red semi-transparent)
     ctx.fillStyle = 'rgba(239, 68, 68, 0.18)';
     ctx.beginPath();
@@ -364,7 +370,7 @@ function error(a, R, N) {
       const yTrue = this._trueFunc(x);
       if (!isFinite(yTrue)) continue;
       const px = toX(x);
-      const py = toY(Math.max(yLo, Math.min(yHi, yTrue)));
+      const py = toY(yTrue);
       if (!pathStarted) { ctx.moveTo(px, py); pathStarted = true; }
       else ctx.lineTo(px, py);
     }
@@ -373,9 +379,8 @@ function error(a, R, N) {
       if (!this._inDomain(x)) continue;
       const yApprox = this._taylorFunc(x, N, a);
       if (!isFinite(yApprox)) continue;
-      const clamped = Math.max(yLo, Math.min(yHi, yApprox));
       const px = toX(x);
-      const py = toY(clamped);
+      const py = toY(yApprox);
       ctx.lineTo(px, py);
     }
     ctx.closePath();
@@ -392,7 +397,7 @@ function error(a, R, N) {
       const y = this._trueFunc(x);
       if (!isFinite(y) || y < yLo - 5 || y > yHi + 5) { started = false; continue; }
       const px = toX(x);
-      const py = toY(Math.max(yLo, Math.min(yHi, y)));
+      const py = toY(y);
       if (!started) { ctx.moveTo(px, py); started = true; }
       else ctx.lineTo(px, py);
     }
@@ -408,11 +413,13 @@ function error(a, R, N) {
       const y = this._taylorFunc(x, N, a);
       if (!isFinite(y) || y < yLo - 5 || y > yHi + 5) { started = false; continue; }
       const px = toX(x);
-      const py = toY(Math.max(yLo, Math.min(yHi, y)));
+      const py = toY(y);
       if (!started) { ctx.moveTo(px, py); started = true; }
       else ctx.lineTo(px, py);
     }
     ctx.stroke();
+
+    ctx.restore();
 
     // Legend
     ctx.font = this._font(10);
@@ -424,7 +431,7 @@ function error(a, R, N) {
     ctx.fillRect(legX, legY - 1, 14, 3);
     ctx.fillStyle = '#8b8fa3';
     const funcLabels = { sin: 'sin(x)', cos: 'cos(x)', exp: 'e\u02E3', ln: 'ln(1+x)' };
-    ctx.fillText(funcLabels[func] || func, legX + 20, legY + 4);
+    ctx.fillText(funcLabels[this.params.func] || this.params.func, legX + 20, legY + 4);
 
     legY += 16;
     ctx.fillStyle = '#22d3ee';

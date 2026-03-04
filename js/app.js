@@ -27,6 +27,11 @@ import './explorations/mandelbrot-logistic-3d.js';
 import './explorations/julia-set.js';
 import './explorations/kleinian.js';
 import './explorations/coupled-systems.js';
+import './explorations/double-pendulum.js';
+import './explorations/firefly-synchrony.js';
+import './explorations/coupled-metronomes.js';
+import './explorations/lorenz-attractor.js';
+import './explorations/perceptron-bifurcation.js';
 import './explorations/fluid-dynamics.js';
 
 // PDE demos
@@ -207,6 +212,29 @@ const ANIM_PARAMS = {
     { key: 'rA', label: 'r (A)', min: 0.5, max: 4.0 },
     { key: 'rB', label: 'r (B)', min: 0.5, max: 4.0 }
   ],
+  'double-pendulum': [
+    { key: 'damping', label: 'Damping', min: 0, max: 0.2 },
+    { key: 'gravity', label: 'Gravity', min: 1, max: 20 },
+  ],
+  'firefly-synchrony': [
+    { key: 'count', label: 'Fly Count', min: 8, max: 120 },
+    { key: 'spread', label: 'Freq Spread', min: 0.01, max: 0.8 },
+    { key: 'coupling', label: 'Coupling K', min: 0, max: 3 },
+  ],
+  'coupled-metronomes': [
+    { key: 'count', label: 'Count', min: 2, max: 12 },
+    { key: 'mismatch', label: 'Mismatch', min: 0, max: 0.6 },
+    { key: 'coupling', label: 'Coupling', min: 0, max: 4 },
+  ],
+  'lorenz-attractor': [
+    { key: 'sigma', label: 'sigma', min: 0.1, max: 30 },
+    { key: 'rho', label: 'rho', min: 0, max: 70 },
+    { key: 'beta', label: 'beta', min: 0.1, max: 6 },
+  ],
+  'perceptron-bifurcation': [
+    { key: 'etaMax', label: 'η Max', min: 5, max: 150 },
+    { key: 'target', label: 'Target', min: 0.1, max: 0.9 },
+  ],
   'sine-cosine': [
     { key: 'frequency', label: 'Frequency (ω)', min: 0.1, max: 10 },
     { key: 'phase', label: 'Phase (φ)', min: 0, max: 6.28 }
@@ -360,6 +388,7 @@ function rebuildControls() {
       if (action === 'start') currentInstance.start();
       else if (action === 'stop') currentInstance.stop();
       else if (action === 'reset') { animator.stop(); currentInstance.reset(); }
+      else if (action === 'randomize' && currentInstance.onAction) { animator.stop(); currentInstance.onAction('randomize'); }
       else if (action === 'regrow' && currentInstance.onAction) { currentInstance.onAction('regrow'); }
       else if (action === 'challenge' && currentInstance.onAction) { currentInstance.onAction('challenge'); }
       else if (action === 'showInfo') showInfoPanel();
