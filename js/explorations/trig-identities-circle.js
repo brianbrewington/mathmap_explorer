@@ -286,6 +286,21 @@ through P to the axes.</p>`;
       ctx.fillStyle = '#22d3ee';
       ctx.textAlign = 'right';
       ctx.fillText('csc\u03b8', cx - 6, (cy + cscY) / 2 + 4);
+
+      // Tangent line connecting sec θ on x-axis to csc θ on y-axis
+      // (this line is tangent to the unit circle at P)
+      ctx.strokeStyle = '#fb923c';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(secX, cy);
+      ctx.lineTo(cx, cscY);
+      ctx.stroke();
+
+      // Small tangent point indicator at P
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, 2 * Math.PI);
+      ctx.fillStyle = '#fb923c';
+      ctx.fill();
     }
 
     // Point P
