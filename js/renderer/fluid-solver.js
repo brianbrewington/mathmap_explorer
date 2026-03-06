@@ -87,7 +87,8 @@ export class FluidSolver {
       enableProjection: true,
       enableBuoyancy: false,
       buoyancyStrength: 0.5,
-      showVelocity: false
+      showVelocity: false,
+      dyeDissipation: 1.0
     };
 
     this._mouse = { x: 0, y: 0, dx: 0, dy: 0, down: false };
@@ -133,7 +134,7 @@ export class FluidSolver {
     // Advection
     if (this.params.enableAdvection) {
       this._advect(this.velocity, this.velocity, dt);
-      this._advect(this.dye, this.velocity, dt);
+      this._advect(this.dye, this.velocity, dt, this.params.dyeDissipation);
       if (this.params.enableBuoyancy) {
         this._advect(this.temperature, this.velocity, dt);
       }
@@ -320,7 +321,7 @@ export class FluidSolver {
     drawFullscreenQuad(gl);
   }
 
-  _advect(target, velocityFBO, dt) {
+  _advect(target, velocityFBO, dt, dissipation = 1.0) {
     const gl = this.gl;
     gl.viewport(0, 0, this.simWidth, this.simHeight);
     gl.bindFramebuffer(gl.FRAMEBUFFER, target.write.fbo);
@@ -333,6 +334,7 @@ export class FluidSolver {
     gl.bindTexture(gl.TEXTURE_2D, target.read.texture);
     gl.uniform1i(u.u_source, 1);
     gl.uniform1f(u.u_dt, dt);
+    gl.uniform1f(u.u_dissipation, dissipation);
     drawFullscreenQuad(gl);
     target.swap();
   }

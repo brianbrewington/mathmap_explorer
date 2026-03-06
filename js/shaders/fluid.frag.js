@@ -3,12 +3,13 @@ precision highp float;
 uniform sampler2D u_velocity;
 uniform sampler2D u_source;
 uniform float u_dt;
+uniform float u_dissipation;
 in vec2 v_uv;
 out vec4 fragColor;
 void main() {
   vec2 vel = texture(u_velocity, v_uv).xy;
   vec2 pos = v_uv - u_dt * vel;
-  fragColor = texture(u_source, pos);
+  fragColor = texture(u_source, pos) * u_dissipation;
 }`;
 
 export const fluidDiffuseFrag = `#version 300 es

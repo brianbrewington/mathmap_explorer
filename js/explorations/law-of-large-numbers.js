@@ -9,7 +9,7 @@ class LawOfLargeNumbersExploration extends BaseExploration {
   static tags = ['probability-statistics', 'simulation', 'beginner'];
   static foundations = [];
   static extensions = ['central-limit-theorem'];
-  static teaserQuestion = 'Why do averages always stabilize?';
+  static teaserQuestion = 'Do averages always stabilize?';
   static formulaShort = 'X\u0304<sub>n</sub> \u2192 E[X] as n \u2192 \u221E';
   static formula = `<h3>Law of Large Numbers</h3>
 <div class="formula-block">
@@ -18,12 +18,13 @@ P(|X&#x0304;<sub>n</sub> &minus; &mu;| &gt; &epsilon;) &rarr; 0 &nbsp; as &nbsp;
 </div>
 <p>The <strong>Law of Large Numbers (LLN)</strong> says that the sample mean of i.i.d.
 random variables converges to the population mean &mu; = E[X] as the
-sample size grows.</p>
+sample size grows &mdash; <em>provided E[X] exists</em>.</p>
 <p>The <strong>weak</strong> form guarantees convergence in probability; the
 <strong>strong</strong> form guarantees almost-sure convergence. In either case,
 the practical consequence is that averages stabilize.</p>
-<p>This is the foundation of statistics: sample averages are reliable
-estimators of expected values when the sample is large enough.</p>`;
+<p>But not every distribution has a finite mean. The <strong>Cauchy distribution</strong>
+has such heavy tails that E[X] is undefined. For Cauchy samples, the running
+average wanders forever &mdash; a dramatic failure of the LLN&rsquo;s premise.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>upper panel</strong> shows the running average X&#x0304;<sub>n</sub> for each
 independent trial as a colored line. The dashed white horizontal line marks
@@ -35,7 +36,8 @@ from every trial. Its shape reveals the underlying distribution.</p>
 <li>Start with <strong>Coin Flip</strong> &mdash; averages converge to 0.5.</li>
 <li>Try <strong>Die Roll</strong> &mdash; averages converge to 3.5.</li>
 <li>Try <strong>Exponential</strong> &mdash; averages converge to 1.0 despite the skewed distribution.</li>
-<li>Increase <strong>Number of Trials</strong> to see many lines all funneling toward the mean.</li>
+<li>Now try <strong>Cauchy</strong> &mdash; the averages <em>never</em> settle down! Large outliers keep yanking the mean around, because E[X] doesn&rsquo;t exist.</li>
+<li>Increase <strong>Number of Trials</strong> to see many lines all funneling toward the mean (or wildly diverging for Cauchy).</li>
 <li>Increase <strong>Max Samples</strong> to watch convergence over a longer horizon.</li>
 </ul>`;
 
@@ -60,6 +62,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
         { value: 'coin', label: 'Coin Flip (Bernoulli p=0.5)' },
         { value: 'die', label: 'Die Roll (Uniform 1\u20136)' },
         { value: 'exponential', label: 'Exponential (rate=1)' },
+        { value: 'cauchy', label: 'Cauchy (no finite mean!)' },
       ], value: this.params.distribution },
       { type: 'slider', key: 'numTrials', label: 'Number of Trials', min: 1, max: 20, step: 1, value: this.params.numTrials },
       { type: 'slider', key: 'maxN', label: 'Max Samples (N)', min: 100, max: 10000, step: 100, value: this.params.maxN },
@@ -123,6 +126,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
     const d = this.params.distribution;
     if (d === 'coin') return 0.5;
     if (d === 'die') return 3.5;
+    if (d === 'cauchy') return null;
     return 1.0; // exponential rate=1
   }
 
@@ -130,7 +134,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
     const d = this.params.distribution;
     if (d === 'coin') return Math.random() < 0.5 ? 1 : 0;
     if (d === 'die') return Math.floor(Math.random() * 6) + 1;
-    // Exponential via inverse CDF: -ln(1-U)/lambda, lambda=1
+    if (d === 'cauchy') return Math.tan(Math.PI * (Math.random() - 0.5));
     return -Math.log(1 - Math.random());
   }
 
@@ -138,6 +142,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
     const d = this.params.distribution;
     if (d === 'coin') return { min: 0, max: 1, bins: 2 };
     if (d === 'die') return { min: 0.5, max: 6.5, bins: 6 };
+    if (d === 'cauchy') return { min: -20, max: 20, bins: 40 };
     return { min: 0, max: 6, bins: 30 };
   }
 
@@ -242,6 +247,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
     const plotH = plotB - plotT;
 
     const ev = this._expectedValue();
+    const hasEV = ev !== null;
 
     // Title
     ctx.fillStyle = '#8b8fa3';
@@ -249,15 +255,14 @@ from every trial. Its shape reveals the underlying distribution.</p>
     ctx.textAlign = 'center';
     ctx.fillText('Running Average X\u0304n', plotL + plotW / 2, plotT - 8);
 
-    // Compute y-range centered on expected value
-    let yMin = ev, yMax = ev;
+    // Compute y-range centered on expected value (or 0 for Cauchy)
+    let yMin = hasEV ? ev : 0, yMax = hasEV ? ev : 0;
     for (const trial of this.trials) {
       for (const avg of trial.averages) {
         if (avg < yMin) yMin = avg;
         if (avg > yMax) yMax = avg;
       }
     }
-    // Ensure some padding
     const yPad = Math.max((yMax - yMin) * 0.15, 0.5);
     yMin -= yPad;
     yMax += yPad;
@@ -291,22 +296,30 @@ from every trial. Its shape reveals the underlying distribution.</p>
       ctx.fillText(val.toFixed(2), plotL - 4, gy + 3);
     }
 
-    // E[X] line
-    const evY = plotB - ((ev - yMin) / (yMax - yMin)) * plotH;
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([8, 5]);
-    ctx.beginPath();
-    ctx.moveTo(plotL, evY);
-    ctx.lineTo(plotR, evY);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    if (hasEV) {
+      // E[X] line
+      const evY = plotB - ((ev - yMin) / (yMax - yMin)) * plotH;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 5]);
+      ctx.beginPath();
+      ctx.moveTo(plotL, evY);
+      ctx.lineTo(plotR, evY);
+      ctx.stroke();
+      ctx.setLineDash([]);
 
-    // E[X] label
-    ctx.fillStyle = '#ffffff';
-    ctx.font = this._font(10);
-    ctx.textAlign = 'left';
-    ctx.fillText(`E[X] = ${ev}`, plotR - 80, evY - 6);
+      // E[X] label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = this._font(10);
+      ctx.textAlign = 'left';
+      ctx.fillText(`E[X] = ${ev}`, plotR - 80, evY - 6);
+    } else {
+      // No finite expected value
+      ctx.fillStyle = '#ef4444';
+      ctx.font = this._font(11);
+      ctx.textAlign = 'center';
+      ctx.fillText('E[X] does not exist \u2014 averages never stabilize!', plotL + plotW / 2, plotT + 16);
+    }
 
     // Axis labels
     ctx.fillStyle = '#6b7089';
@@ -343,7 +356,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
     const lineLen = 16;
     const legPad = 6;
     const legRowH = 14;
-    const legRows = this.trials.length + 1; // +1 for E[X]
+    const legRows = this.trials.length + (hasEV ? 1 : 0);
     const legH = legRows * legRowH + legPad * 2;
     const legW = 80;
     const legX = plotR - legW - 4;
@@ -356,19 +369,24 @@ from every trial. Its shape reveals the underlying distribution.</p>
     ctx.lineWidth = 0.5;
     ctx.strokeRect(legX, legY, legW, legH);
 
-    // E[X] entry
     let ly = legY + legPad + 10;
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 3]);
-    ctx.beginPath();
-    ctx.moveTo(legX + legPad, ly - 4);
-    ctx.lineTo(legX + legPad + lineLen, ly - 4);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#c8cad4';
-    ctx.textAlign = 'left';
-    ctx.fillText('E[X]', legX + legPad + lineLen + 4, ly);
+
+    if (hasEV) {
+      // E[X] entry
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(legX + legPad, ly - 4);
+      ctx.lineTo(legX + legPad + lineLen, ly - 4);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#c8cad4';
+      ctx.textAlign = 'left';
+      ctx.fillText('E[X]', legX + legPad + lineLen + 4, ly);
+    } else {
+      ly -= legRowH;
+    }
 
     // Trial entries
     for (let t = 0; t < this.trials.length; t++) {
@@ -381,6 +399,7 @@ from every trial. Its shape reveals the underlying distribution.</p>
       ctx.lineTo(legX + legPad + lineLen, ly - 4);
       ctx.stroke();
       ctx.fillStyle = '#c8cad4';
+      ctx.textAlign = 'left';
       ctx.fillText(`Trial ${t + 1}`, legX + legPad + lineLen + 4, ly);
     }
 
@@ -453,8 +472,11 @@ from every trial. Its shape reveals the underlying distribution.</p>
       for (let i = 0; i < 6; i++) {
         ctx.fillText(String(i + 1), plotL + i * barW + barW / 2, plotB + 12);
       }
+    } else if (d === 'cauchy') {
+      ctx.fillText(range.min.toFixed(0), plotL, plotB + 12);
+      ctx.fillText('0', plotL + plotW / 2, plotB + 12);
+      ctx.fillText(range.max.toFixed(0), plotR, plotB + 12);
     } else {
-      // Exponential: label min and max
       ctx.fillText('0', plotL, plotB + 12);
       ctx.fillText(range.max.toFixed(0), plotR, plotB + 12);
     }

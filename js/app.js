@@ -32,6 +32,7 @@ import './explorations/firefly-synchrony.js';
 import './explorations/coupled-metronomes.js';
 import './explorations/lorenz-attractor.js';
 import './explorations/perceptron-bifurcation.js';
+import './explorations/nn-bifurcation.js';
 import './explorations/fluid-dynamics.js';
 
 // PDE demos
@@ -74,6 +75,7 @@ import './explorations/limit-game.js';
 import './explorations/derivative-definition.js';
 import './explorations/chain-rule.js';
 import './explorations/taylor-approximation.js';
+import './explorations/taylor-coeff-fit.js';
 import './explorations/integration-riemann.js';
 
 // Probability & statistics (batch 4)
@@ -86,6 +88,41 @@ import './explorations/normal-distribution.js';
 // PDE & turbulence (batch 4)
 import './explorations/wave-equation.js';
 import './explorations/vortex-shedding.js';
+
+// Analog circuits
+import './explorations/van-der-pol.js';
+import './explorations/rlc-filter.js';
+import './explorations/diode-clipper.js';
+import './explorations/chua-circuit.js';
+import './explorations/phase-locked-loop.js';
+import './explorations/relaxation-oscillator.js';
+import './explorations/bucket-brigade.js';
+import './explorations/colpitts-oscillator.js';
+import './explorations/memristor-chaos.js';
+import './explorations/ring-oscillator.js';
+import './explorations/charge-pump.js';
+
+// Number theory (batch 5)
+import './explorations/modular-multiplication-circle.js';
+import './explorations/ulam-spiral.js';
+import './explorations/ulam-sphere.js';
+import './explorations/ulam-helix.js';
+import './explorations/ford-circles.js';
+import './explorations/euclidean-rectangles.js';
+import './explorations/gaussian-primes.js';
+
+// Information theory (batch 6)
+import './explorations/surprise-entropy.js';
+import './explorations/source-coding.js';
+import './explorations/noisy-channel.js';
+import './explorations/kl-divergence.js';
+import './explorations/shannon-boltzmann.js';
+
+// Principle of least action (batch 6)
+import './explorations/least-action-paths.js';
+import './explorations/brachistochrone.js';
+import './explorations/fermats-principle.js';
+import './explorations/laplacian-growth.js';
 
 let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
@@ -349,6 +386,23 @@ const ANIM_PARAMS = {
     { key: 'inflowSpeed', label: 'Inflow Speed', min: 0.5, max: 5.0 },
     { key: 'viscosity', label: 'Viscosity (ν)', min: 0.00005, max: 0.01 }
   ],
+  'modular-multiplication-circle': [
+    { key: 'multiplier', label: 'Multiplier (k)', min: 2.0, max: 50.0 },
+    { key: 'numPoints', label: 'Points (N)', min: 10, max: 400 },
+  ],
+  'ulam-spiral': [
+    { key: 'gridSize', label: 'Grid Size', min: 50, max: 500 },
+  ],
+  'ford-circles': [
+    { key: 'maxDenom', label: 'Max Denominator', min: 2, max: 60 },
+  ],
+  'euclidean-rectangles': [
+    { key: 'a', label: 'a', min: 1, max: 200 },
+    { key: 'b', label: 'b', min: 1, max: 200 },
+  ],
+  'gaussian-primes': [
+    { key: 'range', label: 'Range', min: 10, max: 100 },
+  ],
 };
 
 function getAnimParamsForExploration(id) {
@@ -596,9 +650,7 @@ function selectExploration(id) {
   currentInstance.render();
   showTeaser(ExplClass.teaserQuestion);
 
-  if (!audioEngine.isMuted) {
-    currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
-  }
+  currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
 
   // Auto-capture hero only when one doesn't already exist (or existing is blank).
   // Two attempts with increasing delay for worker-based explorations.

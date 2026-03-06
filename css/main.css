@@ -83,7 +83,7 @@ body { font-family: 'Lexend', -apple-system, BlinkMacSystemFont, system-ui, sans
 .sidebar-group-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: inherit; font-weight: 400; }
 .sidebar-group-count { font-size: 10px; color: var(--text-secondary); background: transparent; border: 1px solid var(--border-color); border-radius: 8px; padding: 0 5px; margin-left: auto; line-height: 16px; font-family: inherit; transition: all 0.15s; }
 
-.sidebar-group-content { overflow: hidden; transition: max-height 0.25s ease, opacity 0.2s ease; max-height: 600px; opacity: 1; }
+.sidebar-group-content { overflow: hidden; transition: max-height 0.25s ease, opacity 0.2s ease; max-height: 3000px; opacity: 1; }
 .sidebar-group-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
 
 .exploration-btn { display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 8px 10px; margin-bottom: 2px; background: transparent; border: none; border-radius: 6px; color: var(--text-primary); font-size: 14px; cursor: pointer; transition: background 0.15s; }

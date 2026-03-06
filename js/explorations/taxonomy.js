@@ -16,8 +16,10 @@ export const FACETS = {
       'complex-analysis', 'physics', 'series-transforms', 'signal-processing',
       'pde-simulation',
       'probability-statistics',
+      'information-theory',
       'combinatorics',
       'calculus',
+      'number-theory',
     ],
     values: {
       'fractals':           { label: 'Fractals' },
@@ -29,8 +31,10 @@ export const FACETS = {
       'signal-processing':  { label: 'Signal Processing' },
       'pde-simulation':     { label: 'PDEs & Simulation' },
       'probability-statistics': { label: 'Probability & Statistics' },
+      'information-theory':   { label: 'Information Theory' },
       'combinatorics':      { label: 'Combinatorics' },
       'calculus':             { label: 'Calculus' },
+      'number-theory':        { label: 'Number Theory' },
     },
   },
   technique: {

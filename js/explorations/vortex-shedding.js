@@ -66,9 +66,9 @@ The alternating red-blue pattern downstream is the K\u00E1rm\u00E1n street.</li>
     super(canvas, controlsContainer);
     this.params = {
       inflowSpeed: 2.0,
-      viscosity: 0.001,
+      viscosity: 0.0005,
       cylinderRadius: 0.06,
-      cylinderY: 0.5,
+      cylinderY: 0.48,
       visualization: 'dye',
     };
     this.solver = null;
@@ -80,9 +80,9 @@ The alternating red-blue pattern downstream is the K\u00E1rm\u00E1n street.</li>
   getControls() {
     return [
       { type: 'slider', key: 'inflowSpeed', label: 'Inflow Speed', min: 0.5, max: 5.0, step: 0.1, value: this.params.inflowSpeed },
-      { type: 'slider', key: 'viscosity', label: 'Viscosity (\u03BD)', min: 0.00005, max: 0.01, step: 0.00005, value: this.params.viscosity },
+      { type: 'slider', key: 'viscosity', label: 'Viscosity (\u03BD)', min: 0.0001, max: 0.01, step: 0.0001, value: this.params.viscosity },
       { type: 'slider', key: 'cylinderRadius', label: 'Cylinder Radius', min: 0.02, max: 0.12, step: 0.01, value: this.params.cylinderRadius },
-      { type: 'slider', key: 'cylinderY', label: 'Cylinder Y', min: 0.3, max: 0.7, step: 0.01, value: this.params.cylinderY },
+      { type: 'slider', key: 'cylinderY', label: 'Cylinder Y', min: 0.3, max: 0.7, step: 0.005, value: this.params.cylinderY },
       { type: 'select', key: 'visualization', label: 'Visualization', options: [
         { value: 'dye', label: 'Dye' },
         { value: 'velocity', label: 'Velocity' },
@@ -145,6 +145,7 @@ The alternating red-blue pattern downstream is the K\u00E1rm\u00E1n street.</li>
     this.solver.params.enableProjection = true;
     this.solver.params.enableBuoyancy = false;
     this.solver.params.showVelocity = this.params.visualization === 'velocity';
+    this.solver.params.dyeDissipation = 0.998;
   }
 
   _generateObstacle() {
@@ -204,7 +205,24 @@ The alternating red-blue pattern downstream is the K\u00E1rm\u00E1n street.</li>
     // Set mouse state to idle (no user interaction needed for this exploration)
     this.solver.setMouseState(0, 0, 0, 0, false);
 
-    this.solver.step();
+    // Apply small oscillating perturbation behind cylinder to trigger shedding
+    if (this._frameCount % 4 === 0) {
+      const pert = Math.sin(this._frameCount * 0.12) * 0.08;
+      this.solver._applyForce(
+        this._cylinderX + this.params.cylinderRadius * 2,
+        this.params.cylinderY, 0, pert
+      );
+    }
+
+    // Sub-stepping to keep CFL ≤ 2 and reduce numerical diffusion
+    const nominalCFL = this.params.inflowSpeed * 0.016 * this.solver.simWidth;
+    const subSteps = Math.max(1, Math.ceil(nominalCFL / 2.0));
+    this.solver.params.dt = 0.016 / subSteps;
+    for (let s = 0; s < subSteps; s++) {
+      this.solver.step();
+    }
+    this.solver.params.dt = 0.016;
+
     this.render();
     this.animFrameId = requestAnimationFrame(() => this._animate());
   }
@@ -240,7 +258,7 @@ The alternating red-blue pattern downstream is the K\u00E1rm\u00E1n street.</li>
       gl.bindTexture(gl.TEXTURE_2D, solver.dye.read.texture);
       gl.uniform1i(u.u_dye, 0);
       gl.uniform2f(u.u_point, xPos, yPos);
-      gl.uniform3f(u.u_color, r * 0.5, g * 0.5, b * 0.5);
+      gl.uniform3f(u.u_color, r * 0.2, g * 0.2, b * 0.2);
       gl.uniform1f(u.u_radius, 0.02);
       drawFullscreenQuad(gl);
       solver.dye.swap();

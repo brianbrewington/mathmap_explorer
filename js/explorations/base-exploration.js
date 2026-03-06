@@ -62,10 +62,15 @@ export class BaseExploration {
     }
   }
 
+  /** Scale a CSS-pixel value to buffer pixels (accounts for devicePixelRatio). */
+  _px(n) {
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    return Math.round(n * dpr);
+  }
+
   /** Return a CSS font string with the size scaled by devicePixelRatio. */
   _font(px, family = '"Lexend", sans-serif', weight = '') {
-    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
-    const s = Math.round(px * dpr);
+    const s = this._px(px);
     return weight ? `${weight} ${s}px ${family}` : `${s}px ${family}`;
   }
 

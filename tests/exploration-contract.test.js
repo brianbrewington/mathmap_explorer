@@ -72,6 +72,7 @@ import '../js/explorations/limit-game.js';
 import '../js/explorations/derivative-definition.js';
 import '../js/explorations/chain-rule.js';
 import '../js/explorations/taylor-approximation.js';
+import '../js/explorations/taylor-coeff-fit.js';
 import '../js/explorations/integration-riemann.js';
 import '../js/explorations/random-walk.js';
 import '../js/explorations/law-of-large-numbers.js';
@@ -81,6 +82,32 @@ import '../js/explorations/normal-distribution.js';
 import '../js/explorations/wave-equation.js';
 import '../js/explorations/vortex-shedding.js';
 import '../js/explorations/perceptron-bifurcation.js';
+import '../js/explorations/nn-bifurcation.js';
+import '../js/explorations/modular-multiplication-circle.js';
+import '../js/explorations/ulam-spiral.js';
+import '../js/explorations/ford-circles.js';
+import '../js/explorations/euclidean-rectangles.js';
+import '../js/explorations/gaussian-primes.js';
+import '../js/explorations/van-der-pol.js';
+import '../js/explorations/rlc-filter.js';
+import '../js/explorations/diode-clipper.js';
+import '../js/explorations/chua-circuit.js';
+import '../js/explorations/phase-locked-loop.js';
+import '../js/explorations/relaxation-oscillator.js';
+import '../js/explorations/bucket-brigade.js';
+import '../js/explorations/colpitts-oscillator.js';
+import '../js/explorations/memristor-chaos.js';
+import '../js/explorations/ring-oscillator.js';
+import '../js/explorations/charge-pump.js';
+import '../js/explorations/surprise-entropy.js';
+import '../js/explorations/source-coding.js';
+import '../js/explorations/noisy-channel.js';
+import '../js/explorations/kl-divergence.js';
+import '../js/explorations/shannon-boltzmann.js';
+import '../js/explorations/least-action-paths.js';
+import '../js/explorations/brachistochrone.js';
+import '../js/explorations/fermats-principle.js';
+import '../js/explorations/laplacian-growth.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -103,7 +130,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(60);
+    expect(explorations.length).toBe(87);
   });
 
   it('all ids are unique', () => {
