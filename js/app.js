@@ -125,6 +125,13 @@ import './explorations/brachistochrone.js';
 import './explorations/fermats-principle.js';
 import './explorations/laplacian-growth.js';
 
+// Path to infinite dimensions (calculus of variations)
+import './explorations/gradient-dimensions.js';
+import './explorations/discrete-path-action.js';
+import './explorations/functional-derivative.js';
+import './explorations/euler-lagrange-bridge.js';
+import './explorations/embedding-dimension.js';
+
 // Numerical DE foundations & dynamics on networks (batch 7)
 import './explorations/ode-integrator.js';
 import './explorations/phase-portrait.js';
@@ -152,6 +159,7 @@ import './explorations/doppler-effect.js';
 import './trails/circles-to-fourier.js';
 import './trails/road-to-chaos.js';
 import './trails/calculus-from-scratch.js';
+import './trails/path-to-infinite-dimensions.js';
 import './trails/fractal-worlds.js';
 import './trails/oscillations-and-circuits.js';
 import './trails/networks.js';

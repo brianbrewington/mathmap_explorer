@@ -12,7 +12,7 @@ class LeastActionPathsExploration extends BaseExploration {
   static foundations = ['simple-harmonic'];
   static extensions = ['brachistochrone', 'fermats-principle'];
   static teaserQuestion = 'Why does nature choose the parabola over every other path?';
-  static resources = [{ type: 'youtube', title: 'Feynman — Principle of Least Action', url: 'https://www.youtube.com/watch?v=VJflMdhqmaE' }, { type: 'wikipedia', title: 'Principle of least action', url: 'https://en.wikipedia.org/wiki/Stationary-action_principle' }];
+  static resources = [{ type: 'external', title: 'Feynman Lectures — Principle of Least Action', url: 'https://www.feynmanlectures.caltech.edu/II_19.html' }, { type: 'wikipedia', title: 'Principle of least action', url: 'https://en.wikipedia.org/wiki/Stationary-action_principle' }];
   static formulaShort = 'S = ∫ (T − V) dt';
   static formula = `<h3>Principle of Least Action</h3>
 <div class="formula-block">

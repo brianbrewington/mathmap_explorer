@@ -32,14 +32,50 @@ This codebase contains real-time renderers for 14 explorations across fractals, 
 
 ## Getting Started
 
-Because this is a static web application built with vanilla JavaScript (ES6 modules), HTML, and CSS, no complicated build step is required.
+### Prerequisites
 
-1.  Clone the repository to your local machine.
-2.  Serve the directory using any local web server. For example, using Python 3:
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+
+### Setup
+
+1.  Clone the repository:
     ```bash
-    python3 -m http.server
+    git clone https://github.com/brianbrewington/mathmap_explorer.git
+    cd mathmap_explorer
     ```
-3.  Open your browser and navigate to `http://localhost:8000`.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+### Running the dev server
+
+```bash
+make serve
+```
+
+Then open your browser and navigate to `http://localhost:8080`.
+
+You can also use a different port:
+```bash
+PORT=3000 make serve
+```
+
+Alternatively, since this is a static web application built with vanilla JavaScript (ES6 modules), you can serve it with any local web server, e.g.:
+```bash
+python3 -m http.server
+```
+
+### Running tests
+
+```bash
+make test
+```
+
+To run tests in watch mode:
+```bash
+make test-watch
+```
 
 ## Architecture
 

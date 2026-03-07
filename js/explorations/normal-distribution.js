@@ -10,7 +10,7 @@ class NormalDistributionExploration extends BaseExploration {
   static foundations = [];
   static extensions = ['central-limit-theorem'];
   static teaserQuestion = 'What makes the bell curve so universal?';
-  static resources = [{ type: 'youtube', title: '3B1B — Why is the Gaussian so special?', url: 'https://www.youtube.com/watch?v=cy8r7WSuT1I' }, { type: 'wikipedia', title: 'Normal distribution', url: 'https://en.wikipedia.org/wiki/Normal_distribution' }];
+  static resources = [{ type: 'youtube', title: '3B1B — The Gaussian Integral', url: 'https://www.youtube.com/watch?v=cy8r7WSuT1I' }, { type: 'wikipedia', title: 'Normal distribution', url: 'https://en.wikipedia.org/wiki/Normal_distribution' }];
   static formulaShort = 'f(x) = (1/\u03C3\u221A2\u03C0) e<sup>\u2212(x\u2212\u03BC)\u00B2/2\u03C3\u00B2</sup>';
   static formula = `<h3>Normal (Gaussian) Distribution</h3>
 <div class="formula-block">

@@ -141,6 +141,15 @@ const server = createServer(async (req, res) => {
   await serveStatic(res, filePath);
 });
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n  Error: port ${PORT} is already in use.\n  Try: PORT=<other> make serve\n`);
+  } else {
+    console.error(`\n  Server error: ${err.message}\n`);
+  }
+  process.exit(1);
+});
+
 server.listen(PORT, () => {
   console.log(`\n  MathMap Explorer running at  http://localhost:${PORT}`);
   console.log(`  Ollama proxy             /ollama/ → ${OLLAMA_HOST}`);

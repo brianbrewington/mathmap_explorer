@@ -33,7 +33,7 @@ to scale the view.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
   static teaserQuestion = 'Why do the solutions of z\u207F = 1 form a perfect polygon?';
-  static resources = [{ type: 'youtube', title: '3B1B — Roots of Unity', url: 'https://www.youtube.com/watch?v=mvmuCPvRoWQ' }, { type: 'wikipedia', title: 'Root of unity', url: 'https://en.wikipedia.org/wiki/Root_of_unity' }];
+  static resources = [{ type: 'youtube', title: "3B1B — Euler's Formula with Group Theory", url: 'https://www.youtube.com/watch?v=mvmuCPvRoWQ' }, { type: 'wikipedia', title: 'Root of unity', url: 'https://en.wikipedia.org/wiki/Root_of_unity' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -121,6 +121,11 @@ import '../js/explorations/stochastic-resonance.js';
 import '../js/explorations/ulam-sphere.js';
 import '../js/explorations/ulam-helix.js';
 import '../js/explorations/fourier-analysis.js';
+import '../js/explorations/gradient-dimensions.js';
+import '../js/explorations/discrete-path-action.js';
+import '../js/explorations/functional-derivative.js';
+import '../js/explorations/euler-lagrange-bridge.js';
+import '../js/explorations/embedding-dimension.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -143,7 +148,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(100);
+    expect(explorations.length).toBe(105);
   });
 
   it('all ids are unique', () => {
