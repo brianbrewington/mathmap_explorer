@@ -4,7 +4,6 @@ import { getHeroImage } from './hero-images.js';
 import { getById } from '../explorations/registry.js';
 import { getNote, saveNote, getSnapshots, saveSnapshot, deleteSnapshot } from './user-state.js';
 import { getTagLabel, getFacet, isFacetTag } from '../explorations/taxonomy.js';
-import { addFilter } from './sidebar.js';
 import { openImageModal } from './image-modal.js';
 import { buildTrailList, attachTrailListeners, buildTrailNav, attachTrailNavListeners } from './trail-picker.js';
 import { renderMath } from './math-renderer.js';
@@ -151,12 +150,6 @@ export function initInfoPanel() {
       return;
     }
 
-    const badge = e.target.closest('.clickable-badge');
-    if (badge) {
-      const facetKey = badge.dataset.facet;
-      const tagValue = badge.dataset.tag;
-      if (facetKey && tagValue) addFilter(facetKey, tagValue);
-    }
   });
 
   panel.addEventListener('dblclick', (e) => {

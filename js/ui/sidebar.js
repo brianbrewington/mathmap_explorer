@@ -1,5 +1,5 @@
 import { getAll } from '../explorations/registry.js';
-import { FACETS, groupByFacet, matchesFilters, getFacetValueLabel, getTagLabel, isFacetTag, getFacet } from '../explorations/taxonomy.js';
+import { groupByFacet, getFacetValueLabel } from '../explorations/taxonomy.js';
 import { getHeroImage, getAllHeroImages } from './hero-images.js';
 import { hasVisited, getSnapshots } from './user-state.js';
 import { openImageModal } from './image-modal.js';
@@ -12,16 +12,13 @@ let onCaptureHeroCallback = null;
 let onSnapshotLoadCallback = null;
 let listElRef = null;
 
-let activeFacet = 'topic';
-let activeFilters = {};
 let allExplorations = [];
-let onFilterChangeCallback = null;
 
 function loadState() {
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return raw || { expanded: {}, facet: 'topic', filters: {} };
-  } catch { return { expanded: {}, facet: 'topic', filters: {} }; }
+    return raw || { expanded: {} };
+  } catch { return { expanded: {} }; }
 }
 
 function saveState(patch) {
@@ -67,111 +64,48 @@ function createExplorationBtn(E) {
   return btn;
 }
 
-// ── Facet pill bar ──────────────────────────────────────────────────────
-
-function buildFacetBar(listEl) {
-  let bar = listEl.querySelector('.facet-bar');
-  if (!bar) {
-    bar = document.createElement('div');
-    bar.className = 'facet-bar';
-    const searchEl = listEl.querySelector('.sidebar-search');
-    if (searchEl) {
-      searchEl.after(bar);
-    } else {
-      listEl.prepend(bar);
-    }
-  }
-  bar.innerHTML = '';
-
-  for (const [key, facet] of Object.entries(FACETS)) {
-    const pill = document.createElement('button');
-    pill.className = 'facet-pill' + (key === activeFacet ? ' active' : '');
-    pill.textContent = facet.label;
-    pill.addEventListener('click', () => {
-      activeFacet = key;
-      saveState({ facet: key });
-      buildFacetBar(listEl);
-      buildGroups(listEl, allExplorations, listEl.querySelector('.sidebar-search-input')?.value || '');
-    });
-    bar.appendChild(pill);
-  }
-
-  buildFilterChips(listEl);
-}
-
-// ── Filter chips ────────────────────────────────────────────────────────
-
-function buildFilterChips(listEl) {
-  let chipArea = listEl.querySelector('.filter-chips');
-  const hasFilters = Object.values(activeFilters).some(v => v);
-
-  if (!hasFilters) {
-    if (chipArea) chipArea.remove();
-    return;
-  }
-
-  if (!chipArea) {
-    chipArea = document.createElement('div');
-    chipArea.className = 'filter-chips';
-    const bar = listEl.querySelector('.facet-bar');
-    if (bar) bar.after(chipArea);
-  }
-  chipArea.innerHTML = '';
-
-  for (const [facetKey, tagValue] of Object.entries(activeFilters)) {
-    if (!tagValue) continue;
-    const chip = document.createElement('button');
-    chip.className = 'filter-chip';
-    const facetLabel = FACETS[facetKey]?.label || facetKey;
-    chip.innerHTML = `<span class="filter-chip-facet">${facetLabel}:</span> ${getFacetValueLabel(facetKey, tagValue)} <span class="filter-chip-x">\u00d7</span>`;
-    chip.addEventListener('click', () => {
-      delete activeFilters[facetKey];
-      saveState({ filters: activeFilters });
-      buildFacetBar(listEl);
-      buildGroups(listEl, allExplorations, listEl.querySelector('.sidebar-search-input')?.value || '');
-    });
-    chipArea.appendChild(chip);
-  }
-
-  const clearBtn = document.createElement('button');
-  clearBtn.className = 'filter-chip filter-chip-clear';
-  clearBtn.textContent = 'Clear all';
-  clearBtn.addEventListener('click', () => {
-    activeFilters = {};
-    saveState({ filters: {} });
-    buildFacetBar(listEl);
-    buildGroups(listEl, allExplorations, listEl.querySelector('.sidebar-search-input')?.value || '');
-  });
-  chipArea.appendChild(clearBtn);
-}
-
 // ── Group rendering ─────────────────────────────────────────────────────
 
-function buildGroups(listEl, explorations, filter) {
-  listEl.querySelectorAll('.sidebar-group').forEach(g => g.remove());
+function buildGroups(scrollZone, explorations, filter) {
+  scrollZone.innerHTML = '';
 
   const lowerFilter = filter?.toLowerCase() || '';
 
   let filtered = explorations;
   if (lowerFilter) {
     filtered = explorations.filter(E => {
-      const tagLabels = (E.tags || []).map(t => getTagLabel(t)).join(' ');
-      const searchable = `${E.title} ${E.description || ''} ${E.formulaShort || ''} ${tagLabels}`.toLowerCase();
+      const searchable = `${E.title} ${E.description || ''} ${E.formulaShort || ''}`.toLowerCase();
       return searchable.includes(lowerFilter);
     });
   }
 
-  if (Object.values(activeFilters).some(v => v)) {
-    filtered = filtered.filter(E => matchesFilters(E, activeFilters));
+  if (lowerFilter) {
+    const flatDiv = document.createElement('div');
+    flatDiv.className = 'sidebar-flat-results';
+    if (filtered.length === 0) {
+      const noResults = document.createElement('div');
+      noResults.className = 'sidebar-no-results';
+      noResults.textContent = 'No explorations found';
+      flatDiv.appendChild(noResults);
+    } else {
+      const seen = new Set();
+      filtered.forEach(E => {
+        if (seen.has(E.id)) return;
+        seen.add(E.id);
+        flatDiv.appendChild(createExplorationBtn(E));
+      });
+    }
+    scrollZone.appendChild(flatDiv);
+    return;
   }
 
-  const groups = groupByFacet(filtered, activeFacet);
+  const groups = groupByFacet(filtered, 'topic');
   const state = loadState();
   const expanded = state.expanded || {};
 
   for (const [tagValue, items] of groups) {
     if (items.length === 0) continue;
-    const isCollapsed = !lowerFilter && expanded[tagValue] !== true;
+    const isCollapsed = expanded[tagValue] !== true;
 
     const group = document.createElement('div');
     group.className = 'sidebar-group';
@@ -187,7 +121,7 @@ function buildGroups(listEl, explorations, filter) {
 
     const label = document.createElement('span');
     label.className = 'sidebar-group-label';
-    label.textContent = getFacetValueLabel(activeFacet, tagValue);
+    label.textContent = getFacetValueLabel('topic', tagValue);
 
     const count = document.createElement('span');
     count.className = 'sidebar-group-count';
@@ -220,7 +154,7 @@ function buildGroups(listEl, explorations, filter) {
 
     group.appendChild(header);
     group.appendChild(content);
-    listEl.appendChild(group);
+    scrollZone.appendChild(group);
   }
 }
 
@@ -232,14 +166,13 @@ export async function buildSidebar(listEl, onSelect) {
   listElRef = listEl;
 
   allExplorations = getAll();
-
-  const state = loadState();
-  activeFacet = state.facet || 'topic';
-  activeFilters = state.filters || {};
-
   heroImages = await getAllHeroImages(allExplorations.map(E => E.id));
 
-  // Search bar
+  // Fixed zone: search + hero card (pinned, does not scroll)
+  const fixedZone = document.createElement('div');
+  fixedZone.className = 'sidebar-fixed';
+  listEl.appendChild(fixedZone);
+
   const searchWrap = document.createElement('div');
   searchWrap.className = 'sidebar-search';
   const searchInput = document.createElement('input');
@@ -247,26 +180,27 @@ export async function buildSidebar(listEl, onSelect) {
   searchInput.placeholder = 'Search explorations\u2026';
   searchInput.className = 'sidebar-search-input';
   searchWrap.appendChild(searchInput);
-  listEl.appendChild(searchWrap);
+  fixedZone.appendChild(searchWrap);
 
-  // Facet bar
-  buildFacetBar(listEl);
-
-  // Hero card for active exploration
   const heroCard = document.createElement('div');
   heroCard.className = 'sidebar-hero-card';
   heroCard.id = 'sidebar-hero-card';
   heroCard.innerHTML = '<div class="hero-image-placeholder"></div>';
-  listEl.appendChild(heroCard);
+  fixedZone.appendChild(heroCard);
 
-  buildGroups(listEl, allExplorations, '');
+  // Scrollable zone: groups / flat results
+  const scrollZone = document.createElement('div');
+  scrollZone.className = 'sidebar-scroll';
+  listEl.appendChild(scrollZone);
+
+  buildGroups(scrollZone, allExplorations, '');
 
   let debounceTimer = null;
   searchInput.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      buildGroups(listEl, allExplorations, searchInput.value);
-      const currentId = listEl.querySelector('.sidebar-hero-card')?.dataset.activeId;
+      buildGroups(scrollZone, allExplorations, searchInput.value);
+      const currentId = listEl.querySelector('#sidebar-hero-card')?.dataset.activeId;
       if (currentId) {
         listEl.querySelectorAll('.exploration-btn').forEach(btn => {
           btn.classList.toggle('active', btn.dataset.id === currentId);
@@ -331,22 +265,6 @@ export function setCaptureHeroCallback(callback) {
 
 export function setSnapshotLoadCallback(callback) {
   onSnapshotLoadCallback = callback;
-}
-
-/**
- * Add a facet filter from outside (e.g. clicking a tag badge in the info panel).
- */
-export function addFilter(facetKey, tagValue) {
-  activeFilters[facetKey] = tagValue;
-  saveState({ filters: activeFilters });
-  if (listElRef) {
-    buildFacetBar(listElRef);
-    buildGroups(listElRef, allExplorations, listElRef.querySelector('.sidebar-search-input')?.value || '');
-  }
-}
-
-export function setFilterChangeCallback(callback) {
-  onFilterChangeCallback = callback;
 }
 
 async function buildHeroCarousel(heroCard, id) {

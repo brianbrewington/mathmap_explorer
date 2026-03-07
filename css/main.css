@@ -18,7 +18,7 @@ body { font-family: 'Lexend', -apple-system, BlinkMacSystemFont, system-ui, sans
 
 #app { display: flex; height: 100vh; }
 
-#sidebar { width: 280px; min-width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow-y: auto; }
+#sidebar { width: 280px; min-width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; }
 .sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid var(--border-color); }
 .sidebar-header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
 .logo-icon { flex-shrink: 0; }
@@ -31,7 +31,7 @@ body { font-family: 'Lexend', -apple-system, BlinkMacSystemFont, system-ui, sans
 .mute-btn.audible { color: var(--accent); border-color: var(--accent-dim); }
 .mute-btn.audible .mute-slash { display: none; }
 
-#exploration-list { padding: 12px; flex: 1; }
+#exploration-list { display: flex; flex-direction: column; overflow: hidden; padding: 0; flex: 1; }
 
 /* Sidebar search */
 .sidebar-search { padding: 0 0 8px; }
@@ -39,20 +39,11 @@ body { font-family: 'Lexend', -apple-system, BlinkMacSystemFont, system-ui, sans
 .sidebar-search-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
 .sidebar-search-input:focus { border-color: var(--accent); }
 
-/* Facet pill bar */
-.facet-bar { display: flex; gap: 4px; padding: 0 0 8px; flex-wrap: wrap; }
-.facet-pill { padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-.facet-pill:hover { border-color: var(--accent-dim); color: var(--text-primary); }
-.facet-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--text-primary); }
-
-/* Filter chips */
-.filter-chips { display: flex; gap: 4px; padding: 0 0 8px; flex-wrap: wrap; }
-.filter-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 10px; border: 1px solid var(--accent-dim); background: rgba(107, 124, 255, 0.08); color: var(--text-primary); font-family: inherit; font-size: 10px; cursor: pointer; transition: all 0.15s; }
-.filter-chip:hover { background: rgba(107, 124, 255, 0.18); border-color: var(--accent); }
-.filter-chip-facet { color: var(--text-secondary); font-weight: 400; }
-.filter-chip-x { font-size: 12px; line-height: 1; opacity: 0.6; }
-.filter-chip-clear { border-color: var(--border-color); background: transparent; color: var(--text-secondary); }
-.filter-chip-clear:hover { color: var(--danger); border-color: var(--danger); }
+/* Sidebar layout zones */
+.sidebar-fixed { padding: 12px 12px 8px; flex-shrink: 0; }
+.sidebar-scroll { padding: 0 12px 12px; flex: 1; overflow-y: auto; }
+.sidebar-flat-results { }
+.sidebar-no-results { padding: 12px 8px; font-size: 12px; color: var(--text-secondary); text-align: center; }
 
 /* Hero card for active exploration */
 .sidebar-hero-card { border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); min-height: 48px; }
