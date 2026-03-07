@@ -12,12 +12,12 @@ class DerivativeDefinitionExploration extends BaseExploration {
   static formulaShort = "f'(x) = lim<sub>h\u21920</sub> [f(x+h)\u2212f(x)]/h";
   static formula = `<h3>Definition of the Derivative</h3>
 <div class="formula-block">
-f'(x) = lim<sub>h\u21920</sub> [f(x + h) \u2212 f(x)] / h
+$$f'(x) = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}$$
 </div>
 <p>The <strong>derivative</strong> of a function at a point measures its instantaneous rate of change.
 It is defined as the limit of the <em>difference quotient</em> &mdash; the slope of a secant line
 through two points on the curve &mdash; as the two points merge.</p>
-<p>When h is large the secant line is a coarse approximation; as h shrinks toward zero the
+<p>When $h$ is large the secant line is a coarse approximation; as $h$ shrinks toward zero the
 secant rotates into the <strong>tangent line</strong>, whose slope is the derivative.</p>`;
   static tutorial = `<h3>From Slope to Speed</h3>
 <p>What does "instantaneous rate of change" mean? You can measure average speed between two

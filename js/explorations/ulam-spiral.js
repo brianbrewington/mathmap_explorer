@@ -14,15 +14,14 @@ class UlamSpiralExploration extends BaseExploration {
   static formulaShort = 'n ↦ spiral position; highlight if prime';
   static formula = `<h3>Ulam Spiral</h3>
 <div class="formula-block">
-Place 1 at the center, then spiral outward:<br>
-1, 2, 3, 4, 5, 6, 7, 8, 9, …<br><br>
-Color cell <em>n</em> if <em>n</em> is prime.
+$$1,\\; 2,\\; 3,\\; 4,\\; 5,\\; 6,\\; 7,\\; 8,\\; 9,\\; \\ldots$$
 </div>
+<p>Place 1 at the center, then spiral outward. Color cell <em>n</em> if <em>n</em> is prime.</p>
 <p>Discovered by Stanislaw Ulam in 1963 while doodling during a lecture,
 the spiral reveals that primes cluster along certain <strong>diagonal lines</strong>.</p>
 <p>These diagonals correspond to prime-rich <strong>quadratic polynomials</strong>.
-For example, Euler's famous <em>n² + n + 41</em> produces primes for
-n = 0, 1, …, 39 — a remarkable streak visible as a prominent diagonal.</p>
+For example, Euler's famous $n^2 + n + 41$ produces primes for
+$n = 0, 1, \\ldots, 39$ — a remarkable streak visible as a prominent diagonal.</p>
 <p>No one has a complete explanation for why the diagonals are so striking.
 The patterns connect to the <strong>Hardy–Littlewood conjectures</strong> on the
 density of primes represented by quadratic forms.</p>`;

@@ -13,13 +13,13 @@ class PerceptronBifurcationExploration extends BaseExploration {
   static formulaShort = 'w\u2099\u208A\u2081 = w\u2099 \u2212 \u03B7\u22C5\u2207L';
   static formula = `<h3>Single-Perceptron Gradient Descent as an Iterated Map</h3>
 <div class="formula-block">
-w<sub>n+1</sub> = w<sub>n</sub> &minus; &eta; &middot; 2(&sigma;(w<sub>n</sub>) &minus; t) &middot; &sigma;(w<sub>n</sub>)(1 &minus; &sigma;(w<sub>n</sub>))
+$$w_{n+1} = w_n - \\eta \\cdot 2(\\sigma(w_n) - t) \\cdot \\sigma(w_n)(1 - \\sigma(w_n))$$
 </div>
-<p>A single perceptron with sigmoid activation &sigma;(w) = 1/(1+e<sup>&minus;w</sup>) trained with
-gradient descent on squared-error loss L = (&sigma;(w) &minus; target)&sup2;.</p>
-<p>The sigmoid derivative &sigma;(1&minus;&sigma;) is exactly the logistic map&rsquo;s nonlinearity x(1&minus;x).
-As learning rate &eta; increases, the fixed point loses stability and the weight
-undergoes <strong>period-doubling bifurcations</strong> &mdash; the same Feigenbaum cascade seen in the logistic map.</p>`;
+<p>A single perceptron with sigmoid activation $\\sigma(w) = 1/(1+e^{-w})$ trained with
+gradient descent on squared-error loss $L = (\\sigma(w) - \\text{target})^2$.</p>
+<p>The sigmoid derivative $\\sigma(1-\\sigma)$ is exactly the logistic map's nonlinearity $x(1-x)$.
+As learning rate $\\eta$ increases, the fixed point loses stability and the weight
+undergoes <strong>period-doubling bifurcations</strong> — the same Feigenbaum cascade seen in the logistic map.</p>`;
   static tutorial = `<h3>Reading the Bifurcation Diagram</h3>
 <p>The x-axis is learning rate &eta;. For each &eta; we iterate gradient descent from an
 initial weight and plot the last N values of &sigma;(w) on the y-axis.</p>

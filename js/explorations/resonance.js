@@ -10,14 +10,14 @@ class ResonanceExploration extends BaseExploration {
   static formulaShort = 'x″ + 2ζω₀x′ + ω₀²x = F₀cos(ωt)';
   static formula = `<h3>Driven Damped Oscillator</h3>
 <div class="formula-block">
-x'' + 2&zeta;&omega;<sub>0</sub>x' + &omega;<sub>0</sub>&sup2;x = F<sub>0</sub>cos(&omega;t)
+$$\\ddot{x} + 2\\zeta\\omega_0 \\dot{x} + \\omega_0^2 x = F_0 \\cos(\\omega t)$$
 </div>
-<p>When a damped oscillator is driven by an external force at frequency &omega;,
-the steady-state amplitude depends on how close &omega; is to the natural frequency
-&omega;<sub>0</sub>.</p>
-<p>At <strong>resonance</strong> (&omega; &asymp; &omega;<sub>0</sub>), the amplitude peaks.
-The <strong>quality factor Q = 1/(2&zeta;)</strong> measures the sharpness of this peak:
-high Q means a narrow, tall resonance.</p>`;
+<p>When a damped oscillator is driven by an external force at frequency $\\omega$,
+the steady-state amplitude depends on how close $\\omega$ is to the natural frequency
+$\\omega_0$.</p>
+<p>At <strong>resonance</strong> ($\\omega \\approx \\omega_0$), the amplitude peaks.
+The <strong>quality factor $Q = 1/(2\\zeta)$</strong> measures the sharpness of this peak:
+high $Q$ means a narrow, tall resonance.</p>`;
   static tutorial = `<h3>Finding the Resonance Peak</h3>
 <p>The left panel shows the oscillator's response over time. The right panel plots the
 amplitude vs. driving frequency &mdash; the classic resonance curve.</p>

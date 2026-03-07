@@ -12,10 +12,12 @@ class BarnsleyExploration extends BaseExploration {
   static formulaShort = '4 affine transforms';
   static formula = `<h3>Barnsley Fern (IFS)</h3>
 <div class="formula-block">
-f<sub>1</sub>(1%): x' = 0, &nbsp; y' = 0.16y<br>
-f<sub>2</sub>(85%): x' = 0.85x + 0.04y, &nbsp; y' = −0.04x + 0.85y + 1.6<br>
-f<sub>3</sub>(7%): x' = 0.2x − 0.26y, &nbsp; y' = 0.23x + 0.22y + 1.6<br>
-f<sub>4</sub>(7%): x' = −0.15x + 0.28y, &nbsp; y' = 0.26x + 0.24y + 0.44
+$$\\begin{aligned}
+f_1\\,(1\\%)&: \\quad x' = 0,\\; y' = 0.16y \\\\
+f_2\\,(85\\%)&: \\quad x' = 0.85x + 0.04y,\\; y' = -0.04x + 0.85y + 1.6 \\\\
+f_3\\,(7\\%)&: \\quad x' = 0.2x - 0.26y,\\; y' = 0.23x + 0.22y + 1.6 \\\\
+f_4\\,(7\\%)&: \\quad x' = -0.15x + 0.28y,\\; y' = 0.26x + 0.24y + 0.44
+\\end{aligned}$$
 </div>
 <p>An Iterated Function System with 4 affine transformations, each chosen with a specific probability. The result is a remarkably realistic fern — a classic example of how simple math generates natural-looking forms.</p>`;
   static tutorial = `<h3>How the Barnsley Fern is Computed</h3>
@@ -79,8 +81,9 @@ for (let i = 0; i < iterations; i++) {
       resolution: 2000,
       brightness: 1.0
     };
-    this._bounds = { xMin: -2.5, xMax: 2.5, yMin: -0.5, yMax: 10.5 };
-    this._defaultBounds = { ...this._bounds };
+    this._naturalBounds = { xMin: -2.5, xMax: 2.5, yMin: -0.5, yMax: 10.5 };
+    this._bounds = { ...this._naturalBounds };
+    this._defaultBounds = { ...this._naturalBounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
@@ -89,6 +92,22 @@ for (let i = 0; i < iterations; i++) {
     this._densityHeight = 2000;
     this._lastDensity = null;
     this._lastMaxDensity = 0;
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this._defaultBounds = { xMin: xMid - xHalf, xMax: xMid + xHalf, yMin: yMid - yHalf, yMax: yMid + yHalf };
   }
 
   getControls() {
@@ -118,6 +137,8 @@ for (let i = 0; i < iterations; i++) {
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -147,8 +168,7 @@ for (let i = 0; i < iterations; i++) {
       return;
     }
     if (key === 'resolution') {
-      this._densityWidth = Math.round(value / 2);
-      this._densityHeight = value;
+      this._syncAspect();
     }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
@@ -156,14 +176,14 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.iterations = 2000000;
+    this._syncAspect();
     this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   _startWorker() {

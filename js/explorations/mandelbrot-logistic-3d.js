@@ -13,14 +13,12 @@ class MandelbrotLogistic3DExploration extends BaseExploration {
   static category = 'fractal';
   static tags = ['fractals', 'dynamical-systems', 'escape-time', 'advanced', 'complex-plane', 'bifurcation', '3D', 'ray-marching', 'logistic-connection'];
   static formulaShort = 'c = r(2\u2212r)/4';
-  static formula = `<h3>Mandelbrot \u2194 Logistic Conjugacy</h3>
+  static formula = `<h3>Mandelbrot $\\leftrightarrow$ Logistic Conjugacy</h3>
 <div class="formula-block">
-c = r(2 \u2212 r) / 4<br>
-Logistic: x<sub>n+1</sub> = r \u00b7 x<sub>n</sub> \u00b7 (1 \u2212 x<sub>n</sub>)<br>
-Mandelbrot: z<sub>n+1</sub> = z<sub>n</sub>\u00b2 + c, &nbsp; c \u2208 \u211d
+$$\\begin{aligned} c &= \\frac{r(2 - r)}{4} \\\\ x_{n+1} &= r \\cdot x_n \\cdot (1 - x_n) \\quad \\text{(Logistic)} \\\\ z_{n+1} &= z_n^2 + c,\\; c \\in \\mathbb{R} \\quad \\text{(Mandelbrot)} \\end{aligned}$$
 </div>
-<p>The logistic map x \u2192 rx(1\u2212x) and the quadratic map z \u2192 z\u00b2+c are topologically conjugate under the substitution c = r(2\u2212r)/4, x = \u00bd \u2212 z/r. This means every dynamical feature of the bifurcation diagram (period-doubling, chaos, windows) has an exact counterpart along the real axis of the Mandelbrot set.</p>
-<p>This 3D view places the Mandelbrot set on the floor plane (y=0) with the complex number c = (x, z). The bifurcation diagram rises vertically from the real axis (z=0), showing the attractor values of the logistic map for each c value.</p>`;
+<p>The logistic map $x \\to rx(1-x)$ and the quadratic map $z \\to z^2+c$ are topologically conjugate under the substitution $c = r(2-r)/4$, $x = \\tfrac{1}{2} - z/r$. This means every dynamical feature of the bifurcation diagram (period-doubling, chaos, windows) has an exact counterpart along the real axis of the Mandelbrot set.</p>
+<p>This 3D view places the Mandelbrot set on the floor plane ($y=0$) with the complex number $c = (x, z)$. The bifurcation diagram rises vertically from the real axis ($z=0$), showing the attractor values of the logistic map for each $c$ value.</p>`;
   static tutorial = `<h3>The Conjugacy c = r(2\u2212r)/4</h3>
 <p>Consider the logistic map f(x) = rx(1\u2212x) and the quadratic map g(z) = z\u00b2 + c. Define the change of variables:</p>
 <pre><code>x = 1/2 \u2212 z/r

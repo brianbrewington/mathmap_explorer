@@ -12,10 +12,12 @@ class HenonExploration extends BaseExploration {
   static formulaShort = "x' = 1 − ax² + y";
   static formula = `<h3>Hénon Map</h3>
 <div class="formula-block">
-x<sub>n+1</sub> = 1 − a · x<sub>n</sub>² + y<sub>n</sub><br>
-y<sub>n+1</sub> = b · x<sub>n</sub>
+$$\\begin{aligned}
+x_{n+1} &= 1 - a \\cdot x_n^2 + y_n \\\\
+y_{n+1} &= b \\cdot x_n
+\\end{aligned}$$
 </div>
-<p>A discrete-time dynamical system introduced by Michel Hénon as a simplified model of the Poincaré section of the Lorenz model. At the classic parameters (a=1.4, b=0.3) it exhibits a strange attractor with fractal structure.</p>`;
+<p>A discrete-time dynamical system introduced by Michel Hénon as a simplified model of the Poincaré section of the Lorenz model. At the classic parameters ($a=1.4$, $b=0.3$) it exhibits a strange attractor with fractal structure.</p>`;
   static tutorial = `<h3>How the Hénon Map is Computed</h3>
 <p>The Hénon map is one of the simplest 2D maps that produces chaotic behavior. We iterate the map and bin the visited points into a density histogram.</p>
 <pre><code class="language-js">let x = 0.1, y = 0.1;
@@ -76,8 +78,9 @@ for (let i = 0; i < iterations; i++) {
       resolution: 2000,
       brightness: 1.0
     };
-    this._bounds = { xMin: -1.5, xMax: 1.5, yMin: -0.5, yMax: 0.5 };
-    this._defaultBounds = { ...this._bounds };
+    this._naturalBounds = { xMin: -1.5, xMax: 1.5, yMin: -0.5, yMax: 0.5 };
+    this._bounds = { ...this._naturalBounds };
+    this._defaultBounds = { ...this._naturalBounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
@@ -86,6 +89,22 @@ for (let i = 0; i < iterations; i++) {
     this._densityHeight = 1000;
     this._lastDensity = null;
     this._lastMaxDensity = 0;
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this._defaultBounds = { xMin: xMid - xHalf, xMax: xMid + xHalf, yMin: yMid - yHalf, yMax: yMid + yHalf };
   }
 
   getControls() {
@@ -116,6 +135,8 @@ for (let i = 0; i < iterations; i++) {
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -145,8 +166,7 @@ for (let i = 0; i < iterations; i++) {
       return;
     }
     if (key === 'resolution') {
-      this._densityWidth = value;
-      this._densityHeight = Math.round(value / 2);
+      this._syncAspect();
     }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
@@ -154,14 +174,14 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.a = 1.4; this.params.b = 0.3;
+    this._syncAspect();
     this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   _startWorker() {

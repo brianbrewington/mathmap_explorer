@@ -14,14 +14,12 @@ class SimpleHarmonicExploration extends BaseExploration {
   static formulaShort = 'x = A cos(&omega;t + &phi;), &omega; = &radic;(k/m)';
   static formula = `<h3>Simple Harmonic Motion</h3>
 <div class="formula-block">
-x(t) = A&middot;cos(&omega;t + &phi;)<br>
-&omega; = &radic;(k / m)<br>
-F = &minus;kx &nbsp;&nbsp;(Hooke&rsquo;s Law)
+$$\\begin{aligned} x(t) &= A\\cos(\\omega t + \\phi) \\\\ \\omega &= \\sqrt{k / m} \\\\ F &= -kx \\quad (\\text{Hooke's Law}) \\end{aligned}$$
 </div>
 <p>Simple Harmonic Motion (SHM) describes oscillation about an equilibrium point where the
 restoring force is proportional to displacement. It is the foundation of nearly all
-vibrating systems &mdash; from springs and pendulums to molecules and electrical circuits.</p>
-<p>The <strong>angular frequency &omega;</strong> is derived from the spring stiffness <em>k</em>
+vibrating systems — from springs and pendulums to molecules and electrical circuits.</p>
+<p>The <strong>angular frequency $\\omega$</strong> is derived from the spring stiffness <em>k</em>
 and mass <em>m</em>. A stiffer spring or lighter mass means faster oscillation.</p>`;
   static tutorial = `<h3>The Simplest Oscillation</h3>
 <p>Every vibration in nature — a guitar string, a pendulum, the atoms in a crystal —
@@ -49,23 +47,23 @@ const x = A * Math.cos(omega * t + phi);</code></pre>
   static guidedSteps = [
     {
       label: 'Slow Oscillation',
-      description: 'A gentle back-and-forth at low frequency. The displacement follows A sin(ωt + φ) exactly — the most fundamental periodic motion in physics.',
-      params: { freq: 1, amplitude: 3, phase: 0 }
+      description: 'A gentle back-and-forth at low frequency. The displacement follows A cos(ωt + φ) exactly — the most fundamental periodic motion in physics.',
+      params: { stiffness: 1, mass: 1, amplitude: 3, phase: 0 }
     },
     {
       label: 'Fast Oscillation',
       description: 'Higher frequency compresses the wave. More cycles fit in the same time window but the amplitude stays the same — energy depends on both frequency and amplitude.',
-      params: { freq: 5, amplitude: 3, phase: 0 }
+      params: { stiffness: 25, mass: 1, amplitude: 3, phase: 0 }
     },
     {
       label: 'Small Amplitude',
       description: 'Reduce the amplitude. The oscillation is gentler — less displacement, less velocity, less energy. The period stays identical regardless of amplitude.',
-      params: { freq: 2, amplitude: 1, phase: 0 }
+      params: { stiffness: 4, mass: 1, amplitude: 1, phase: 0 }
     },
     {
       label: 'Phase Shifted',
       description: 'Add a phase offset of π/2. The wave starts at its maximum instead of zero — this is the difference between sine and cosine: just a quarter-cycle shift.',
-      params: { freq: 2, amplitude: 3, phase: 1.57 }
+      params: { stiffness: 4, mass: 1, amplitude: 3, phase: 1.57 }
     }
   ];
 
@@ -154,8 +152,8 @@ const x = A * Math.cos(omega * t + phi);</code></pre>
   _syncAudioParams() {
     if (!this._osc) return;
     const now = this._audioCtx.currentTime;
-    this._osc.frequency.setTargetAtTime(200 + this.omega * 40, now, 0.05);
-    this._gainNode.gain.setTargetAtTime(Math.max(0, (this.params.amplitude || 0) / 2), now, 0.05);
+    this._osc.frequency.setTargetAtTime(110 * this.omega, now, 0.05);
+    this._gainNode.gain.setTargetAtTime(Math.min(0.8, Math.max(0, (this.params.amplitude || 0) / 5)), now, 0.05);
   }
 
   updateAudio() {}

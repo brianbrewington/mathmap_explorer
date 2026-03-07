@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { forceDirectedLayout } from './force-layout.js';
+import { GraphPanZoom } from '../ui/graph-pan-zoom.js';
 
 const TAU = Math.PI * 2;
 
@@ -43,12 +44,12 @@ class KuramotoNetworkExploration extends BaseExploration {
   static formulaShort = "dθ_i/dt = ω_i + (K/|N_i|)Σ_{j∈N_i} sin(θ_j - θ_i)";
   static formula = `<h3>Kuramoto Model on Networks</h3>
 <div class="formula-block">
-dθ<sub>i</sub>/dt = ω<sub>i</sub> + (K/|N<sub>i</sub>|) Σ<sub>j∈N<sub>i</sub></sub> sin(θ<sub>j</sub> − θ<sub>i</sub>)
+$$\\frac{d\\theta_i}{dt} = \\omega_i + \\frac{K}{|\\mathcal{N}_i|} \\sum_{j \\in \\mathcal{N}_i} \\sin(\\theta_j - \\theta_i)$$
 </div>
-<p>Each oscillator i has natural frequency ω<sub>i</sub> and couples to its graph neighbors N<sub>i</sub>.
-The <strong>order parameter R</strong> = |Σ e<sup>iθ<sub>j</sub></sup>|/N measures global synchronization.</p>
+<p>Each oscillator $i$ has natural frequency $\\omega_i$ and couples to its graph neighbors $\\mathcal{N}_i$.
+The <strong>order parameter</strong> $R = |\\sum e^{i\\theta_j}|/N$ measures global synchronization.</p>
 <p><strong>Chimera states:</strong> On certain topologies, some nodes synchronize while others
-don't — a coexistence of order and disorder that shouldn't be possible but is.</p>`;
+don't &mdash; a coexistence of order and disorder that shouldn't be possible but is.</p>`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>Coupling K:</strong> Increase to drive synchronization. Watch R climb from ~0 to ~1.</li>
@@ -84,6 +85,7 @@ and network topology.</p>`;
     this._positions = [];
     this._orderHistory = [];
     this._lastFrame = 0;
+    this._pz = new GraphPanZoom(() => this.render());
   }
 
   getControls() {
@@ -114,11 +116,12 @@ and network topology.</p>`;
 
   activate() {
     this.ctx = this.canvas.getContext('2d');
+    this._pz.attach(this.canvas);
     this._rebuild();
     this.start();
   }
 
-  deactivate() { super.deactivate(); this.ctx = null; }
+  deactivate() { super.deactivate(); this._pz.detach(); this.ctx = null; }
 
   onParamChange(key, value) {
     this.params[key] = value;
@@ -141,6 +144,7 @@ and network topology.</p>`;
     this._phases = Array.from({ length: n }, () => rng() * TAU);
     this._omegas = Array.from({ length: n }, () => 1 + this._randn(rng) * this.params.freqSpread);
     this._positions = forceDirectedLayout(n, this._graph.adj, rng);
+    this._pz.reset();
     this._orderHistory = [];
   }
 
@@ -209,10 +213,12 @@ and network topology.</p>`;
     ctx.strokeRect(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h);
 
     const gPad = px(25);
-    const gW = graphPanel.w - 2 * gPad;
-    const gH = graphPanel.h - 2 * gPad;
-    const toX = u => graphPanel.x + gPad + u * gW;
-    const toY = v => graphPanel.y + gPad + v * gH;
+    const pz = this._pz;
+    pz.setPanel(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h, gPad);
+    const toX = u => pz.toX(u);
+    const toY = v => pz.toY(v);
+
+    pz.clipToPanel(ctx);
 
     // Edges
     ctx.strokeStyle = 'rgba(100,116,139,0.12)';
@@ -232,6 +238,8 @@ and network topology.</p>`;
       ctx.arc(toX(u), toY(v), px(4), 0, TAU);
       ctx.fill();
     }
+
+    pz.unclip(ctx);
 
     const R = this._orderParameter();
     ctx.fillStyle = '#d3d8e5';

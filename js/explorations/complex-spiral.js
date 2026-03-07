@@ -12,12 +12,12 @@ class ComplexSpiralExploration extends BaseExploration {
   static formulaShort = 'z(t) = e<sup>(&sigma;+i&omega;)t</sup>';
   static formula = `<h3>Complex Exponential Spiral</h3>
 <div class="formula-block">
-z(t) = e<sup>(&sigma; + i&omega;)t</sup> = e<sup>&sigma;t</sup> &middot; e<sup>i&omega;t</sup>
+$$z(t) = e^{(\\sigma + i\\omega)t} = e^{\\sigma t} \\cdot e^{i\\omega t}$$
 </div>
 <p>The complex exponential combines real exponential growth (or decay) with circular
-rotation. The real part &sigma; controls the <strong>envelope</strong>: positive &sigma; spirals
-outward, negative &sigma; spirals inward, and &sigma;&nbsp;=&nbsp;0 traces the unit circle.</p>
-<p>The imaginary part &omega; sets the angular velocity. Together they produce logarithmic
+rotation. The real part $\\sigma$ controls the <strong>envelope</strong>: positive $\\sigma$ spirals
+outward, negative $\\sigma$ spirals inward, and $\\sigma = 0$ traces the unit circle.</p>
+<p>The imaginary part $\\omega$ sets the angular velocity. Together they produce logarithmic
 spirals that appear throughout nature &mdash; seashells, hurricanes, and galaxies.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The trail plots <code>z(t)</code> on the complex plane as time advances:</p>

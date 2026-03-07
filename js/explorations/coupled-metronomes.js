@@ -62,12 +62,14 @@ class CoupledMetronomesExploration extends BaseExploration {
   static formulaShort = "θ'' = -ω²sin θ + E(1-(θ/θ_max)²)θ' - x''cos θ";
   static formula = `<h3>Driven Metronomes On A Rolling Base</h3>
 <div class="formula-block">
-(M+nm)x'' = nm·C·mean(sin θ<sub>i</sub>) − γx' − kx<br>
-θ''<sub>i</sub> = −ω<sub>i</sub>²sin θ<sub>i</sub> + E(1−(θ<sub>i</sub>/θ<sub>max</sub>)²)θ'<sub>i</sub> − dθ'<sub>i</sub> − x''cos θ<sub>i</sub>
+$$\\begin{aligned}
+(M + nm)\\ddot{x} &= nmC\\,\\text{mean}(\\sin\\theta_i) - \\gamma\\dot{x} - kx \\\\
+\\ddot{\\theta}_i &= -\\omega_i^2 \\sin\\theta_i + E\\!\\left(1 - \\left(\\frac{\\theta_i}{\\theta_{\\max}}\\right)^{\\!2}\\right)\\dot{\\theta}_i - d\\dot{\\theta}_i - \\ddot{x}\\cos\\theta_i
+\\end{aligned}$$
 </div>
 <p>Each pendulum is <strong>driven</strong> by a van der Pol escapement that pumps energy
-near vertical and self-limits at amplitude θ<sub>max</sub>. The platform couples all
-pendula through its shared acceleration x''.</p>
+near vertical and self-limits at amplitude $\\theta_{\\max}$. The platform couples all
+pendula through its shared acceleration $\\ddot{x}$.</p>
 <p>Energy terms: pendulum KE/PE, platform KE/PE, and a cross-coupling KE from
 the bob velocity in the lab frame.</p>`;
   static tutorial = `<h3>What To Try</h3>
@@ -393,7 +395,7 @@ the bob velocity in the lab frame.</p>`;
       osc.type = 'triangle';
       osc.frequency.value = CLICK_FREQ_HZ;
       gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.exponentialRampToValueAtTime(0.08, t0 + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.6, t0 + 0.002);
       gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
       osc.connect(gain);
       gain.connect(this._clickBus);

@@ -112,16 +112,12 @@ class LSystemExploration extends BaseExploration {
   static formulaShort = 'Axiom → Rules → Turtle';
   static formula = `<h3>L-Systems</h3>
 <div class="formula-block">
-Axiom: initial string<br>
-Rules: character → replacement (per iteration)<br>
-F = draw forward, + = turn left, - = turn right<br>
-[ = push state, ] = pop state<br><br>
-<b>Stochastic rules:</b><br>
-F(0.6) = F[+F]F[-F]F<br>
-F(0.3) = F[+F]F<br>
-F(0.1) = F
+$$\\text{Axiom: initial string}$$
+$$\\text{Rules: character} \\to \\text{replacement (per iteration)}$$
+$$F = \\text{draw},\\; + = \\text{left},\\; - = \\text{right},\\; [\\,] = \\text{push/pop}$$
+$$\\textbf{Stochastic: } F \\xrightarrow{0.6} F[{+}F]F[{-}F]F,\\; F \\xrightarrow{0.3} F[{+}F]F,\\; F \\xrightarrow{0.1} F$$
 </div>
-<p>Lindenmayer systems generate complex fractal patterns through simple string rewriting rules. With probability weights, the same rules produce different organisms each time — same genotype, different phenotype.</p>`;
+<p>Lindenmayer systems generate complex fractal patterns through simple string rewriting rules. With probability weights, the same rules produce different organisms each time &mdash; same genotype, different phenotype.</p>`;
   static tutorial = `<h3>How L-Systems Work</h3>
 <p>Starting from an axiom string, each iteration replaces characters according to production rules. The final string is interpreted as turtle graphics:</p>
 <pre><code class="language-js">// F = move forward and draw

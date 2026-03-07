@@ -16,9 +16,9 @@ class LeastActionPathsExploration extends BaseExploration {
   static formulaShort = 'S = ∫ (T − V) dt';
   static formula = `<h3>Principle of Least Action</h3>
 <div class="formula-block">
-Lagrangian: L = T &minus; V = &frac12; m v&sup2; &minus; m g y<br><br>
-Action: S = &int;<sub>0</sub><sup>T</sup> L &thinsp;dt<br><br>
-Nature picks the path where &delta;S = 0
+$$\\mathcal{L} = T - V = \\tfrac{1}{2}mv^2 - mgy$$
+$$S = \\int_0^T \\mathcal{L}\\,dt$$
+$$\\text{Nature picks the path where } \\delta S = 0$$
 </div>
 <p>The <strong>principle of least (stationary) action</strong> says the true trajectory
 of a particle is the one that makes the action integral stationary. For

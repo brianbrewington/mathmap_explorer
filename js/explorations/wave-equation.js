@@ -14,25 +14,23 @@ class WaveEquationExploration extends BaseExploration {
   static formulaShort = '\u2202\u00B2u/\u2202t\u00B2 = c\u00B2\u2202\u00B2u/\u2202x\u00B2';
   static formula = `<h3>1D Wave Equation</h3>
 <div class="formula-block">
-\u2202\u00B2u/\u2202t\u00B2 = c\u00B2 \u2202\u00B2u/\u2202x\u00B2
+$$\\frac{\\partial^2 u}{\\partial t^2} = c^2 \\frac{\\partial^2 u}{\\partial x^2}$$
 </div>
 <p>This is the classical wave equation describing vibrations on a string, sound waves in a tube,
 or any system where disturbances propagate at speed <strong>c</strong>.</p>
 <h4>Finite-Difference Scheme</h4>
 <div class="formula-block">
-u<sup>n+1</sup><sub>i</sub> = 2u<sup>n</sup><sub>i</sub> \u2212 u<sup>n\u22121</sup><sub>i</sub>
-+ r\u00B2 (u<sup>n</sup><sub>i+1</sub> \u2212 2u<sup>n</sup><sub>i</sub> + u<sup>n</sup><sub>i\u22121</sub>)
-\u2212 \u03B3\u0394t (u<sup>n</sup><sub>i</sub> \u2212 u<sup>n\u22121</sup><sub>i</sub>)
+$$u_i^{n+1} = 2u_i^n - u_i^{n-1} + r^2(u_{i+1}^n - 2u_i^n + u_{i-1}^n) - \\gamma\\Delta t\\,(u_i^n - u_i^{n-1})$$
 </div>
-<p>where <strong>r = c\u0394t/\u0394x</strong> is the Courant number. Stability requires r \u2264 1 (the CFL condition).</p>
+<p>where $r = c\\Delta t / \\Delta x$ is the Courant number. Stability requires $r \\le 1$ (the CFL condition).</p>
 <h4>Boundary Conditions</h4>
 <ul>
-<li><strong>Fixed:</strong> u(0) = u(L) = 0 \u2014 string clamped at both ends (reflection with inversion)</li>
-<li><strong>Free:</strong> \u2202u/\u2202x = 0 at boundaries \u2014 string free to slide (reflection without inversion)</li>
+<li><strong>Fixed:</strong> $u(0) = u(L) = 0$ \u2014 string clamped at both ends (reflection with inversion)</li>
+<li><strong>Free:</strong> $\\partial u / \\partial x = 0$ at boundaries \u2014 string free to slide (reflection without inversion)</li>
 <li><strong>Absorbing:</strong> waves leave without reflection \u2014 the Engquist\u2013Majda ABC condition</li>
 </ul>
 <h4>Damping</h4>
-<p>The damping term \u03B3 \u2202u/\u2202t causes exponential amplitude decay, modeling dissipation in real strings.</p>`;
+<p>The damping term $\\gamma\\, \\partial u / \\partial t$ causes exponential amplitude decay, modeling dissipation in real strings.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>upper panel</strong> shows the string displacement u(x, t) as a cyan curve. The x-axis
 represents the string at rest. Displacement is shown both above and below this equilibrium.</p>
@@ -111,7 +109,7 @@ it oscillates in place forever (zero damping).</li>
         { value: 'pluck', label: 'Plucked String' },
         { value: 'standing', label: 'Standing Wave' },
       ], value: this.params.initial },
-      { type: 'slider', key: 'damping', label: 'Damping (\u03B3)', min: 0, max: 0.01, step: 0.0001, value: this.params.damping },
+      { type: 'slider', key: 'damping', label: 'Damping (\u03B3)', min: 0, max: 1.0, step: 0.01, value: this.params.damping },
       { type: 'slider', key: 'speed', label: 'Steps/Frame', min: 1, max: 10, step: 1, value: this.params.speed },
       { type: 'separator' },
       { type: 'button', key: 'start', label: 'Start', action: 'start' },

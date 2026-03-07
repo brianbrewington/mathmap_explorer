@@ -7,6 +7,9 @@ import { getTagLabel, getFacet, isFacetTag } from '../explorations/taxonomy.js';
 import { addFilter } from './sidebar.js';
 import { openImageModal } from './image-modal.js';
 import { buildTrailList, attachTrailListeners, buildTrailNav, attachTrailNavListeners } from './trail-picker.js';
+import { renderMath } from './math-renderer.js';
+import { renderBlockDiagram, buildBlockDiagramHtml } from './diagram-renderer.js';
+import { buildCircuitSVGHtml } from './circuit-renderer.js';
 
 let panel, formulaContent, tutorialContent, relatedContent, notesContent, toggleBtn;
 let currentTab = 'formula';
@@ -335,7 +338,8 @@ function isCircuitDemo(ExplClass) {
   return Array.isArray(ExplClass?.tags) && ExplClass.tags.includes('analog-circuits');
 }
 
-function buildCircuitDiagram(diagram) {
+function buildCircuitDiagram(diagram, schematic) {
+  if (schematic) return buildCircuitSVGHtml(schematic);
   if (!diagram) return '';
   return `<div class="circuit-learning-block">
     <h3>Circuit Diagram</h3>
@@ -385,12 +389,17 @@ function buildBenchChecklist(items) {
 }
 
 function buildCircuitLearningHtml(ExplClass) {
-  const diagramHtml = buildCircuitDiagram(ExplClass.circuitDiagram);
+  const diagramHtml = buildCircuitDiagram(ExplClass.circuitDiagram, ExplClass.circuitSchematic);
+  let blockDiagramMeta = null;
+  if (ExplClass.blockDiagram) {
+    blockDiagramMeta = buildBlockDiagramHtml();
+  }
   const probeHtml = buildProbeMap(ExplClass.probeMap);
   const benchMapHtml = buildBenchMap(ExplClass.benchMap);
   const checklistHtml = buildBenchChecklist(ExplClass.benchChecklist);
-  if (!diagramHtml && !probeHtml && !benchMapHtml && !checklistHtml) return '';
-  return `<div class="circuit-learning">${diagramHtml}${probeHtml}${benchMapHtml}${checklistHtml}</div>`;
+  const blockHtml = blockDiagramMeta ? blockDiagramMeta.html : '';
+  if (!diagramHtml && !blockHtml && !probeHtml && !benchMapHtml && !checklistHtml) return '';
+  return { html: `<div class="circuit-learning">${diagramHtml}${blockHtml}${probeHtml}${benchMapHtml}${checklistHtml}</div>`, blockDiagramMeta };
 }
 
 function getEffectiveGuidedSteps(ExplClass) {
@@ -413,7 +422,8 @@ export function updateInfoPanel(ExplClass) {
   const resourceHtml = buildResourceLinks(ExplClass.resources);
   const guidedSteps = getEffectiveGuidedSteps(ExplClass);
   const tellMeMoreHtml = buildTellMeMore(guidedSteps);
-  const circuitLearningHtml = buildCircuitLearningHtml(ExplClass);
+  const circuitResult = buildCircuitLearningHtml(ExplClass);
+  const circuitLearningHtml = circuitResult ? circuitResult.html : '';
 
   let formulaHtml = '';
   if (overviewHtml) {
@@ -430,6 +440,13 @@ export function updateInfoPanel(ExplClass) {
   }
   formulaContent.innerHTML = formulaHtml;
 
+  // Async rendering: KaTeX math + Mermaid block diagrams
+  renderMath(formulaContent);
+  if (circuitResult?.blockDiagramMeta && ExplClass.blockDiagram) {
+    const container = document.getElementById(circuitResult.blockDiagramMeta.containerId);
+    if (container) renderBlockDiagram(container, ExplClass.blockDiagram);
+  }
+
   const guidedHtml = buildGuidedSteps(guidedSteps);
   if (ExplClass.tutorial) {
     let html = ExplClass.tutorial;
@@ -442,6 +459,7 @@ export function updateInfoPanel(ExplClass) {
   } else {
     tutorialContent.innerHTML = '<p class="info-empty">No guide available.</p>';
   }
+  renderMath(tutorialContent);
 
   currentExplId = ExplClass.id;
   currentExplClass = ExplClass;

@@ -12,10 +12,10 @@ class SierpinskiExploration extends BaseExploration {
   static formulaShort = 'p<sub>n+1</sub> = (p<sub>n</sub> + v) / 2';
   static formula = `<h3>Sierpinski Triangle (Chaos Game)</h3>
 <div class="formula-block">
-p<sub>n+1</sub> = (p<sub>n</sub> + v<sub>k</sub>) / 2<br>
-where v<sub>k</sub> is a randomly chosen vertex of the triangle
+$$p_{n+1} = \\frac{p_n + v_k}{2}$$
 </div>
-<p>The chaos game: start at any point, pick a random vertex of the triangle, and move halfway toward it. Repeating this simple rule millions of times produces the Sierpinski triangle — a fractal with Hausdorff dimension log(3)/log(2) ≈ 1.585.</p>`;
+<p>where $v_k$ is a randomly chosen vertex of the triangle.</p>
+<p>The chaos game: start at any point, pick a random vertex of the triangle, and move halfway toward it. Repeating this simple rule millions of times produces the Sierpinski triangle — a fractal with Hausdorff dimension $\\log(3)/\\log(2) \\approx 1.585$.</p>`;
   static tutorial = `<h3>How the Sierpinski Triangle is Computed</h3>
 <p>The chaos game is elegantly simple. Three vertices define a triangle. At each step, we randomly select one vertex and move our current point halfway toward it.</p>
 <pre><code class="language-js">const vertices = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]];
@@ -69,8 +69,9 @@ for (let i = 0; i < iterations; i++) {
       resolution: 2000,
       brightness: 1.0
     };
-    this._bounds = { xMin: -0.1, xMax: 1.1, yMin: -0.1, yMax: 1.0 };
-    this._defaultBounds = { ...this._bounds };
+    this._naturalBounds = { xMin: -0.1, xMax: 1.1, yMin: -0.1, yMax: 1.0 };
+    this._bounds = { ...this._naturalBounds };
+    this._defaultBounds = { ...this._naturalBounds };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
@@ -79,6 +80,22 @@ for (let i = 0; i < iterations; i++) {
     this._densityHeight = 1750;
     this._lastDensity = null;
     this._lastMaxDensity = 0;
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this._defaultBounds = { xMin: xMid - xHalf, xMax: xMid + xHalf, yMin: yMid - yHalf, yMax: yMid + yHalf };
   }
 
   getControls() {
@@ -108,6 +125,8 @@ for (let i = 0; i < iterations; i++) {
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -137,8 +156,7 @@ for (let i = 0; i < iterations; i++) {
       return;
     }
     if (key === 'resolution') {
-      this._densityWidth = value;
-      this._densityHeight = Math.round(value * 0.875);
+      this._syncAspect();
     }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
@@ -146,14 +164,14 @@ for (let i = 0; i < iterations; i++) {
 
   reset() {
     this.params.iterations = 1000000;
+    this._syncAspect();
     this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   _startWorker() {

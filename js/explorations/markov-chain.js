@@ -36,18 +36,23 @@ class MarkovChainExploration extends BaseExploration {
   static formulaShort = '\u03C0 = \u03C0P (stationary distribution)';
   static formula = `<h3>Markov Chain</h3>
 <div class="formula-block">
-P(X<sub>n+1</sub> = j | X<sub>n</sub> = i) = P<sub>ij</sub><br><br>
-&pi; = &pi;P &nbsp; (stationary distribution)<br><br>
-&pi;<sub>j</sub> = &sum;<sub>i</sub> &pi;<sub>i</sub> P<sub>ij</sub>
+$$\\begin{aligned} P(X_{n+1} = j \\mid X_n = i) &= P_{ij} \\\\ \\pi &= \\pi P \\quad \\text{(stationary distribution)} \\\\ \\pi_j &= \\sum_i \\pi_i P_{ij} \\end{aligned}$$
 </div>
 <p>A <strong>Markov chain</strong> is a sequence of random variables where the next state
-depends only on the current state &mdash; not on the history. The transition
+depends only on the current state — not on the history. The transition
 probabilities are encoded in the matrix <strong>P</strong>.</p>
 <p>An <strong>ergodic</strong> (irreducible, aperiodic) chain has a unique
-<strong>stationary distribution</strong> &pi; satisfying &pi; = &pi;P. Regardless of
-the starting state, the fraction of time spent in each state converges to &pi;.</p>
-<p>Chains with <strong>absorbing states</strong> (like the Gambler&rsquo;s Ruin) do not have
-a non-trivial stationary distribution &mdash; the walker eventually gets trapped.</p>`;
+<strong>stationary distribution</strong> $\\pi$ satisfying $\\pi = \\pi P$. Regardless of
+the starting state, the fraction of time spent in each state converges to $\\pi$.</p>
+<p>Chains with <strong>absorbing states</strong> (like the Gambler's Ruin) do not have
+a non-trivial stationary distribution — the walker eventually gets trapped.</p>`;
+  static blockDiagram = `graph LR
+  S1["State 1"] -->|P12| S2["State 2"]
+  S2 -->|P21| S1
+  S2 -->|P23| S3["State 3"]
+  S3 -->|P31| S1
+  S1 -->|P13| S3
+  S3 -->|P32| S2`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>left panel</strong> shows the state graph. States are arranged in a polygon.
 Arrows between states have thickness proportional to transition probability.

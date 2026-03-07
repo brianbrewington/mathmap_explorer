@@ -12,14 +12,14 @@ class ButterflyCurveExploration extends BaseExploration {
   static formulaShort = 'r = e<sup>sin&theta;</sup> &minus; 2cos(4&theta;) + sin<sup>5</sup>(&hellip;)';
   static formula = `<h3>Temple Fay&rsquo;s Butterfly Curve</h3>
 <div class="formula-block">
-r(&theta;) = e<sup>sin&theta;</sup> &minus; 2&middot;cos(4&theta;) + sin<sup>5</sup>((2&theta; &minus; &pi;) / 24)
+$$r(\\theta) = e^{\\sin\\theta} - 2\\cos(4\\theta) + \\sin^5\\!\\left(\\frac{2\\theta - \\pi}{24}\\right)$$
 </div>
 <p>Discovered by Temple H. Fay in 1989, this polar curve produces a remarkably lifelike butterfly
 shape from a single compact equation. The interplay of exponential, cosine, and fifth-power sine
 terms creates the delicate wing structure.</p>
 <p>The curve requires many full rotations (typically 12) to complete because the argument of the
-sin<sup>5</sup> term divides &theta; by 24, so the pattern only closes after
-&theta;&nbsp;=&nbsp;24&pi;.</p>`;
+$\\sin^5$ term divides $\\theta$ by 24, so the pattern only closes after
+$\\theta = 24\\pi$.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The curve is traced in polar coordinates and converted to Cartesian for drawing:</p>
 <pre><code class="language-js">const r = Math.exp(Math.sin(theta))

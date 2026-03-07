@@ -66,15 +66,19 @@ class CoupledSystemsExploration extends BaseExploration {
   static formulaShort = 'x_A ↔ x_B coupled';
   static formula = `<h3>Coupled Chaotic Systems</h3>
 <div class="formula-block">
-<b>Additive coupling:</b><br>
-x<sub>A</sub>(n+1) = f<sub>A</sub>(x<sub>A</sub>) + \u03B5(x<sub>B</sub> \u2212 x<sub>A</sub>)<br>
-x<sub>B</sub>(n+1) = f<sub>B</sub>(x<sub>B</sub>) + \u03B5(x<sub>A</sub> \u2212 x<sub>B</sub>)<br><br>
-<b>Replacement coupling:</b><br>
-x<sub>A</sub>(n+1) = (1\u2212\u03B5)\u00B7f<sub>A</sub>(x<sub>A</sub>) + \u03B5\u00B7f<sub>B</sub>(x<sub>B</sub>)<br><br>
-<b>Parametric coupling:</b><br>
-x<sub>A</sub>(n+1) = f<sub>A</sub>(x<sub>A</sub>; p + \u03B5\u00B7x<sub>B</sub>)
+<p><strong>Additive coupling:</strong></p>
+$$\\begin{aligned}
+x_A(n+1) &= f_A(x_A) + \\varepsilon(x_B - x_A) \\\\
+x_B(n+1) &= f_B(x_B) + \\varepsilon(x_A - x_B)
+\\end{aligned}$$
+<p><strong>Replacement coupling:</strong></p>
+$$x_A(n+1) = (1-\\varepsilon)\\cdot f_A(x_A) + \\varepsilon \\cdot f_B(x_B)$$
+<p><strong>Parametric coupling:</strong></p>
+$$x_A(n+1) = f_A(x_A;\\, p + \\varepsilon \\cdot x_B)$$
 </div>
-<p>\u03B5 = 0: independent systems. \u03B5 > 0: coupled. In the <b>phase portrait</b> view, synchronization appears as the orbit collapsing onto the diagonal x<sub>A</sub> = x<sub>B</sub>.</p>`;
+<p>$\\varepsilon = 0$: independent systems. $\\varepsilon > 0$: coupled. In the <strong>phase portrait</strong> view, synchronization appears as the orbit collapsing onto the diagonal $x_A = x_B$.</p>`;
+  static blockDiagram = `graph LR
+  A["System A (xA)"] <-->|"coupling κ"| B["System B (xB)"]`;
   static tutorial = `<h3>What Coupling Does</h3>
 <p>Two identical chaotic systems with <b>zero coupling</b> (\u03B5=0) produce completely different trajectories from different initial conditions \u2014 that's sensitivity to initial conditions.</p>
 <p>With <b>sufficient coupling</b>, something remarkable happens: the two systems <b>synchronize</b>. Despite being chaotic, they lock onto the same trajectory. In the phase portrait, independent systems fill a 2D region; synchronized systems collapse to the diagonal.</p>
@@ -171,6 +175,7 @@ xB_next = f(xB) + epsilon * (xA - xB);
       colorScheme: 0,
       brightness: 1.5
     };
+    this._naturalBounds = { ...p.bounds };
     this._bounds = { ...p.bounds };
     this._defaultBounds = { ...p.bounds };
     this.densityRenderer = null;
@@ -181,6 +186,22 @@ xB_next = f(xB) + epsilon * (xA - xB);
     this._densityHeight = 2000;
     this._lastDensity = null;
     this._lastMaxDensity = 0;
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution || 2000;
+    this._densityWidth = Math.round(this._densityHeight * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this._defaultBounds = { xMin: xMid - xHalf, xMax: xMid + xHalf, yMin: yMid - yHalf, yMax: yMid + yHalf };
   }
 
   shouldRebuildControls(key) {
@@ -239,6 +260,8 @@ xB_next = f(xB) + epsilon * (xA - xB);
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -277,7 +300,9 @@ xB_next = f(xB) + epsilon * (xA - xB);
         this.params.epsilon = p.epsilon;
         this.params.bidirectional = p.bidirectional ? 1 : 0;
         this.params.viewMode = p.viewMode;
-        this._bounds = { ...p.bounds };
+        this._naturalBounds = { ...p.bounds };
+        this._syncAspect();
+        this._bounds = { ...this._defaultBounds };
       }
     }
 
@@ -307,14 +332,15 @@ xB_next = f(xB) + epsilon * (xA - xB);
     this.params.bidirectional = p.bidirectional ? 1 : 0;
     this.params.couplingType = p.coupling;
     this.params.viewMode = p.viewMode;
-    this._bounds = { ...p.bounds };
+    this._naturalBounds = { ...p.bounds };
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   _buildSystemParams(side) {
@@ -361,9 +387,9 @@ xB_next = f(xB) + epsilon * (xA - xB);
       if (done) window.hideOverlay();
     };
 
-    const res = this.params.resolution || 2000;
-    this._densityWidth = res;
-    this._densityHeight = res;
+    if (!this._densityWidth || !this._densityHeight) {
+      this._syncAspect();
+    }
 
     this.worker.postMessage({
       systemA: {

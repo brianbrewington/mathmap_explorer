@@ -14,19 +14,19 @@ class GaussianPrimesExploration extends BaseExploration {
   static formulaShort = 'N(a + bi) = a² + b²; prime if N is prime form';
   static formula = `<h3>Gaussian Primes</h3>
 <div class="formula-block">
-Gaussian integers: ℤ[i] = { a + bi : a, b ∈ ℤ }<br><br>
-Norm: N(a + bi) = a² + b²<br><br>
-α ∈ ℤ[i] is prime iff it cannot be written as a product of two non-units.
+$$\\mathbb{Z}[i] = \\{\\, a + bi : a, b \\in \\mathbb{Z} \\,\\}$$
+$$N(a + bi) = a^2 + b^2$$
+$$\\alpha \\in \\mathbb{Z}[i] \\text{ is prime iff it cannot be written as a product of two non-units.}$$
 </div>
-<p>A regular prime <em>p</em> behaves in one of three ways in ℤ[i]:</p>
+<p>A regular prime $p$ behaves in one of three ways in $\\mathbb{Z}[i]$:</p>
 <ul>
-<li><strong>p = 2</strong> ramifies: 2 = −i(1 + i)²</li>
-<li><strong>p ≡ 1 (mod 4)</strong> splits: p = π·π̄ where π and π̄ are conjugate Gaussian primes
-(e.g. 5 = (2+i)(2−i))</li>
-<li><strong>p ≡ 3 (mod 4)</strong> stays prime (inert) in ℤ[i]</li>
+<li><strong>$p = 2$</strong> ramifies: $2 = -i(1 + i)^2$</li>
+<li><strong>$p \\equiv 1 \\pmod{4}$</strong> splits: $p = \\pi\\bar{\\pi}$ where $\\pi$ and $\\bar{\\pi}$ are conjugate Gaussian primes
+(e.g. $5 = (2+i)(2-i)$)</li>
+<li><strong>$p \\equiv 3 \\pmod{4}$</strong> stays prime (inert) in $\\mathbb{Z}[i]$</li>
 </ul>
 <p>This trichotomy is a consequence of <strong>Fermat's theorem on sums of two squares</strong>:
-a prime p can be written as a² + b² if and only if p = 2 or p ≡ 1 (mod 4).</p>`;
+a prime $p$ can be written as $a^2 + b^2$ if and only if $p = 2$ or $p \\equiv 1 \\pmod{4}$.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>Each dot represents a Gaussian integer a + bi. Bright dots are Gaussian primes;
 dark dots are composite or zero.</p>

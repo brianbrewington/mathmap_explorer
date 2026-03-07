@@ -12,14 +12,16 @@ class EpitrochoidExploration extends BaseExploration {
   static formulaShort = 'x = (R+r)cos t &minus; d&middot;cos((R+r)t/r)';
   static formula = `<h3>Epitrochoid (Spirograph)</h3>
 <div class="formula-block">
-x(t) = (R + r)&middot;cos(t) &minus; d&middot;cos((R + r)&middot;t / r)<br>
-y(t) = (R + r)&middot;sin(t) &minus; d&middot;sin((R + r)&middot;t / r)
+$$\\begin{aligned}
+x(t) &= (R + r)\\cos(t) - d\\cos\\!\\left(\\frac{(R + r)\\,t}{r}\\right) \\\\
+y(t) &= (R + r)\\sin(t) - d\\sin\\!\\left(\\frac{(R + r)\\,t}{r}\\right)
+\\end{aligned}$$
 </div>
-<p>An <strong>epitrochoid</strong> is the trace of a point attached to a circle of radius <em>r</em>
-rolling around the outside of a fixed circle of radius <em>R</em>. The pen is at
-distance <em>d</em> from the center of the rolling circle.</p>
-<p>When d&nbsp;=&nbsp;r the curve is an <strong>epicycloid</strong>; when d&nbsp;&lt;&nbsp;r the loops stay inside
-the annulus; when d&nbsp;&gt;&nbsp;r the loops extend outward. The ratio R/r determines the
+<p>An <strong>epitrochoid</strong> is the trace of a point attached to a circle of radius $r$
+rolling around the outside of a fixed circle of radius $R$. The pen is at
+distance $d$ from the center of the rolling circle.</p>
+<p>When $d = r$ the curve is an <strong>epicycloid</strong>; when $d < r$ the loops stay inside
+the annulus; when $d > r$ the loops extend outward. The ratio $R/r$ determines the
 number of cusps or petals.</p>`;
   static tutorial = `<h3>How Spirograph Curves Work</h3>
 <p>The rolling circle traces the curve as parameter t increases:</p>

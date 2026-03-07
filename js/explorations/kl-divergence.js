@@ -37,15 +37,15 @@ class KLDivergenceExploration extends BaseExploration {
   static formulaShort = 'D_KL(P‖Q) = Σ p·log(p/q)';
   static formula = `<h3>Kullback-Leibler Divergence</h3>
 <div class="formula-block">
-D<sub>KL</sub>(P ‖ Q) = &sum;<sub>i</sub> P(i) log<sub>2</sub> (P(i) / Q(i))<br><br>
-Cross-entropy: H(P, Q) = H(P) + D<sub>KL</sub>(P ‖ Q)<br><br>
-D<sub>KL</sub>(P ‖ Q) &ne; D<sub>KL</sub>(Q ‖ P) &nbsp; (asymmetric!)
+$$D_{\\text{KL}}(P \\,\\|\\, Q) = \\sum_i P(i) \\log_2 \\frac{P(i)}{Q(i)}$$
+$$H(P, Q) = H(P) + D_{\\text{KL}}(P \\,\\|\\, Q)$$
+$$D_{\\text{KL}}(P \\,\\|\\, Q) \\neq D_{\\text{KL}}(Q \\,\\|\\, P) \\quad \\text{(asymmetric!)}$$
 </div>
-<p><strong>KL divergence</strong> measures the extra bits needed when using code Q to
-represent data that actually follows distribution P. It is always &ge; 0
-(Gibbs&rsquo; inequality) and equals 0 only when P = Q.</p>
-<p>The <strong>asymmetry</strong> is its most counterintuitive property: D<sub>KL</sub>(P‖Q) can
-differ wildly from D<sub>KL</sub>(Q‖P). This matters enormously in machine
+<p><strong>KL divergence</strong> measures the extra bits needed when using code $Q$ to
+represent data that actually follows distribution $P$. It is always $\\geq 0$
+(Gibbs&rsquo; inequality) and equals 0 only when $P = Q$.</p>
+<p>The <strong>asymmetry</strong> is its most counterintuitive property: $D_{\\text{KL}}(P\\|Q)$ can
+differ wildly from $D_{\\text{KL}}(Q\\|P)$. This matters enormously in machine
 learning where the choice of direction determines the loss function.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>top panels</strong> show P (blue) and Q (purple) as bar charts, side by side.

@@ -14,20 +14,19 @@ class FordCirclesExploration extends BaseExploration {
   static formulaShort = 'C(p/q): center (p/q, 1/(2q²)), radius 1/(2q²)';
   static formula = `<h3>Ford Circles</h3>
 <div class="formula-block">
-For each reduced fraction p/q, draw a circle:<br><br>
-center = (p/q, &nbsp;1/(2q²))<br>
-radius = 1/(2q²)
+$$\\text{For each reduced fraction } \\frac{p}{q}\\text{, draw a circle:}$$
+$$\\text{center} = \\left(\\frac{p}{q},\\; \\frac{1}{2q^2}\\right), \\quad \\text{radius} = \\frac{1}{2q^2}$$
 </div>
 <p>Introduced by Lester Ford in 1938, these circles have a remarkable property:
 <strong>no two Ford circles overlap</strong>. Two circles are tangent if and only if their
-fractions are <em>Farey neighbors</em>, meaning |p₁q₂ − p₂q₁| = 1.</p>
+fractions are <em>Farey neighbors</em>, meaning $|p_1 q_2 - p_2 q_1| = 1$.</p>
 <p>The construction reveals the hierarchical structure of rational numbers.
 Larger circles correspond to simpler fractions (small denominators), and
-the pattern is self-similar at every scale — a hallmark of the
+the pattern is self-similar at every scale &mdash; a hallmark of the
 <strong>Stern-Brocot tree</strong>.</p>
 <p>Ford circles connect number theory to hyperbolic geometry: they are
 horocycles in the upper half-plane model, and the tangency relations
-encode the action of <strong>SL(2,ℤ)</strong> on the rationals.</p>`;
+encode the action of $\\text{SL}(2,\\mathbb{Z})$ on the rationals.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The x-axis represents the number line from 0 to 1. Each circle sits
 tangent to the axis at a rational point p/q, with size inversely proportional

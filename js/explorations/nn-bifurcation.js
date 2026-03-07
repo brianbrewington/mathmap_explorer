@@ -189,10 +189,10 @@ class NNBifurcationExploration extends BaseExploration {
   static formulaShort = 'θₙ₊₁ = θₙ − η·∇L(θₙ)';
   static formula = `<h3>Neural Network Gradient Descent as a Dynamical System</h3>
 <div class="formula-block">
-&theta;<sub>n+1</sub> = &theta;<sub>n</sub> &minus; &eta; &middot; &nabla;L(&theta;<sub>n</sub>)
+$$\\theta_{n+1} = \\theta_n - \\eta \\cdot \\nabla L(\\theta_n)$$
 </div>
 <p>Full-batch gradient descent on a fixed dataset is a <strong>deterministic iterated map</strong>
-on the weight vector &theta;. As learning rate &eta; increases, individual weights and neuron
+on the weight vector $\\theta$. As learning rate $\\eta$ increases, individual weights and neuron
 activations undergo period-doubling bifurcations — the same Feigenbaum cascade seen in
 the logistic map and the single-perceptron case.</p>
 <p>This exploration lets you build networks from a single perceptron to multi-layer MLPs,

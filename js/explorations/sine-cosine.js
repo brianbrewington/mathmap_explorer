@@ -13,14 +13,13 @@ class SineCosineExploration extends BaseExploration {
   static formulaShort = 'y = A sin(&omega;t + &phi;)';
   static formula = `<h3>Sine &amp; Cosine Functions</h3>
 <div class="formula-block">
-y<sub>1</sub> = A &middot; sin(&omega;t + &phi;)<br>
-y<sub>2</sub> = A &middot; cos(&omega;t)
+$$\\begin{aligned} y_1 &= A \\sin(\\omega t + \\phi) \\\\ y_2 &= A \\cos(\\omega t) \\end{aligned}$$
 </div>
 <p>Sine and cosine are the two fundamental circular functions. They describe the vertical and
 horizontal projections of a point moving around the unit circle at constant angular velocity
-&omega;.</p>
-<p>The phase parameter &phi; shifts sine along the time axis.
-When &phi;&nbsp;=&nbsp;&pi;/2 the sine becomes a cosine, illustrating that the two functions are
+$\\omega$.</p>
+<p>The phase parameter $\\phi$ shifts sine along the time axis.
+When $\\phi = \\pi/2$ the sine becomes a cosine, illustrating that the two functions are
 identical but offset by a quarter cycle.</p>`;
   static tutorial = `<h3>The Shape of Oscillation</h3>
 <p>Sine and cosine aren't just abstract curves — they are the <strong>shadow</strong>

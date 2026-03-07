@@ -12,29 +12,25 @@ class ShannonBoltzmannExploration extends BaseExploration {
   static teaserQuestion = 'Why does the same formula measure both information and thermodynamic disorder — and what role does temperature play?';
   static resources = [{ type: 'wikipedia', title: 'Boltzmann entropy', url: 'https://en.wikipedia.org/wiki/Boltzmann%27s_entropy_formula' }];
   static formulaShort = 'S_B / k_B ≈ N · H_Shannon';
-  static formula = `<h3>Shannon&ndash;Boltzmann Bridge</h3>
+  static formula = `<h3>Shannon–Boltzmann Bridge</h3>
 <div class="formula-block">
-Boltzmann: S<sub>B</sub> = k<sub>B</sub> ln W, &nbsp;
-W = N! / (n<sub>1</sub>! n<sub>2</sub>! &hellip; n<sub>M</sub>!)<br><br>
-Shannon: H = &minus;&sum; (n<sub>i</sub>/N) log(n<sub>i</sub>/N)<br><br>
-Stirling bridge: ln W &asymp; N &middot; H &nbsp; (large N)
+$$\\begin{aligned} \\text{Boltzmann:}\\quad S_B &= k_B \\ln W, \\quad W = \\frac{N!}{n_1!\\, n_2!\\, \\ldots\\, n_M!} \\\\ \\text{Shannon:}\\quad H &= -\\sum \\frac{n_i}{N} \\log \\frac{n_i}{N} \\\\ \\text{Stirling bridge:}\\quad \\ln W &\\approx N \\cdot H \\quad (\\text{large } N) \\end{aligned}$$
 </div>
-<p>The <strong>Boltzmann entropy</strong> S<sub>B</sub> = k<sub>B</sub> ln W counts microstates:
+<p>The <strong>Boltzmann entropy</strong> $S_B = k_B \\ln W$ counts microstates:
 how many ways can N particles be arranged into compartments matching the
 observed occupation numbers?</p>
 <p>The <strong>Shannon entropy</strong> H measures the information content of the
-occupation frequency distribution (n<sub>i</sub>/N).</p>
-<p>Stirling&rsquo;s approximation shows that <strong>ln W &asymp; N &middot; H</strong>, unifying
+occupation frequency distribution $(n_i / N)$.</p>
+<p>Stirling's approximation shows that $\\ln W \\approx N \\cdot H$, unifying
 the two entropies.</p>
 <h3>Temperature &amp; the Boltzmann Distribution</h3>
 <div class="formula-block">
-P(compartment i) = exp(&minus;E<sub>i</sub> / T) / Z<br>
-Z = &sum; exp(&minus;E<sub>j</sub> / T) &nbsp; (partition function)
+$$\\begin{aligned} P(\\text{compartment } i) &= \\frac{\\exp(-E_i / T)}{Z} \\\\ Z &= \\sum \\exp(-E_j / T) \\quad (\\text{partition function}) \\end{aligned}$$
 </div>
-<p>When compartments have <strong>energy levels</strong> E<sub>i</sub>, particles
+<p>When compartments have <strong>energy levels</strong> $E_i$, particles
 no longer equilibrate to a uniform distribution. Instead, the Metropolis
 criterion accepts hops to higher energy with probability
-exp(&minus;&Delta;E / T). The result is the <strong>Boltzmann distribution</strong>:
+$\\exp(-\\Delta E / T)$. The result is the <strong>Boltzmann distribution</strong>:
 lower-energy compartments attract more particles.</p>
 <p><strong>Temperature controls entropy:</strong> at high T, all compartments are
 nearly equally populated (maximum entropy). At low T, particles concentrate
@@ -62,12 +58,12 @@ peak at the center is unmistakable.</li>
 </ul>`;
 
   static guidedSteps = [
-    { title: 'Equilibration', description: 'Particles start packed in the first box. With no energy landscape (flat), they spread uniformly — both entropies climb to their maximum.', params: { numParticles: 80, numCompartments: 6, speed: 2, initMode: 'packed', energyLandscape: 'flat' } },
-    { title: 'The Bridge Converges', description: 'Increase N to 200. The Stirling ratio ln W / (N·H) tightens toward 1 — the bridge between Shannon and Boltzmann becomes exact in the large-N limit.', params: { numParticles: 200, numCompartments: 6, speed: 3, initMode: 'packed', energyLandscape: 'flat' } },
-    { title: 'Adding Energy', description: 'Switch to a linear energy gradient and start uniform. Compartment 1 has the lowest energy. Watch particles drift left as the Boltzmann distribution (dashed yellow) emerges.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 5 } },
-    { title: 'Cooling Down', description: 'Lower the temperature to 0.5. Nearly all particles pile into the lowest-energy compartment — entropy drops dramatically. This is what "cold" means statistically.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 0.5 } },
-    { title: 'Potential Well', description: 'A parabolic energy well with the minimum at the center. Particles concentrate in the middle compartments, forming a bell-shaped Boltzmann distribution.', params: { numParticles: 120, numCompartments: 12, speed: 2, initMode: 'uniform', energyLandscape: 'well', temperature: 2 } },
-    { title: 'Temperature = Entropy Dial', description: 'Crank temperature to 20 on any landscape. The energy differences become negligible — you recover the flat (uniform) limit. Infinite temperature means maximum entropy.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 20 } },
+    { label: 'Equilibration', description: 'Particles start packed in the first box. With no energy landscape (flat), they spread uniformly — both entropies climb to their maximum.', params: { numParticles: 80, numCompartments: 6, speed: 2, initMode: 'packed', energyLandscape: 'flat' } },
+    { label: 'The Bridge Converges', description: 'Increase N to 200. The Stirling ratio ln W / (N·H) tightens toward 1 — the bridge between Shannon and Boltzmann becomes exact in the large-N limit.', params: { numParticles: 200, numCompartments: 6, speed: 3, initMode: 'packed', energyLandscape: 'flat' } },
+    { label: 'Adding Energy', description: 'Switch to a linear energy gradient and start uniform. Compartment 1 has the lowest energy. Watch particles drift left as the Boltzmann distribution (dashed yellow) emerges.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 5 } },
+    { label: 'Cooling Down', description: 'Lower the temperature to 0.5. Nearly all particles pile into the lowest-energy compartment — entropy drops dramatically. This is what "cold" means statistically.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 0.5 } },
+    { label: 'Potential Well', description: 'A parabolic energy well with the minimum at the center. Particles concentrate in the middle compartments, forming a bell-shaped Boltzmann distribution.', params: { numParticles: 120, numCompartments: 12, speed: 2, initMode: 'uniform', energyLandscape: 'well', temperature: 2 } },
+    { label: 'Temperature = Entropy Dial', description: 'Crank temperature to 20 on any landscape. The energy differences become negligible — you recover the flat (uniform) limit. Infinite temperature means maximum entropy.', params: { numParticles: 100, numCompartments: 8, speed: 2, initMode: 'uniform', energyLandscape: 'linear', temperature: 20 } },
   ];
 
   constructor(canvas, controlsContainer) {

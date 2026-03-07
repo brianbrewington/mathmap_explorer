@@ -12,14 +12,14 @@ class TaylorSeriesExploration extends BaseExploration {
   static formulaShort = 'T<sub>N</sub>(x) = &sum; f<sup>(n)</sup>(0)&middot;x<sup>n</sup>/n!';
   static formula = `<h3>Taylor Series</h3>
 <div class="formula-block">
-T<sub>N</sub>(x) = &sum;<sub>n=0</sub><sup>N</sup> f<sup>(n)</sup>(0) &middot; x<sup>n</sup> / n!
+$$T_N(x) = \\sum_{n=0}^{N} \\frac{f^{(n)}(0)}{n!}\\, x^n$$
 </div>
 <p>A <strong>Taylor series</strong> approximates a smooth function as a polynomial by matching
 its derivatives at a point. Adding more terms improves the approximation over a
 wider interval.</p>
-<p>For <em>sin(x)</em>: T(x) = x &minus; x&sup3;/3! + x&sup5;/5! &minus; &hellip;<br>
-For <em>cos(x)</em>: T(x) = 1 &minus; x&sup2;/2! + x&sup4;/4! &minus; &hellip;<br>
-For <em>e<sup>x</sup></em>: T(x) = 1 + x + x&sup2;/2! + x&sup3;/3! + &hellip;</p>`;
+<p>For <em>sin(x)</em>: $T(x) = x - \\tfrac{x^3}{3!} + \\tfrac{x^5}{5!} - \\ldots$<br>
+For <em>cos(x)</em>: $T(x) = 1 - \\tfrac{x^2}{2!} + \\tfrac{x^4}{4!} - \\ldots$<br>
+For <em>$e^x$</em>: $T(x) = 1 + x + \\tfrac{x^2}{2!} + \\tfrac{x^3}{3!} + \\ldots$</p>`;
   static tutorial = `<h3>Infinite Polynomials That Capture Functions</h3>
 <p>A Taylor series is a polynomial of infinite degree that matches a function
 perfectly — at least near one point. Each additional term captures one more

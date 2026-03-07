@@ -14,17 +14,17 @@ class CentralLimitTheoremExploration extends BaseExploration {
   static formulaShort = 'f<sub>X+Y</sub> = f<sub>X</sub> * f<sub>Y</sub>';
   static formula = `<h3>Central Limit Theorem</h3>
 <div class="formula-block">
-(f<sub>X</sub> * f<sub>Y</sub>)(z) = \u222B f<sub>X</sub>(z \u2212 t) f<sub>Y</sub>(t) dt<br><br>
-S<sub>N</sub> = X<sub>1</sub> + X<sub>2</sub> + \u2026 + X<sub>N</sub>
+$$(f_X * f_Y)(z) = \\int f_X(z - t)\\, f_Y(t)\\, dt$$
+$$S_N = X_1 + X_2 + \\ldots + X_N$$
 </div>
 <p>The distribution of a <strong>sum of independent random variables</strong> is the
 <em>convolution</em> of their individual densities.</p>
 <p>The <strong>Central Limit Theorem</strong> says that regardless of the shape of the
 original distribution, the standardized sum converges to a
-<strong>Gaussian (normal) distribution</strong> as N \u2192 \u221E.</p>
+<strong>Gaussian (normal) distribution</strong> as $N \\to \\infty$.</p>
 <p>This visualization computes the convolution directly: starting from a base
-density f, it convolves f with itself N\u22121 times to obtain the density of
-S<sub>N</sub>.</p>`;
+density $f$, it convolves $f$ with itself $N-1$ times to obtain the density of
+$S_N$.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>left panel</strong> shows the base distribution \u2014 the shape of a single
 random variable X.</p>
@@ -180,10 +180,8 @@ a matching normal curve is drawn for comparison.</p>
 
   _convolve(a, b) {
     const len = a.length + b.length - 1;
-    const out = new Float64Array(len > a.length ? a.length : len);
-    // Clamp to original length for visualization
-    const result = new Float64Array(a.length);
-    for (let i = 0; i < a.length; i++) {
+    const result = new Float64Array(len);
+    for (let i = 0; i < len; i++) {
       let s = 0;
       for (let j = 0; j < b.length; j++) {
         const idx = i - j;
@@ -249,18 +247,19 @@ a matching normal curve is drawn for comparison.</p>
       const baseStat = this._getMeanAndVar(base);
       const sumMean = numSums * baseStat.mean;
       const sumVar = numSums * baseStat.variance;
-      gaussArr = new Float64Array(bins);
+      const sumLen = sumDist.length;
+      gaussArr = new Float64Array(sumLen);
       let gMax = 0;
-      for (let i = 0; i < bins; i++) {
+      for (let i = 0; i < sumLen; i++) {
         gaussArr[i] = this._gaussian(i, sumMean, sumVar);
         if (gaussArr[i] > gMax) gMax = gaussArr[i];
       }
       // Normalize gaussian to match sum distribution peak
       let sMax = 0;
-      for (let i = 0; i < bins; i++) if (sumDist[i] > sMax) sMax = sumDist[i];
+      for (let i = 0; i < sumLen; i++) if (sumDist[i] > sMax) sMax = sumDist[i];
       if (gMax > 0) {
         const scale = sMax / gMax;
-        for (let i = 0; i < bins; i++) gaussArr[i] *= scale;
+        for (let i = 0; i < sumLen; i++) gaussArr[i] *= scale;
       }
     }
 

@@ -250,6 +250,34 @@ body { font-family: 'Lexend', -apple-system, BlinkMacSystemFont, system-ui, sans
   font-size: 11px;
   white-space: pre;
 }
+
+/* SVG circuit schematics */
+.circuit-svg-container { padding: 8px 4px; text-align: center; }
+.circuit-svg-container svg { max-width: 100%; height: auto; }
+.circuit-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Mermaid block diagrams */
+.block-diagram-container { padding: 8px 0; text-align: center; overflow-x: auto; }
+.block-diagram-container svg { max-width: 100%; height: auto; }
+.diagram-fallback {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+/* KaTeX overrides for dark theme */
+.katex { color: #c8d0e4; }
+.katex-display { margin: 0.6em 0; overflow-x: auto; overflow-y: hidden; }
+.formula-block .katex-display { margin: 0.3em 0; }
+.katex .base { color: #c8d0e4; }
+.katex-display > .katex { text-align: left; }
 .circuit-map-table {
   width: 100%;
   border-collapse: collapse;

@@ -25,22 +25,20 @@ class LogisticMapExploration extends BaseExploration {
   static formulaShort = 'x<sub>n+1</sub> = r·x<sub>n</sub>·(1 − x<sub>n</sub>)';
   static formula = `<h3>Logistic Map</h3>
 <div class="formula-block">
-x<sub>n+1</sub> = r · x<sub>n</sub> · (1 − x<sub>n</sub>)<br>
-r ∈ [0, 4], &nbsp; x ∈ [0, 1]
+$$x_{n+1} = r \\cdot x_n \\cdot (1 - x_n), \\quad r \\in [0, 4],\\; x \\in [0, 1]$$
 </div>
-<p>The logistic map is a polynomial mapping of degree 2 that exhibits the period-doubling route to chaos. The bifurcation diagram shows the long-term values of x as a function of r, revealing fixed points, periodic orbits, and chaotic bands.</p>
+<p>The logistic map is a polynomial mapping of degree 2 that exhibits the period-doubling route to chaos. The bifurcation diagram shows the long-term values of $x$ as a function of $r$, revealing fixed points, periodic orbits, and chaotic bands.</p>
 <h3>Lyapunov Exponent</h3>
 <div class="formula-block">
-λ(r) = lim<sub>N→∞</sub> (1/N) Σ ln|f'(x<sub>n</sub>)|<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= lim<sub>N→∞</sub> (1/N) Σ ln|r(1 − 2x<sub>n</sub>)|
+$$\\begin{aligned} \\lambda(r) &= \\lim_{N \\to \\infty} \\frac{1}{N} \\sum \\ln|f'(x_n)| \\\\ &= \\lim_{N \\to \\infty} \\frac{1}{N} \\sum \\ln|r(1 - 2x_n)| \\end{aligned}$$
 </div>
 <p>The Lyapunov exponent measures the rate of separation of infinitesimally close trajectories:</p>
-<p><strong>λ &lt; 0</strong>: Stable — nearby orbits converge (periodic attractor)<br>
-<strong>λ = 0</strong>: Marginally stable — bifurcation boundary<br>
-<strong>λ &gt; 0</strong>: Chaotic — nearby orbits diverge exponentially</p>
+<p><strong>$\\lambda < 0$</strong>: Stable — nearby orbits converge (periodic attractor)<br>
+<strong>$\\lambda = 0$</strong>: Marginally stable — bifurcation boundary<br>
+<strong>$\\lambda > 0$</strong>: Chaotic — nearby orbits diverge exponentially</p>
 <p>Enable the Lyapunov overlay to see the blue (stable) and red (chaotic) regions.</p>
 <h3>Feigenbaum Constants</h3>
-<p>The ratio of successive bifurcation intervals converges to the <strong>Feigenbaum constant</strong> δ ≈ 4.6692..., a universal constant that appears in all period-doubling systems, from fluid dynamics to electronic circuits.</p>`;
+<p>The ratio of successive bifurcation intervals converges to the <strong>Feigenbaum constant</strong> $\\delta \\approx 4.6692\\ldots$, a universal constant that appears in all period-doubling systems, from fluid dynamics to electronic circuits.</p>`;
   static tutorial = `<h3>How the Bifurcation Diagram is Computed</h3>
 <p>For each value of r, we iterate the logistic map many times. After discarding transient iterations (to reach the attractor), we plot the remaining x values vertically at that r position.</p>
 <pre><code class="language-js">for (let step = 0; step < rSteps; step++) {

@@ -10,8 +10,10 @@ class DopplerEffectExploration extends BaseExploration {
   static formulaShort = 'f\u2032 = f\u2080 / (1 \u2212 v<sub>s</sub>/c)';
   static formula = `<h3>Doppler Effect</h3>
 <div class="formula-block">
-f' = f<sub>0</sub> &middot; c / (c &minus; v<sub>s</sub>)  (approaching)<br><br>
-f' = f<sub>0</sub> &middot; c / (c + v<sub>s</sub>)  (receding)
+$$\\begin{aligned}
+f' &= f_0 \\cdot \\frac{c}{c - v_s} \\quad \\text{(approaching)} \\\\
+f' &= f_0 \\cdot \\frac{c}{c + v_s} \\quad \\text{(receding)}
+\\end{aligned}$$
 </div>
 <p>When a wave source moves, the wavefronts are compressed in the direction of
 motion and stretched behind. At the <strong>speed of sound</strong> (Mach 1),

@@ -60,10 +60,9 @@ class PhasePortraitExploration extends BaseExploration {
   static formulaShort = "dx/dt = f(x,y), dy/dt = g(x,y)";
   static formula = `<h3>2D Autonomous ODE System</h3>
 <div class="formula-block">
-dx/dt = f(x, y)<br>
-dy/dt = g(x, y)
+$$\\begin{aligned} \\frac{dx}{dt} &= f(x, y) \\\\ \\frac{dy}{dt} &= g(x, y) \\end{aligned}$$
 </div>
-<p>The phase portrait shows the direction field and trajectories in the (x, y) plane.
+<p>The phase portrait shows the direction field and trajectories in the $(x, y)$ plane.
 <strong>Nullclines</strong> are curves where one component of the velocity is zero.
 <strong>Fixed points</strong> occur where both nullclines intersect — the system is at equilibrium.</p>
 <p>Fixed points are classified by the eigenvalues of the Jacobian:
@@ -350,8 +349,13 @@ points, and the trajectories connecting them.</p>`;
     ctx.fillRect(0, 0, W, H);
 
     const pad = px(30);
-    const toX = x => pad + ((x - xMin) / (xMax - xMin)) * (W - 2 * pad);
-    const toY = y => H - pad - ((y - yMin) / (yMax - yMin)) * (H - 2 * pad);
+    const drawW = W - 2 * pad;
+    const drawH = H - 2 * pad;
+    const uScale = Math.min(drawW / (xMax - xMin), drawH / (yMax - yMin));
+    const midX = (xMin + xMax) / 2, midY = (yMin + yMax) / 2;
+    const cxP = pad + drawW / 2, cyP = pad + drawH / 2;
+    const toX = x => cxP + (x - midX) * uScale;
+    const toY = y => cyP - (y - midY) * uScale;
 
     // Axes
     ctx.strokeStyle = '#2a3348';

@@ -66,9 +66,7 @@ class LorenzAttractorExploration extends BaseExploration {
   static formulaShort = "x' = sigma(y-x), y' = x(rho-z)-y, z' = xy-beta z";
   static formula = `<h3>Lorenz System (Editable)</h3>
 <div class="formula-block">
-x' = f(x, y, z, &sigma;, &rho;, &beta;)<br>
-y' = g(x, y, z, &sigma;, &rho;, &beta;)<br>
-z' = h(x, y, z, &sigma;, &rho;, &beta;)
+$$\\begin{aligned} x' &= f(x, y, z, \\sigma, \\rho, \\beta) \\\\ y' &= g(x, y, z, \\sigma, \\rho, \\beta) \\\\ z' &= h(x, y, z, \\sigma, \\rho, \\beta) \\end{aligned}$$
 </div>
 <p>Default equations are the classical Lorenz model. You can edit all three right-hand sides
 to run your own nonlinear flow experiments.</p>`;
@@ -427,8 +425,13 @@ track together, then suddenly diverge — the "butterfly effect" in action.</p>
       xMin = -20; xMax = 20; yMin = -20; yMax = 20;
     }
     const pad = px(14);
-    const toX = x => main.x + pad + ((x - xMin) / (xMax - xMin)) * (main.w - 2 * pad);
-    const toY = y => main.y + main.h - pad - ((y - yMin) / (yMax - yMin)) * (main.h - 2 * pad);
+    const drawW = main.w - 2 * pad;
+    const drawH = main.h - 2 * pad;
+    const uScale = Math.min(drawW / (xMax - xMin), drawH / (yMax - yMin));
+    const midX = (xMin + xMax) / 2, midY = (yMin + yMax) / 2;
+    const cxP = main.x + pad + drawW / 2, cyP = main.y + pad + drawH / 2;
+    const toX = x => cxP + (x - midX) * uScale;
+    const toY = y => cyP - (y - midY) * uScale;
 
     if (projected.length > 1) {
       ctx.strokeStyle = '#22d3ee';

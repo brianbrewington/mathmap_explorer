@@ -14,15 +14,18 @@ class StochasticResonanceExploration extends BaseExploration {
   static formulaShort = "dx = (-dV/dx + A·cos(ωt))dt + σ·dW";
   static formula = `<h3>Stochastic Resonance</h3>
 <div class="formula-block">
-dx = (−dV/dx + A cos(ωt)) dt + σ dW<br><br>
-V(x) = −x²/2 + x⁴/4 &nbsp; (double-well potential)
+$$\\begin{aligned} dx &= \\left(-\\frac{dV}{dx} + A\\cos(\\omega t)\\right)dt + \\sigma\\, dW \\\\ V(x) &= -\\frac{x^2}{2} + \\frac{x^4}{4} \\quad (\\text{double-well potential}) \\end{aligned}$$
 </div>
-<p>The potential V(x) has two stable wells at x = ±1 separated by a barrier.
-<strong>Periodic forcing</strong> A cos(ωt) tilts the wells back and forth.
-<strong>Noise σ·dW</strong> provides random kicks.</p>
+<p>The potential $V(x)$ has two stable wells at $x = \\pm 1$ separated by a barrier.
+<strong>Periodic forcing</strong> $A\\cos(\\omega t)$ tilts the wells back and forth.
+<strong>Noise</strong> $\\sigma \\cdot dW$ provides random kicks.</p>
 <p>At the <strong>resonance</strong>: noise is just strong enough to kick the particle over
 the barrier in sync with the forcing — the signal-to-noise ratio peaks.
 Too little noise: trapped. Too much: random hopping.</p>`;
+  static blockDiagram = `graph LR
+  Signal["Weak periodic signal"] --> Well["Double-well potential"]
+  Noise["Noise σ"] --> Well
+  Well --> Output["Amplified output"]`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>Noise σ:</strong> The star control. Sweep from 0 to 2 and watch the SNR curve peak.</li>

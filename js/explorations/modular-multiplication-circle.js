@@ -14,13 +14,13 @@ class ModularMultiplicationCircleExploration extends BaseExploration {
   static formulaShort = 'i → (i × k) mod N';
   static formula = `<h3>Modular Multiplication Circle</h3>
 <div class="formula-block">
-f(i) = (i × k) mod N
+$$f(i) = (i \\times k) \\mod N$$
 </div>
-<p>Place <strong>N</strong> points equally spaced around a circle, numbered 0 to N−1.
-For each point <em>i</em>, draw a chord to point <em>(i × k) mod N</em>.</p>
-<p>When <strong>k = 2</strong>, the envelope of chords traces a <em>cardioid</em> — the same
-curve seen in a coffee cup's caustic. At <strong>k = 3</strong> a <em>nephroid</em> appears;
-in general, multiplier <em>k</em> produces a curve with <em>k − 1</em> cusps.</p>
+<p>Place $N$ points equally spaced around a circle, numbered $0$ to $N-1$.
+For each point $i$, draw a chord to point $(i \\times k) \\mod N$.</p>
+<p>When $k = 2$, the envelope of chords traces a <em>cardioid</em> — the same
+curve seen in a coffee cup's caustic. At $k = 3$ a <em>nephroid</em> appears;
+in general, multiplier $k$ produces a curve with $k - 1$ cusps.</p>
 <p>These envelopes are <strong>epicycloids</strong>, and the connection runs deep:
 modular arithmetic on a cyclic group is geometrically equivalent to
 the rolling-circle construction of these curves.</p>`;

@@ -12,8 +12,10 @@ class HeartCurveExploration extends BaseExploration {
   static formulaShort = 'x = 16sin&sup3;t, y = 13cos t &minus; 5cos 2t &minus; &hellip;';
   static formula = `<h3>Heart Curve</h3>
 <div class="formula-block">
-x(t) = s&middot;16&middot;sin&sup3;(t)<br>
-y(t) = s&middot;(13&middot;cos(t) &minus; 5&middot;cos(2t) &minus; 2&middot;cos(3t) &minus; cos(4t))
+$$\\begin{aligned}
+x(t) &= s \\cdot 16\\sin^3(t) \\\\
+y(t) &= s\\bigl(13\\cos(t) - 5\\cos(2t) - 2\\cos(3t) - \\cos(4t)\\bigr)
+\\end{aligned}$$
 </div>
 <p>The heart curve is a well-known parametric shape built from a sum of cosine harmonics
 for the y-coordinate and a cubed-sine for x. It demonstrates how a small number of

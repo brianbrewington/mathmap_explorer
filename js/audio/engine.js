@@ -19,7 +19,7 @@ export class AudioEngine {
       if (!Ctor) return null;
       this._ctx = new Ctor();
       this._masterGain = this._ctx.createGain();
-      this._masterGain.gain.value = this._muted ? 0 : 0.1;
+      this._masterGain.gain.value = this._muted ? 0 : 0.5;
       this._masterGain.connect(this._ctx.destination);
     }
     if (this._ctx.state === 'suspended') this._ctx.resume();
@@ -45,7 +45,7 @@ export class AudioEngine {
     // Accessing ctx ensures AudioContext is created on this user gesture
     const c = this.ctx;
     if (this._masterGain && c) {
-      this._masterGain.gain.setTargetAtTime(0.1, c.currentTime, 0.02);
+      this._masterGain.gain.setTargetAtTime(0.5, c.currentTime, 0.02);
     }
   }
 

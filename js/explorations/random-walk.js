@@ -39,15 +39,14 @@ class RandomWalkExploration extends BaseExploration {
   static formulaShort = '\u27E8x\u00B2\u27E9 = N (1D), \u27E8r\u00B2\u27E9 = N (2D)';
   static formula = `<h3>Random Walk</h3>
 <div class="formula-block">
-1D: X<sub>N</sub> = &sum;<sub>i=1</sub><sup>N</sup> S<sub>i</sub>, &nbsp; S<sub>i</sub> = &pm;1<br><br>
-&langle;X<sub>N</sub>&rangle; = 0, &nbsp; &langle;X<sub>N</sub><sup>2</sup>&rangle; = N<br><br>
-RMS distance = &radic;N
+$$\\text{1D: } X_N = \\sum_{i=1}^{N} S_i, \\quad S_i = \\pm 1$$
+$$\\langle X_N \\rangle = 0, \\quad \\langle X_N^2 \\rangle = N, \\quad \\text{RMS distance} = \\sqrt{N}$$
 </div>
-<p>A <strong>random walk</strong> is a sequence of random steps. In 1D each step is +1 or &minus;1
+<p>A <strong>random walk</strong> is a sequence of random steps. In 1D each step is $+1$ or $-1$
 with equal probability. In 2D each step moves in a random direction on the unit circle.</p>
-<p>The <strong>root-mean-square displacement</strong> grows as &radic;N, not linearly &mdash;
+<p>The <strong>root-mean-square displacement</strong> grows as $\\sqrt{N}$, not linearly —
 this is the hallmark of diffusive transport. The distribution of endpoints
-after N steps converges to a <strong>Gaussian</strong> by the Central Limit Theorem.</p>
+after $N$ steps converges to a <strong>Gaussian</strong> by the Central Limit Theorem.</p>
 <p>An ensemble of many walkers lets us see both individual path variability and
 the collective statistical behavior simultaneously.</p>`;
   static tutorial = `<h3>The Drunkard's Walk</h3>
@@ -594,7 +593,7 @@ stock prices wandering over time.</p>
     }
 
     // Rayleigh overlay (theoretical for 2D random walk distances)
-    const sigma2 = (this.currentStep || 1);
+    const sigma2 = (this.currentStep || 1) / 2;
     ctx.strokeStyle = '#facc15';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -613,7 +612,7 @@ stock prices wandering over time.</p>
     ctx.fillStyle = '#facc15';
     ctx.font = this._font(9);
     ctx.textAlign = 'left';
-    ctx.fillText('\u2014 Rayleigh(\u221AN)', plotL + 4, plotT + 14);
+    ctx.fillText('\u2014 Rayleigh(\u221A(N/2))', plotL + 4, plotT + 14);
 
     // Axis label
     ctx.fillStyle = '#6b7089';

@@ -10,11 +10,11 @@ class AcousticBeatsExploration extends BaseExploration {
   static formulaShort = 'sin(f\u2081t) + sin(f\u2082t) = 2cos(\u0394f\u00B7t/2)sin(f\u0304t)';
   static formula = `<h3>Acoustic Beats</h3>
 <div class="formula-block">
-sin(2&pi;f<sub>1</sub>t) + sin(2&pi;f<sub>2</sub>t) = 2cos(&pi;&Delta;f&middot;t)&middot;sin(2&pi;f&#772;t)
+$$\\sin(2\\pi f_1 t) + \\sin(2\\pi f_2 t) = 2\\cos(\\pi\\,\\Delta f \\cdot t)\\cdot\\sin(2\\pi \\bar{f}\\, t)$$
 </div>
-<p>where &Delta;f = f<sub>1</sub> &minus; f<sub>2</sub> and f&#772; = (f<sub>1</sub> + f<sub>2</sub>)/2.</p>
+<p>where $\\Delta f = f_1 - f_2$ and $\\bar{f} = (f_1 + f_2)/2$.</p>
 <p>Two sine waves at close frequencies produce a <strong>beat</strong>: a slow amplitude
-modulation at the difference frequency &Delta;f. The "carrier" oscillates at the
+modulation at the difference frequency $\\Delta f$. The "carrier" oscillates at the
 average frequency. Piano tuners listen for beats to match pitches.</p>`;
   static tutorial = `<h3>Hearing Interference</h3>
 <p>The upper panel shows the two individual waves. The lower panel shows their sum.

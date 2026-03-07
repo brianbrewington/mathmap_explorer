@@ -44,18 +44,24 @@ class BayesTheoremExploration extends BaseExploration {
   static formulaShort = 'P(\u03B8|data) \u221D P(data|\u03B8)\u00B7P(\u03B8)';
   static formula = `<h3>Bayesian Updating (Beta-Binomial)</h3>
 <div class="formula-block">
-P(&theta;|data) &prop; P(data|&theta;) &middot; P(&theta;)<br><br>
-Prior: &theta; ~ Beta(&alpha;<sub>0</sub>, &beta;<sub>0</sub>)<br>
-Likelihood: k heads in n flips ~ Binomial(n, &theta;)<br>
-Posterior: &theta;|data ~ Beta(&alpha;<sub>0</sub> + k, &beta;<sub>0</sub> + n &minus; k)
+$$\\begin{aligned}
+P(\\theta \\mid \\text{data}) &\\propto P(\\text{data} \\mid \\theta) \\cdot P(\\theta) \\\\[6pt]
+\\text{Prior:}\\quad \\theta &\\sim \\text{Beta}(\\alpha_0,\\, \\beta_0) \\\\
+\\text{Likelihood:}\\quad k \\text{ heads in } n \\text{ flips} &\\sim \\text{Binomial}(n,\\, \\theta) \\\\
+\\text{Posterior:}\\quad \\theta \\mid \\text{data} &\\sim \\text{Beta}(\\alpha_0 + k,\\, \\beta_0 + n - k)
+\\end{aligned}$$
 </div>
 <p>The <strong>Beta distribution</strong> is the <em>conjugate prior</em> for the Binomial
 likelihood, meaning the posterior is also a Beta distribution. This makes
-updating elegant: each head adds 1 to &alpha;, each tail adds 1 to &beta;.</p>
+updating elegant: each head adds 1 to $\\alpha$, each tail adds 1 to $\\beta$.</p>
 <p>As data accumulates, the posterior concentrates around the true value of
-&theta;, regardless of the prior &mdash; the data overwhelms the prior belief.</p>
+$\\theta$, regardless of the prior &mdash; the data overwhelms the prior belief.</p>
 <p>The <strong>Beta PDF</strong> is:
-f(x; &alpha;, &beta;) = x<sup>&alpha;&minus;1</sup>(1&minus;x)<sup>&beta;&minus;1</sup> / B(&alpha;, &beta;)</p>`;
+$f(x;\\, \\alpha, \\beta) = \\frac{x^{\\alpha-1}(1-x)^{\\beta-1}}{B(\\alpha, \\beta)}$</p>`;
+  static blockDiagram = `graph LR
+  Prior["Prior P(θ)"] --> Update["Bayes update"]
+  Data["Data x"] --> Update
+  Update --> Post["Posterior P(θ|x)"]`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The plot shows the probability density over &theta; &isin; [0, 1]. The dashed gray
 curve is the <strong>initial prior</strong>. The filled purple curve is the

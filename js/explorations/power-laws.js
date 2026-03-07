@@ -14,19 +14,18 @@ class PowerLawsExploration extends BaseExploration {
   static formulaShort = 'f(x) = C \u00b7 x<sup>\u2212\u03b1</sup>';
   static formula = `<h3>Power Law Distribution</h3>
 <div class="formula-block">
-f(x) = C \u00b7 x<sup>\u2212\u03b1</sup> &nbsp; for &nbsp; x \u2265 x<sub>min</sub><br><br>
-C = (\u03b1 \u2212 1) \u00b7 x<sub>min</sub><sup>\u03b1 \u2212 1</sup>
+$$f(x) = C \\cdot x^{-\\alpha} \\quad \\text{for } x \\geq x_{\\min}, \\qquad C = (\\alpha - 1) \\cdot x_{\\min}^{\\,\\alpha - 1}$$
 </div>
 <p>A <strong>power law</strong> distribution has the special property that on
-<strong>log-log axes</strong>, its density is a straight line with slope <strong>\u2212\u03b1</strong>:</p>
+<strong>log-log axes</strong>, its density is a straight line with slope $-\\alpha$:</p>
 <div class="formula-block">
-log f(x) = \u2212\u03b1 log x + const
+$$\\log f(x) = -\\alpha \\log x + \\text{const}$$
 </div>
-<p>This means there is no characteristic scale \u2014 the distribution is <em>scale-free</em>.
-Extreme events (very large x) occur far more often than exponential or Gaussian
+<p>This means there is no characteristic scale — the distribution is <em>scale-free</em>.
+Extreme events (very large $x$) occur far more often than exponential or Gaussian
 distributions would predict, giving power laws their famous <strong>fat tails</strong>.</p>
-<p>Examples: city populations (Zipf\u2019s law), word frequencies, earthquake magnitudes
-(Gutenberg\u2013Richter law), and many more.</p>`;
+<p>Examples: city populations (Zipf's law), word frequencies, earthquake magnitudes
+(Gutenberg–Richter law), and many more.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>left plot</strong> shows the power law density on ordinary linear axes \u2014 a steep
 drop that makes it hard to see the tail.</p>

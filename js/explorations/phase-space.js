@@ -13,14 +13,13 @@ class PhaseSpaceExploration extends BaseExploration {
   static formulaShort = 's&#x20D7; = (x, x&#x0307;)';
   static formula = `<h3>Phase Space</h3>
 <div class="formula-block">
-x(t) = A&middot;e<sup>&minus;bt</sup>&middot;cos(&omega;t)<br>
-v(t) = dx/dt
+$$\\begin{aligned} x(t) &= A e^{-bt} \\cos(\\omega t) \\\\ v(t) &= \\frac{dx}{dt} \\end{aligned}$$
 </div>
 <p>A <strong>phase portrait</strong> plots velocity against position, collapsing the time dimension and
 revealing the geometry of dynamical behaviour:</p>
 <ul>
-<li><strong>No damping (b=0):</strong> closed ellipse &mdash; energy is conserved.</li>
-<li><strong>With damping (b&gt;0):</strong> inward spiral toward (0,0) &mdash; energy dissipates.</li>
+<li><strong>No damping ($b=0$):</strong> closed ellipse — energy is conserved.</li>
+<li><strong>With damping ($b>0$):</strong> inward spiral toward $(0,0)$ — energy dissipates.</li>
 </ul>`;
   static tutorial = `<h3>How the Phase Portrait is Drawn</h3>
 <p>We compute position and velocity analytically for a damped harmonic oscillator:</p>
@@ -136,12 +135,12 @@ ellipse collapse into a spiral.</p>`;
   _syncAudioParams() {
     if (!this._osc) return;
     const now = this._audioCtx.currentTime;
-    this._osc.frequency.setTargetAtTime(220 + (this.params.freq || 2) * 20, now, 0.05);
+    this._osc.frequency.setTargetAtTime(220 * (this.params.freq || 2), now, 0.05);
   }
 
   updateAudio() {
     if (!this._dampGain || !this._audioCtx) return;
-    const amp = Math.max(0.1, (this.params.amplitude || 1) * 0.5);
+    const amp = Math.min(0.8, Math.max(0.1, (this.params.amplitude || 1) / 5));
     const b = this.params.damping || 0;
     const env = amp * Math.exp(-b * this.time);
     const vol = env < 0.001 ? 0 : env;
@@ -159,7 +158,7 @@ ellipse collapse into a spiral.</p>`;
     const decay = A * Math.exp(-b * t);
     const pos = decay * Math.cos(w * t);
     const vel = decay * (-b * Math.cos(w * t) - w * Math.sin(w * t));
-    return { pos, vel: vel / w };
+    return { pos, vel };
   }
 
   render() {
@@ -172,6 +171,7 @@ ellipse collapse into a spiral.</p>`;
     ctx.fillRect(0, 0, W, H);
 
     const limit = Math.max(1, amplitude * 1.2);
+    const velLimit = Math.max(1, amplitude * freq * 1.2);
     const endT = 12 * Math.PI;
     const steps = 800;
 
@@ -225,7 +225,8 @@ ellipse collapse into a spiral.</p>`;
       const plotSize = Math.min(pW - pad * 2, pH - 30);
       const cx = pW / 2;
       const cy = pH / 2 + 5;
-      const scale = (plotSize / 2) / limit;
+      const phaseLimit = Math.max(limit, velLimit);
+      const scale = (plotSize / 2) / phaseLimit;
 
       // Axes
       ctx.strokeStyle = '#2a2d3a';
@@ -239,7 +240,7 @@ ellipse collapse into a spiral.</p>`;
       ctx.font = this._font(10);
       ctx.textAlign = 'center';
       ctx.fillText('x', cx + plotSize / 2 + 10, cy + 4);
-      ctx.fillText('v', cx, cy - plotSize / 2 - 6);
+      ctx.fillText('dx/dt', cx, cy - plotSize / 2 - 6);
 
       // Trajectory
       ctx.strokeStyle = phaseColor;

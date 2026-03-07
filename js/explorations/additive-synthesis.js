@@ -10,7 +10,7 @@ class AdditiveSynthesisExploration extends BaseExploration {
   static formulaShort = 'y = &sum; a<sub>k</sub>sin(k&omega;t)';
   static formula = `<h3>Additive Synthesis</h3>
 <div class="formula-block">
-y(t) = &sum;<sub>k=1</sub><sup>N</sup> a<sub>k</sub> &middot; sin(k&omega;t + &phi;<sub>k</sub>)
+$$y(t) = \\sum_{k=1}^{N} a_k \\cdot \\sin(k\\omega t + \\phi_k)$$
 </div>
 <p>Musical <strong>timbre</strong> is determined by the relative strengths of harmonics.
 A flute has almost no overtones (nearly a pure sine), while a violin is rich

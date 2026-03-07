@@ -12,10 +12,12 @@ class CalculusOfTrigExploration extends BaseExploration {
   static formulaShort = 'd/dx sin(x) = cos(x)';
   static formula = `<h3>Derivatives &amp; Integrals of Trig Functions</h3>
 <div class="formula-block">
-d/dx sin(x) = cos(x)<br>
-d/dx cos(x) = &minus;sin(x)<br>
-&int; sin(x) dx = &minus;cos(x) + C<br>
-&int; cos(x) dx = sin(x) + C
+$$\\begin{aligned}
+\\frac{d}{dx} \\sin(x) &= \\cos(x) \\\\
+\\frac{d}{dx} \\cos(x) &= -\\sin(x) \\\\
+\\int \\sin(x)\\, dx &= -\\cos(x) + C \\\\
+\\int \\cos(x)\\, dx &= \\sin(x) + C
+\\end{aligned}$$
 </div>
 <p>The derivatives of sine and cosine are each other (up to a sign flip). This reflects the
 fact that the slope of a sine wave is greatest at zero crossings and zero at peaks &mdash;

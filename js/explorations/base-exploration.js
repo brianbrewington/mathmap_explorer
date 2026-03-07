@@ -21,6 +21,8 @@ export class BaseExploration {
   static resources = [];
   static guidedSteps = [];
   static circuitDiagram = '';
+  static circuitSchematic = null;
+  static blockDiagram = '';
   static probeMap = [];
   static benchMap = [];
   static benchChecklist = [];

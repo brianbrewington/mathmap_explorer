@@ -49,10 +49,10 @@ class FireflySynchronyExploration extends BaseExploration {
   static formulaShort = "dtheta_i/dt = omega_i + (K/N)sum_j sin(theta_j-theta_i)";
   static formula = `<h3>Population Synchronization</h3>
 <div class="formula-block">
-d&theta;<sub>i</sub>/dt = &omega;<sub>i</sub> + (K/N)\u2211<sub>j</sub> sin(&theta;<sub>j</sub> - &theta;<sub>i</sub>) + &eta;<sub>i</sub>(t)
+$$\\frac{d\\theta_i}{dt} = \\omega_i + \\frac{K}{N}\\sum_{j} \\sin(\\theta_j - \\theta_i) + \\eta_i(t)$$
 </div>
-<p>Each oscillator has its own natural frequency &omega;<sub>i</sub>. Coupling K pulls phases together.
-The order parameter R measures how synchronized the population is.</p>`;
+<p>Each oscillator has its own natural frequency $\\omega_i$. Coupling $K$ pulls phases together.
+The order parameter $R$ measures how synchronized the population is.</p>`;
   static tutorial = `<h3>How To Use This Demo</h3>
 <ul>
   <li><strong>Fly Count:</strong> increase population size to test large-group behavior.</li>

@@ -1,5 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
+import { forceDirectedLayout } from './force-layout.js';
+import { GraphPanZoom } from '../ui/graph-pan-zoom.js';
 
 const TAU = Math.PI * 2;
 
@@ -63,7 +65,7 @@ function generateGraph(n, type, rng) {
   return { adj, edges };
 }
 
-function layoutGraph(n, type, adj) {
+function layoutGraph(n, type, adj, rng) {
   const pos = new Array(n);
   if (type === 'ring' || type === 'small-world') {
     for (let i = 0; i < n; i++) {
@@ -78,54 +80,7 @@ function layoutGraph(n, type, adj) {
       pos[i] = [0.1 + 0.8 * c / Math.max(1, cols - 1), 0.1 + 0.8 * r / Math.max(1, rows - 1)];
     }
   } else if (type === 'scale-free' && adj) {
-    // Force-directed layout for scale-free graphs
-    for (let i = 0; i < n; i++) pos[i] = [0.5 + 0.3 * Math.cos(i * TAU / n), 0.5 + 0.3 * Math.sin(i * TAU / n)];
-    const k = 0.8 / Math.sqrt(n); // ideal edge length
-    for (let iter = 0; iter < 50; iter++) {
-      const temp = 0.05 * (1 - iter / 50);
-      const disp = Array.from({ length: n }, () => [0, 0]);
-      // Repulsion between all pairs
-      for (let i = 0; i < n; i++) {
-        for (let j = i + 1; j < n; j++) {
-          let dx = pos[i][0] - pos[j][0], dy = pos[i][1] - pos[j][1];
-          const dist = Math.max(0.001, Math.hypot(dx, dy));
-          const force = (k * k) / dist;
-          dx /= dist; dy /= dist;
-          disp[i][0] += dx * force; disp[i][1] += dy * force;
-          disp[j][0] -= dx * force; disp[j][1] -= dy * force;
-        }
-      }
-      // Attraction along edges
-      for (let i = 0; i < n; i++) {
-        for (const j of adj[i]) {
-          if (j <= i) continue;
-          let dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1];
-          const dist = Math.max(0.001, Math.hypot(dx, dy));
-          const force = (dist * dist) / k;
-          dx /= dist; dy /= dist;
-          disp[i][0] += dx * force; disp[i][1] += dy * force;
-          disp[j][0] -= dx * force; disp[j][1] -= dy * force;
-        }
-      }
-      // Apply with cooling
-      for (let i = 0; i < n; i++) {
-        const len = Math.max(0.001, Math.hypot(disp[i][0], disp[i][1]));
-        const cap = Math.min(len, temp);
-        pos[i][0] += (disp[i][0] / len) * cap;
-        pos[i][1] += (disp[i][1] / len) * cap;
-      }
-    }
-    // Normalize to [0.05, 0.95]
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (let i = 0; i < n; i++) {
-      minX = Math.min(minX, pos[i][0]); maxX = Math.max(maxX, pos[i][0]);
-      minY = Math.min(minY, pos[i][1]); maxY = Math.max(maxY, pos[i][1]);
-    }
-    const rangeX = Math.max(1e-6, maxX - minX), rangeY = Math.max(1e-6, maxY - minY);
-    for (let i = 0; i < n; i++) {
-      pos[i][0] = 0.05 + 0.9 * (pos[i][0] - minX) / rangeX;
-      pos[i][1] = 0.05 + 0.9 * (pos[i][1] - minY) / rangeY;
-    }
+    return forceDirectedLayout(n, adj, rng);
   } else {
     // barbell
     const half = Math.floor(n / 2);
@@ -213,14 +168,14 @@ class GraphLaplacianExploration extends BaseExploration {
   static formulaShort = "L = D - A, eigenmodes of heat diffusion on graphs";
   static formula = `<h3>Graph Laplacian</h3>
 <div class="formula-block">
-L = D − A
+$$L = D - A$$
 </div>
-<p>Where <strong>D</strong> is the diagonal degree matrix and <strong>A</strong> is the adjacency matrix.
-The eigenvectors of L are the <strong>vibration modes</strong> of the network.</p>
-<p>The smallest nonzero eigenvalue (λ₁, the <strong>Fiedler value</strong>) controls the speed
+<p>Where $D$ is the diagonal degree matrix and $A$ is the adjacency matrix.
+The eigenvectors of $L$ are the <strong>vibration modes</strong> of the network.</p>
+<p>The smallest nonzero eigenvalue ($\\lambda_1$, the <strong>Fiedler value</strong>) controls the speed
 of diffusion and the Fiedler vector reveals the network's community structure.</p>
 <div class="formula-block">
-Heat diffusion: du/dt = −L·u → u(t) = Σ c<sub>k</sub>·e<sup>−λ<sub>k</sub>t</sup>·v<sub>k</sub>
+$$\\frac{du}{dt} = -L \\cdot u \\;\\Rightarrow\\; u(t) = \\sum_k c_k \\, e^{-\\lambda_k t} \\, v_k$$
 </div>`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
@@ -287,6 +242,7 @@ graph signal processing, and diffusion-based community detection.</p>`;
     this._eigen = null;
     this._heatState = null;
     this._lastFrame = 0;
+    this._pz = new GraphPanZoom(() => this.render());
   }
 
   getControls() {
@@ -318,6 +274,7 @@ graph signal processing, and diffusion-based community detection.</p>`;
   activate() {
     this.ctx = this.canvas.getContext('2d');
     this.canvas.addEventListener('click', this._onClick);
+    this._pz.attach(this.canvas);
     this._rebuild();
     this.render();
   }
@@ -325,28 +282,22 @@ graph signal processing, and diffusion-based community detection.</p>`;
   deactivate() {
     super.deactivate();
     this.canvas.removeEventListener('click', this._onClick);
+    this._pz.detach();
     this.ctx = null;
   }
 
   _onClick = (e) => {
+    if (this._pz.wasDrag()) return;
     const rect = this.canvas.getBoundingClientRect();
-    const W = this.canvas.width;
-    const H = this.canvas.height;
-    const cx = (e.clientX - rect.left) * (W / rect.width);
-    const cy = (e.clientY - rect.top) * (H / rect.height);
+    const cx = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const cy = (e.clientY - rect.top) * (this.canvas.height / rect.height);
     const px = n => this._px(n);
-
-    const graphW = Math.floor(W * 0.58);
-    const gPad = px(30);
-    const gW = graphW - 2 * gPad;
-    const gH = H - px(20) - 2 * gPad;
+    const pz = this._pz;
 
     let closest = -1, closestDist = Infinity;
     for (let i = 0; i < this._positions.length; i++) {
       const [u, v] = this._positions[i];
-      const sx = gPad + gPad + u * gW;
-      const sy = px(10) + gPad + v * gH;
-      const d = Math.hypot(cx - sx, cy - sy);
+      const d = Math.hypot(cx - pz.toX(u), cy - pz.toY(v));
       if (d < closestDist) { closestDist = d; closest = i; }
     }
     if (closest >= 0 && closestDist < px(30)) {
@@ -387,7 +338,8 @@ graph signal processing, and diffusion-based community detection.</p>`;
     const n = this.params.n;
     const rng = this._mulberry32(this.params.seed);
     this._graph = generateGraph(n, this.params.topology, rng);
-    this._positions = layoutGraph(n, this.params.topology, this._graph.adj);
+    this._positions = layoutGraph(n, this.params.topology, this._graph.adj, rng);
+    this._pz.reset();
     const L = buildLaplacian(n, this._graph.adj);
     this._eigen = eigenDecompose(L, n);
     this._heatState = null;
@@ -467,10 +419,10 @@ graph signal processing, and diffusion-based community detection.</p>`;
     ctx.strokeRect(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h);
 
     const gPad = px(30);
-    const gW = graphPanel.w - 2 * gPad;
-    const gH = graphPanel.h - 2 * gPad;
-    const toX = u => graphPanel.x + gPad + u * gW;
-    const toY = v => graphPanel.y + gPad + v * gH;
+    const pz = this._pz;
+    pz.setPanel(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h, gPad);
+    const toX = u => pz.toX(u);
+    const toY = v => pz.toY(v);
 
     // Choose node values
     let nodeValues;
@@ -490,6 +442,8 @@ graph signal processing, and diffusion-based community detection.</p>`;
       vMax = Math.max(vMax, nodeValues[i]);
     }
     if (vMin === vMax) { vMin -= 0.5; vMax += 0.5; }
+
+    pz.clipToPanel(ctx);
 
     // Edges
     ctx.strokeStyle = 'rgba(100,116,139,0.2)';
@@ -512,6 +466,8 @@ graph signal processing, and diffusion-based community detection.</p>`;
       ctx.lineWidth = px(0.5);
       ctx.stroke();
     }
+
+    pz.unclip(ctx);
 
     ctx.fillStyle = '#d3d8e5';
     ctx.font = this._font(11);

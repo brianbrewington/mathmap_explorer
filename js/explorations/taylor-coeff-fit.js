@@ -18,9 +18,9 @@ class TaylorCoeffFitExploration extends BaseExploration {
   static formulaShort = 'P_N(x) = c0 + c1x + c2x^2 + ... + cN x^N';
   static formula = `<h3>Polynomial Coefficient Fitting</h3>
 <div class="formula-block">
-P<sub>N</sub>(x) = &sum;<sub>k=0</sub><sup>N</sup> c<sub>k</sub>x<sup>k</sup>
+$$P_N(x) = \\sum_{k=0}^{N} c_k\\, x^k$$
 </div>
-<p>Manually tune the coefficients c<sub>k</sub> to match a target function on a finite interval.
+<p>Manually tune the coefficients $c_k$ to match a target function on a finite interval.
 Your score is based on mean squared error over sampled points.</p>`;
   static tutorial = `<h3>How To Play</h3>
 <ul>

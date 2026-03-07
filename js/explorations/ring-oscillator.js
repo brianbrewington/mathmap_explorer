@@ -12,17 +12,16 @@ class RingOscillatorExploration extends BaseExploration {
   static formulaShort = 'f = 1 / (2·N·τ_gate)';
   static formula = `<h3>Ring Oscillator</h3>
 <div class="formula-block">
-f = 1 / (2 · N · &tau;)
+$$f = \\frac{1}{2 N \\tau}$$
 </div>
-<p>A ring oscillator is formed by connecting an odd number <em>N</em> of inverting
+<p>A ring oscillator is formed by connecting an odd number $N$ of inverting
 gates in a loop. No stable state exists — each gate's output contradicts its
 input after the propagation delay. The signal races around the ring at
-frequency <em>f</em>&nbsp;=&nbsp;1/(2·N·&tau;) where &tau; is the gate delay.</p>
+frequency $f = 1/(2N\\tau)$ where $\\tau$ is the gate delay.</p>
 <p>Doubling the number of stages halves the frequency. Each gate is modeled
 as a continuous soft inverter:</p>
 <div class="formula-block">
-dV<sub>i</sub>/dt = (target<sub>i</sub> &minus; V<sub>i</sub>) / &tau;<br>
-target<sub>i</sub> = V<sub>dd</sub> · (1 &minus; tanh(gain · (V<sub>i&minus;1</sub> &minus; V<sub>dd</sub>/2))) / 2
+$$\\begin{aligned} \\frac{dV_i}{dt} &= \\frac{\\text{target}_i - V_i}{\\tau} \\\\ \\text{target}_i &= \\frac{V_{dd}}{2}\\left(1 - \\tanh\\!\\left(\\text{gain} \\cdot \\left(V_{i-1} - \\frac{V_{dd}}{2}\\right)\\right)\\right) \\end{aligned}$$
 </div>`;
   static tutorial = `<h3>Things to Try</h3>
 <ul>
@@ -47,10 +46,32 @@ target<sub>i</sub> = V<sub>dd</sub> · (1 &minus; tanh(gain · (V<sub>i&minus;1<
       params: { stages: 5, gain: 2.5, gateDelay: 0.05 }
     },
   ];
-  static circuitDiagram = ` [INV1] -> [INV2] -> [INV3] -> ... -> [INVN]
-    ^                                   |
-    |-----------------------------------|
-   (N must be odd for oscillation)`;
+  static circuitSchematic = {
+    width: 20, height: 9,
+    components: [
+      { type: 'inverter', id: 'I1', x: 4, y: 3 },
+      { type: 'inverter', id: 'I2', x: 8, y: 3 },
+      { type: 'inverter', id: 'I3', x: 12, y: 3 },
+      { type: 'inverter', id: 'IN', x: 16.5, y: 3 },
+    ],
+    wires: [
+      { path: [[2, 3], [3.1, 3]] },
+      { path: [[4.95, 3], [7.1, 3]] },
+      { path: [[8.95, 3], [11.1, 3]] },
+      { path: [[12.95, 3], [14, 3]], dashed: true },
+      { path: [[14, 3], [15.6, 3]] },
+      { path: [[17.45, 3], [18.5, 3], [18.5, 6.5], [2, 6.5], [2, 3]] },
+    ],
+    junctions: [],
+    labels: [
+      { x: 4, y: 1.5, text: 'INV₁', color: '#a0aac0', size: 9 },
+      { x: 8, y: 1.5, text: 'INV₂', color: '#a0aac0', size: 9 },
+      { x: 12, y: 1.5, text: 'INV₃', color: '#a0aac0', size: 9 },
+      { x: 13.5, y: 2.6, text: '···', color: '#a0aac0', size: 12 },
+      { x: 16.5, y: 1.5, text: 'INVn', color: '#a0aac0', size: 9 },
+    ],
+    notes: 'N must be odd for oscillation',
+  };
   static probeMap = [
     {
       model: 'V_i',

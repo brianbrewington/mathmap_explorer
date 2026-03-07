@@ -12,14 +12,14 @@ class ArchimedeanSpiralExploration extends BaseExploration {
   static formulaShort = 'r = a + b&theta;';
   static formula = `<h3>Archimedean Spiral</h3>
 <div class="formula-block">
-r = a + b&theta;
+$$r = a + b\\theta$$
 </div>
-<p>The Archimedean spiral is defined in polar coordinates where the radius <em>r</em>
-increases linearly with the angle &theta;. The parameter <em>a</em> shifts the starting
-point away from the origin, and <em>b</em> controls the spacing between successive
+<p>The Archimedean spiral is defined in polar coordinates where the radius $r$
+increases linearly with the angle $\\theta$. The parameter $a$ shifts the starting
+point away from the origin, and $b$ controls the spacing between successive
 turns.</p>
 <p>Unlike a logarithmic spiral, the distance between consecutive turns remains
-<strong>constant</strong> at 2&pi;b. This simple property makes it appear in turntable
+<strong>constant</strong> at $2\\pi b$. This simple property makes it appear in turntable
 grooves, watch springs, and scroll compressors.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The polar equation is converted to Cartesian coordinates for drawing:</p>

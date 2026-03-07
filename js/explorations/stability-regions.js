@@ -46,12 +46,12 @@ class StabilityRegionsExploration extends BaseExploration {
   static formulaShort = "|R(λh)| ≤ 1 defines the stability region";
   static formula = `<h3>Stability Regions of ODE Methods</h3>
 <div class="formula-block">
-Apply method to y' = λy → y<sub>n+1</sub> = R(z)·y<sub>n</sub>, where z = λh
+$$y' = \\lambda y \\;\\to\\; y_{n+1} = R(z) \\cdot y_n, \\quad z = \\lambda h$$
 </div>
-<p>The <strong>stability region</strong> is the set of complex z = λh where |R(z)| ≤ 1 —
+<p>The <strong>stability region</strong> is the set of complex $z = \\lambda h$ where $|R(z)| \\le 1$ —
 the method doesn't blow up. Larger regions mean the method tolerates larger step sizes.</p>
 <p><strong>Stiffness:</strong> When eigenvalues of your system have large negative real parts,
-you need those eigenvalues × h to fall inside the stability region. Explicit methods
+you need those eigenvalues $\\times h$ to fall inside the stability region. Explicit methods
 have bounded regions; implicit methods (backward Euler) are stable for the entire left half-plane.</p>`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
@@ -123,8 +123,9 @@ half-plane, explaining why they handle stiff problems.</p>`;
     const cx = (e.clientX - rect.left) * (W / rect.width);
     const cy = (e.clientY - rect.top) * (H / rect.height);
     const r = this.params.viewRadius;
-    const re = -r + (cx / W) * 2 * r;
-    const im = r - (cy / H) * 2 * r;
+    const oScale = Math.min(W / (2 * r), H / (2 * r));
+    const re = (cx - W / 2) / oScale;
+    const im = (H / 2 - cy) / oScale;
     this._markers.push({ re, im });
     this.render();
   };
@@ -156,10 +157,11 @@ half-plane, explaining why they handle stiff problems.</p>`;
     if (this.params.showRK4) activeMethods.push(METHODS.rk4);
     if (this.params.showImplicit) activeMethods.push(METHODS.implicit);
 
+    const uScale = Math.min(W / (2 * r), H / (2 * r));
     for (let py = 0; py < H; py++) {
       for (let px = 0; px < W; px++) {
-        const re = -r + (px / W) * 2 * r;
-        const im = r - (py / H) * 2 * r;
+        const re = (px - W / 2) / uScale;
+        const im = (H / 2 - py) / uScale;
         const z = { re, im };
 
         let rC = 18, gC = 22, bC = 30;
@@ -214,8 +216,9 @@ half-plane, explaining why they handle stiff problems.</p>`;
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(offscreen, 0, 0, W, H);
 
-    const toX = re => ((re + r) / (2 * r)) * W;
-    const toY = im => ((r - im) / (2 * r)) * H;
+    const oScale = Math.min(W / (2 * r), H / (2 * r));
+    const toX = re => W / 2 + re * oScale;
+    const toY = im => H / 2 - im * oScale;
 
     // Axes
     ctx.strokeStyle = 'rgba(255,255,255,0.15)';

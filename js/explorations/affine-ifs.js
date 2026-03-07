@@ -47,7 +47,7 @@ const PRESETS = {
     ]
   },
   koch_snowflake: {
-    label: 'Koch Snowflake',
+    label: 'Koch Curve',
     bounds: { xMin: -0.1, xMax: 1.1, yMin: -0.3, yMax: 1.0 },
     transforms: [
       { a:  1/3,  b:  0,                   c:  0,                   d:  1/3,  e: 0,          f: 0,          p: 1 },
@@ -106,16 +106,13 @@ class AffineIFSExploration extends BaseExploration {
 
   static formula = `<h3>Affine Iterated Function System</h3>
 <div class="formula-block">
-Each transform is an affine map on \u211D\u00B2:<br><br>
-f<sub>i</sub>(x, y) =
-\u2308 a<sub>i</sub> &nbsp; b<sub>i</sub> \u2309 \u2308 x \u2309 &nbsp; \u2308 e<sub>i</sub> \u2309<br>
-\u230A c<sub>i</sub> &nbsp; d<sub>i</sub> \u230B \u230A y \u230B + \u230A f<sub>i</sub> \u230B<br><br>
-i.e. &nbsp; x\u2032 = a<sub>i</sub> x + b<sub>i</sub> y + e<sub>i</sub><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; y\u2032 = c<sub>i</sub> x + d<sub>i</sub> y + f<sub>i</sub>
+<p>Each transform is an affine map on $\\mathbb{R}^2$:</p>
+$$f_i(x,y) = \\begin{pmatrix} a_i & b_i \\\\ c_i & d_i \\end{pmatrix} \\begin{pmatrix} x \\\\ y \\end{pmatrix} + \\begin{pmatrix} e_i \\\\ f_i \\end{pmatrix}$$
+$$\\begin{aligned} x' &= a_i x + b_i y + e_i \\\\ y' &= c_i x + d_i y + f_i \\end{aligned}$$
 </div>
-<p><strong>Contraction Mapping Theorem:</strong> If each f<sub>i</sub> is a contraction (its linear part has singular values &lt; 1), then the IFS has a unique compact attractor A such that A = \u22C3 f<sub>i</sub>(A).</p>
-<p><strong>Collage Theorem:</strong> To approximate a target shape S, choose transforms so that \u22C3 f<sub>i</sub>(S) \u2248 S. The IFS attractor will then closely resemble S. This is the basis of fractal image compression.</p>
-<p>Each transform is chosen at random with probability p<sub>i</sub> (normalised). Higher probability means the orbit visits that part of the attractor more often, producing brighter density there.</p>`;
+<p><strong>Contraction Mapping Theorem:</strong> If each $f_i$ is a contraction (its linear part has singular values &lt; 1), then the IFS has a unique compact attractor $A$ such that $A = \\bigcup f_i(A)$.</p>
+<p><strong>Collage Theorem:</strong> To approximate a target shape $S$, choose transforms so that $\\bigcup f_i(S) \\approx S$. The IFS attractor will then closely resemble $S$. This is the basis of fractal image compression.</p>
+<p>Each transform is chosen at random with probability $p_i$ (normalised). Higher probability means the orbit visits that part of the attractor more often, producing brighter density there.</p>`;
 
   static tutorial = `<h3>How the Chaos Game Works</h3>
 <p>The random iteration algorithm (chaos game) generates the attractor of an IFS:</p>
@@ -182,8 +179,8 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
       params: { preset: 'maple_leaf' }
     },
     {
-      label: 'Koch Snowflake',
-      description: 'Seven transforms build the Koch snowflake boundary. Infinite perimeter enclosing finite area — a classic fractal curve.',
+      label: 'Koch Curve',
+      description: 'Four transforms build one edge of the Koch curve. Each segment is replaced by four scaled copies — infinite length in a finite span.',
       params: { preset: 'koch_snowflake' }
     }
   ];
@@ -204,6 +201,7 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
     };
 
     this._transforms = preset.transforms.slice();
+    this._naturalBounds = { ...preset.bounds };
     this._bounds = { ...preset.bounds };
     this._defaultBounds = { ...preset.bounds };
     this._defaultPreset = defaultPreset;
@@ -217,6 +215,22 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
     this._lastDensity = null;
     this._lastMaxDensity = 0;
     this._parseError = '';
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this._defaultBounds = { xMin: xMid - xHalf, xMax: xMid + xHalf, yMin: yMid - yHalf, yMax: yMid + yHalf };
   }
 
   shouldRebuildControls(key) {
@@ -264,6 +278,8 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -293,8 +309,9 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
       if (p) {
         this._transforms = p.transforms.slice();
         this.params.transformText = transformsToText(p.transforms);
-        this._bounds = { ...p.bounds };
-        this._defaultBounds = { ...p.bounds };
+        this._naturalBounds = { ...p.bounds };
+        this._syncAspect();
+        this._bounds = { ...this._defaultBounds };
         this._parseError = '';
       }
       this._scheduleWorker();
@@ -333,8 +350,7 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
 
     // --- Resolution change -------------------------------------------------
     if (key === 'resolution') {
-      this._densityWidth = value;
-      this._densityHeight = value;
+      this._syncAspect();
     }
 
     // --- Any other param: recompute ----------------------------------------
@@ -348,19 +364,16 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
     this.params.transformText = transformsToText(p.transforms);
     this.params.iterations = 2000000;
     this._transforms = p.transforms.slice();
-    this._bounds = { ...p.bounds };
-    this._defaultBounds = { ...p.bounds };
+    this._naturalBounds = { ...p.bounds };
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this._parseError = '';
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity && this.densityRenderer) {
-      this.densityRenderer.render(
-        this._lastDensity, this._densityWidth, this._densityHeight,
-        this._lastMaxDensity, this.params.colorScheme, this.params.brightness
-      );
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   render() {

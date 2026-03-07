@@ -16,15 +16,12 @@ class UlamSphereExploration extends BaseExploration {
   static formulaShort = 'Shell k: 6k points via Fibonacci sphere; highlight primes';
   static formula = `<h3>Ulam Sphere</h3>
 <div class="formula-block">
-Shell 0 (center): integer 1<br>
-Shell k (k &ge; 1): 6k points &rarr; next 6k integers<br>
-Total after N shells: 1 + 3&middot;N&middot;(N+1)
+$$\\begin{aligned} \\text{Shell } 0 \\;(\\text{center}):&\\quad \\text{integer } 1 \\\\ \\text{Shell } k \\;(k \\ge 1):&\\quad 6k \\text{ points} \\to \\text{next } 6k \\text{ integers} \\\\ \\text{Total after } N \\text{ shells}:&\\quad 1 + 3N(N+1) \\end{aligned}$$
 </div>
 <p>Points on each shell are placed using a <strong>Fibonacci sphere</strong> (golden-angle lattice)
 for even spacing without pole clustering:</p>
 <div class="formula-block">
-&phi; = acos(1 &minus; 2(i+0.5)/M)<br>
-&theta; = 2.3999&hellip; &middot; (globalIndex + i)
+$$\\begin{aligned} \\phi &= \\arccos\\bigl(1 - 2(i+0.5)/M\\bigr) \\\\ \\theta &= 2.3999\\ldots \\cdot (\\text{globalIndex} + i) \\end{aligned}$$
 </div>
 <p>A global running index for the golden angle prevents angular alignment across shells,
 spreading points pseudo-randomly in 3D while preserving a deterministic integer-to-point map.</p>`;

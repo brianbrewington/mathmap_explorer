@@ -12,11 +12,9 @@ class RoseCurvesExploration extends BaseExploration {
   static formulaShort = 'r = A&middot;cos(k&theta;)';
   static formula = `<h3>Rose Curves</h3>
 <div class="formula-block">
-r(&theta;) = A&middot;cos(k&middot;&theta;)<br>
-x = r&middot;cos(&theta;), &nbsp; y = r&middot;sin(&theta;)<br>
-&theta; &isin; [0, 2&pi;] &nbsp;(or more for fractional k)
+$$\\begin{aligned} r(\\theta) &= A\\cos(k\\theta) \\\\ x &= r\\cos\\theta, \\quad y = r\\sin\\theta \\\\ \\theta &\\in [0,\\, 2\\pi] \\quad \\text{(or more for fractional } k\\text{)} \\end{aligned}$$
 </div>
-<p>Rose curves are a family of curves described by the polar equation r&nbsp;=&nbsp;A&middot;cos(k&theta;).
+<p>Rose curves are a family of curves described by the polar equation $r = A\\cos(k\\theta)$.
 When <strong>k</strong> is an integer the curve has <em>k</em> petals (if k is odd) or <em>2k</em> petals
 (if k is even). Non-integer values of k produce curves that never quite close, gradually
 filling an annular region.</p>

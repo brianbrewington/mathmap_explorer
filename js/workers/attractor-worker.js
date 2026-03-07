@@ -19,8 +19,8 @@ self.onmessage = function(e) {
     switch (type) {
       case 'dejong': {
         const { a, b, c, d } = params;
-        nx = Math.sin(a * y) + c * Math.cos(a * x);
-        ny = Math.sin(b * x) + d * Math.cos(b * y);
+        nx = Math.sin(a * y) - Math.cos(b * x);
+        ny = Math.sin(c * x) - Math.cos(d * y);
         break;
       }
       case 'henon': {
@@ -58,7 +58,7 @@ self.onmessage = function(e) {
     if (i < 100) continue;
 
     const px = Math.floor((x - xMin) * xScale);
-    const py = Math.floor((y - yMin) * yScale);
+    const py = Math.floor((yMax - y) * yScale);
     if (px >= 0 && px < width && py >= 0 && py < height) {
       const idx = py * width + px;
       density[idx]++;

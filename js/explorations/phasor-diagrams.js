@@ -12,13 +12,11 @@ class PhasorDiagramsExploration extends BaseExploration {
   static formulaShort = 'z = A<sub>1</sub>e<sup>i&omega;<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>i(&omega;<sub>2</sub>t+&phi;)</sup>';
   static formula = `<h3>Phasor Addition</h3>
 <div class="formula-block">
-z<sub>1</sub>(t) = A<sub>1</sub> &middot; e<sup>i&omega;<sub>1</sub>t</sup><br>
-z<sub>2</sub>(t) = A<sub>2</sub> &middot; e<sup>i(&omega;<sub>2</sub>t + &phi;)</sup><br>
-z<sub>total</sub> = z<sub>1</sub> + z<sub>2</sub>
+$$\\begin{aligned} z_1(t) &= A_1 \\cdot e^{i\\omega_1 t} \\\\ z_2(t) &= A_2 \\cdot e^{i(\\omega_2 t + \\phi)} \\\\ z_{\\text{total}} &= z_1 + z_2 \\end{aligned}$$
 </div>
 <p>A <strong>phasor</strong> is a rotating complex vector whose real part traces a sinusoidal wave.
 Adding two phasors tip-to-tail in the complex plane gives the resultant amplitude and phase of
-the combined wave &mdash; the geometric basis of <em>superposition</em>.</p>
+the combined wave — the geometric basis of <em>superposition</em>.</p>
 <p>When the frequencies match, the resultant phasor has a fixed length (constructive or destructive
 interference). When frequencies differ, the resultant rotates and produces beats.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>

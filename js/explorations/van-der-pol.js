@@ -25,16 +25,15 @@ class VanDerPolExploration extends BaseExploration {
   static formulaShort = "x'' - μ(1-x²)x' + x = 0";
   static formula = `<h3>Van der Pol Equation</h3>
 <div class="formula-block">
-x'' &minus; &mu;(1 &minus; x&sup2;) x' + x = 0
+$$x'' - \\mu(1 - x^2)x' + x = 0$$
 </div>
 <p>Rewrite as a first-order system with state variables <em>x</em> and <em>y = x'</em>:</p>
 <div class="formula-block">
-dx/dt = y<br>
-dy/dt = &mu;(1 &minus; x&sup2;) y &minus; x
+$$\\begin{aligned} \\frac{dx}{dt} &= y \\\\ \\frac{dy}{dt} &= \\mu(1 - x^2)y - x \\end{aligned}$$
 </div>
-<p>When |x| &lt; 1 the damping term is <strong>negative</strong> (energy is pumped in);
-when |x| &gt; 1 it is positive (energy is dissipated). This balance drives
-every trajectory onto a stable <em>limit cycle</em> whose shape depends on &mu;.</p>`;
+<p>When $|x| < 1$ the damping term is <strong>negative</strong> (energy is pumped in);
+when $|x| > 1$ it is positive (energy is dissipated). This balance drives
+every trajectory onto a stable <em>limit cycle</em> whose shape depends on $\\mu$.</p>`;
   static tutorial = `<h3>Things to Try</h3>
 <ul>
   <li><strong>Small &mu; (≈ 0.1):</strong> the limit cycle is nearly sinusoidal — compare visually with a pure circle in the phase plane.</li>
@@ -59,13 +58,28 @@ every trajectory onto a stable <em>limit cycle</em> whose shape depends on &mu;.
       params: { preset: 'relaxation', mu: 5.0 }
     },
   ];
-  static circuitDiagram = `       +V
-        |
-   [Active negative-R element]
-        |
-        o---- LC/RC energy storage ---- GND
-        |
-      Output x(t)`;
+  static circuitSchematic = {
+    width: 16, height: 12,
+    components: [
+      { type: 'vcc', id: 'V', x: 4, y: 1.5 },
+      { type: 'block', id: 'NR', x: 4, y: 4, dir: 'down', label: 'Negative-R', w: 3.2, h: 1.4 },
+      { type: 'L', id: 'L1', x: 9, y: 6, dir: 'right', label: 'L' },
+      { type: 'C', id: 'C1', x: 13, y: 8, dir: 'down', label: 'C' },
+      { type: 'gnd', id: 'G1', x: 13, y: 10.5 },
+      { type: 'gnd', id: 'G2', x: 4, y: 10.5 },
+    ],
+    wires: [
+      { path: [[4, 1.8], [4, 3.3]] },
+      { path: [[4, 4.7], [4, 6], [7.5, 6]] },
+      { path: [[10.5, 6], [13, 6], [13, 6.5]] },
+      { path: [[13, 9.5], [13, 10.2]] },
+      { path: [[4, 6], [4, 10.2]] },
+    ],
+    junctions: [[4, 6]],
+    labels: [
+      { x: 5.5, y: 5.6, text: 'x(t)', color: '#22d3ee' },
+    ],
+  };
   static probeMap = [
     {
       model: 'x',
@@ -279,8 +293,13 @@ every trajectory onto a stable <em>limit cycle</em> whose shape depends on &mu;.
     }
 
     const pad = px(24);
-    const toX = v => r.x + pad + ((v - xMin) / (xMax - xMin)) * (r.w - 2 * pad);
-    const toY = v => r.y + r.h - pad - ((v - yMin) / (yMax - yMin)) * (r.h - 2 * pad);
+    const drawW = r.w - 2 * pad;
+    const drawH = r.h - 2 * pad;
+    const uScale = Math.min(drawW / (xMax - xMin), drawH / (yMax - yMin));
+    const midX = (xMin + xMax) / 2, midY = (yMin + yMax) / 2;
+    const cxP = r.x + pad + drawW / 2, cyP = r.y + pad + drawH / 2;
+    const toX = v => cxP + (v - midX) * uScale;
+    const toY = v => cyP - (v - midY) * uScale;
 
     // axes
     ctx.strokeStyle = '#394159';

@@ -10,18 +10,18 @@ class RLCFilterExploration extends BaseExploration {
   static formulaShort = 'H(jω) = 1/√((1-ω²LC)² + (ωRC)²)';
   static formula = `<h3>Driven RLC Circuit</h3>
 <div class="formula-block">
-H(jω) = V<sub>out</sub> / V<sub>in</sub>
+$$H(j\\omega) = \\frac{V_{\\text{out}}}{V_{\\text{in}}}$$
 </div>
 <p>A series <strong>RLC circuit</strong> driven by a sinusoidal voltage source acts as a
-frequency-selective filter. The transfer function H(jω) depends on which
+frequency-selective filter. The transfer function $H(j\\omega)$ depends on which
 component's voltage is taken as output:</p>
 <ul>
-<li><strong>Low-pass</strong> (across C): H = 1 / (1 − ω²LC + jωRC)</li>
-<li><strong>High-pass</strong> (across L): H = −ω²LC / (1 − ω²LC + jωRC)</li>
-<li><strong>Band-pass</strong> (across R): H = jωRC / (1 − ω²LC + jωRC)</li>
+<li><strong>Low-pass</strong> (across C): $H = \\frac{1}{1 - \\omega^2 LC + j\\omega RC}$</li>
+<li><strong>High-pass</strong> (across L): $H = \\frac{-\\omega^2 LC}{1 - \\omega^2 LC + j\\omega RC}$</li>
+<li><strong>Band-pass</strong> (across R): $H = \\frac{j\\omega RC}{1 - \\omega^2 LC + j\\omega RC}$</li>
 </ul>
-<p>The <strong>resonant frequency</strong> is ω₀ = 1/√(LC), where the impedances of L and C
-cancel. The <strong>quality factor</strong> Q = (1/R)√(L/C) controls the sharpness of the
+<p>The <strong>resonant frequency</strong> is $\\omega_0 = \\tfrac{1}{\\sqrt{LC}}$, where the impedances of L and C
+cancel. The <strong>quality factor</strong> $Q = \\tfrac{1}{R}\\sqrt{\\tfrac{L}{C}}$ controls the sharpness of the
 resonance peak — high Q means a narrow, tall peak; low Q means broad damping.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The top panel shows the <strong>Bode magnitude plot</strong> — gain in dB vs. log frequency.
@@ -51,10 +51,32 @@ current drive frequency.</p>
       params: { topology: 'lowpass', R: 100, driveFreq: 10000 }
     },
   ];
-  static circuitDiagram = ` AC Vin ~ -- R -- L -- C -- GND
-               |    |    |
-            VoutR VoutL VoutC
-            (BP)  (HP)  (LP)`;
+  static circuitSchematic = {
+    width: 20, height: 12,
+    components: [
+      { type: 'ac', id: 'Vin', x: 2, y: 5.5 },
+      { type: 'R', id: 'R1', x: 6.5, y: 3.5, dir: 'right', label: 'R' },
+      { type: 'L', id: 'L1', x: 10.5, y: 3.5, dir: 'right', label: 'L' },
+      { type: 'C', id: 'C1', x: 14.5, y: 3.5, dir: 'right', label: 'C' },
+      { type: 'gnd', id: 'G1', x: 2, y: 8 },
+      { type: 'gnd', id: 'G2', x: 17, y: 8 },
+    ],
+    wires: [
+      { path: [[2, 4], [2, 3.5], [5, 3.5]] },
+      { path: [[8, 3.5], [9, 3.5]] },
+      { path: [[12, 3.5], [13, 3.5]] },
+      { path: [[16, 3.5], [17, 3.5], [17, 7.7]] },
+      { path: [[2, 7], [2, 7.7]] },
+    ],
+    junctions: [[8, 3.5], [12, 3.5], [16, 3.5]],
+    labels: [
+      { x: 2, y: 3, text: 'Vin', color: '#f472b6' },
+      { x: 8, y: 5.2, text: 'BP', color: '#22d3ee', size: 9 },
+      { x: 12, y: 5.2, text: 'HP', color: '#22d3ee', size: 9 },
+      { x: 16, y: 5.2, text: 'LP', color: '#22d3ee', size: 9 },
+    ],
+    notes: 'Output taps: across R (band-pass), L (high-pass), or C (low-pass)',
+  };
   static probeMap = [
     {
       model: 'driveFreq',

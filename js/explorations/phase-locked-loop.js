@@ -19,14 +19,13 @@ class PhaseLockedLoopExploration extends BaseExploration {
   static formulaShort = 'dφ/dt = Δω - K·sin(φ)';
   static formula = `<h3>Phase-Locked Loop</h3>
 <div class="formula-block">
-dφ/dt = ω<sub>err</sub><br>
-dω<sub>err</sub>/dt = −2ζω<sub>n</sub>·ω<sub>err</sub> − ω<sub>n</sub>²·sin(φ) + ω<sub>n</sub>²·(Δf/f<sub>ref</sub>)
+$$\\begin{aligned} \\frac{d\\phi}{dt} &= \\omega_{\\text{err}} \\\\ \\frac{d\\omega_{\\text{err}}}{dt} &= -2\\zeta\\omega_n \\cdot \\omega_{\\text{err}} - \\omega_n^2 \\sin(\\phi) + \\omega_n^2 \\cdot \\frac{\\Delta f}{f_{\\text{ref}}} \\end{aligned}$$
 </div>
 <p>A voltage-controlled oscillator (VCO) tracks a reference signal.
-A phase detector outputs sin(φ<sub>ref</sub> − φ<sub>vco</sub>),
+A phase detector outputs $\\sin(\\phi_{\\text{ref}} - \\phi_{\\text{vco}})$,
 a loop filter smooths it, and the VCO adjusts its frequency accordingly.</p>
-<p>The simplified second-order model: dφ/dt = Δω − K·sin(φ), where φ is
-the phase error, Δω is the frequency offset, and K is the loop gain.</p>`;
+<p>The simplified second-order model: $d\\phi/dt = \\Delta\\omega - K\\sin(\\phi)$, where $\\phi$ is
+the phase error, $\\Delta\\omega$ is the frequency offset, and $K$ is the loop gain.</p>`;
   static tutorial = `<h3>How To Use This Demo</h3>
 <ul>
   <li><strong>Watch phase lock:</strong> with small frequency offset the phase error converges to zero.</li>
@@ -50,9 +49,13 @@ the phase error, Δω is the frequency offset, and K is the loop gain.</p>`;
       params: { freqOffset: 0.1, loopBandwidth: 1.5, damping: 0.2 }
     },
   ];
-  static circuitDiagram = `Ref in -> [Phase Detector] -> [Loop Filter] -> [VCO] -> Divider ->|
-             ^                                                    |
-             |----------------------------------------------------|`;
+  static circuitDiagram = '';
+  static blockDiagram = `graph LR
+  Ref["Ref input"] --> PD["Phase Detector"]
+  PD --> LF["Loop Filter"]
+  LF --> VCO["VCO"]
+  VCO --> Div["Divider"]
+  Div --> PD`;
   static probeMap = [
     {
       model: 'phi',

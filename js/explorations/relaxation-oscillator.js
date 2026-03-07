@@ -10,13 +10,13 @@ class RelaxationOscillatorExploration extends BaseExploration {
   static formulaShort = 'V_c(t) = V_supply(1 - e^{-t/RC})';
   static formula = `<h3>Relaxation Oscillator with Schmitt Trigger</h3>
 <div class="formula-block">
-V<sub>c</sub>(t) = V<sub>supply</sub>(1 &minus; e<sup>&minus;t/RC</sup>)
+$$V_c(t) = V_{\\text{supply}}(1 - e^{-t/RC})$$
 </div>
-<p>A capacitor charges through resistor R toward V<sub>supply</sub>.
-When V<sub>c</sub> reaches V<sub>high</sub> (upper Schmitt threshold), the output flips
-and the capacitor discharges toward 0. When V<sub>c</sub> drops to V<sub>low</sub>
+<p>A capacitor charges through resistor $R$ toward $V_{\\text{supply}}$.
+When $V_c$ reaches $V_{\\text{high}}$ (upper Schmitt threshold), the output flips
+and the capacitor discharges toward 0. When $V_c$ drops to $V_{\\text{low}}$
 (lower threshold), the output flips again and charging resumes.</p>
-<p>The hysteresis band (V<sub>high</sub> &minus; V<sub>low</sub>) prevents chattering
+<p>The hysteresis band ($V_{\\text{high}} - V_{\\text{low}}$) prevents chattering
 around a single threshold, giving clean, decisive switching.</p>`;
   static tutorial = `<h3>How To Use This Demo</h3>
 <ul>
@@ -41,13 +41,31 @@ around a single threshold, giving clean, decisive switching.</p>`;
       params: { rc: 0.8, vHigh: 3.3, vLow: 1.7 }
     },
   ];
-  static circuitDiagram = ` Vcc -- R --o-- C -- GND
-             |
-         SchmittTrigger
-             |
-           Output
-             |
-          (feedback to node o)`;
+  static circuitSchematic = {
+    width: 16, height: 12,
+    components: [
+      { type: 'vcc', id: 'V', x: 2, y: 1.5, vccLabel: 'Vcc' },
+      { type: 'R', id: 'R1', x: 5, y: 3, dir: 'right', label: 'R' },
+      { type: 'C', id: 'C1', x: 11.5, y: 3, dir: 'right', label: 'C' },
+      { type: 'schmitt', id: 'ST', x: 8, y: 6.5, dir: 'down' },
+      { type: 'gnd', id: 'G1', x: 14, y: 4.5 },
+      { type: 'gnd', id: 'G2', x: 8, y: 10.5 },
+    ],
+    wires: [
+      { path: [[2, 1.8], [2, 3], [3.5, 3]] },
+      { path: [[6.5, 3], [8, 3], [10, 3]] },
+      { path: [[13, 3], [14, 3], [14, 4.2]] },
+      { path: [[8, 3], [8, 5]] },
+      { path: [[8, 8], [8, 10.2]] },
+      { path: [[8, 9], [1, 9], [1, 3], [2, 3]], dashed: true },
+    ],
+    junctions: [[8, 3], [2, 3]],
+    labels: [
+      { x: 9, y: 2.5, text: 'Vc', color: '#f472b6' },
+      { x: 9.5, y: 8.5, text: 'Output', color: '#22d3ee' },
+      { x: 2, y: 9.5, text: 'feedback', color: '#a0aac0', size: 9 },
+    ],
+  };
   static probeMap = [
     {
       model: 'Vc',

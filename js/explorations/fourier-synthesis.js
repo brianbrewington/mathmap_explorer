@@ -13,13 +13,19 @@ class FourierSynthesisExploration extends BaseExploration {
   static formulaShort = 'f(t) &asymp; &Sigma; (1/n) sin(n&omega;t)';
   static formula = `<h3>Fourier Synthesis (Square Wave)</h3>
 <div class="formula-block">
-f(t) = (4/&pi;) &middot; &Sigma;<sub>k=1,3,5&hellip;</sub> (1/k) &middot; sin(k&omega;t)
+$$f(t) = \\frac{4}{\\pi} \\sum_{k=1,3,5,\\ldots} \\frac{1}{k} \\sin(k\\omega t)$$
 </div>
 <p>Any periodic function can be decomposed into (or built from) a sum of sine and cosine waves at
 integer multiples of a fundamental frequency &mdash; the <em>Fourier series</em>.</p>
-<p>A square wave uses only <strong>odd harmonics</strong> (1, 3, 5, &hellip;) with amplitudes
-that decrease as 1/k. As more harmonics are added the approximation sharpens, though the
+<p>A square wave uses only <strong>odd harmonics</strong> ($1, 3, 5, \\ldots$) with amplitudes
+that decrease as $1/k$. As more harmonics are added the approximation sharpens, though the
 <em>Gibbs phenomenon</em> keeps an overshoot at the discontinuities.</p>`;
+  static blockDiagram = `graph LR
+  H1["Harmonic 1"] --> Sum["Σ Sum"]
+  H3["Harmonic 3"] --> Sum
+  H5["Harmonic 5"] --> Sum
+  Hn["Harmonic n..."] --> Sum
+  Sum --> Wave["Output waveform"]`;
   static tutorial = `<h3>Building Any Shape from Sine Waves</h3>
 <p>Joseph Fourier discovered something astonishing: <em>any</em> periodic signal can be built
 by adding up sine waves. A square wave? That's an infinite sum of odd harmonics.
@@ -124,8 +130,8 @@ y = sum * amplitude * (4 / Math.PI);</code></pre>
     const ctx = this._audioCtx;
     const count = Math.min(Math.floor(this.params.harmonics || 1), 50);
     const baseFreq = 220 * (this.params.freq || 1);
-    const volumeScale = (this.params.amplitude !== undefined ? this.params.amplitude : 1) * 0.15;
-    for (let k = 1; k <= count * 2; k += 2) {
+    const volumeScale = (this.params.amplitude !== undefined ? this.params.amplitude : 1) * 0.5;
+    for (let k = 1; k <= count; k += 2) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.frequency.value = baseFreq * k;

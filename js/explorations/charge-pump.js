@@ -12,16 +12,16 @@ class ChargePumpExploration extends BaseExploration {
   static formulaShort = 'V_out → N × V_in (ideal)';
   static formula = `<h3>Cockcroft-Walton Voltage Multiplier</h3>
 <div class="formula-block">
-V<sub>out</sub> &rarr; N &middot; V<sub>peak</sub> &minus; N &middot; V<sub>diode</sub> &minus; losses
+$$V_{\\text{out}} \\to N \\cdot V_{\\text{peak}} - N \\cdot V_{\\text{diode}} - \\text{losses}$$
 </div>
 <p>A <strong>Cockcroft-Walton voltage multiplier</strong> uses a ladder of diodes and capacitors.
 On each half-cycle of the AC input, charge transfers up the ladder through
 forward-biased diodes. After many cycles, each stage adds approximately
-V<sub>in</sub> to the output.</p>
-<p>Real circuits have losses from <strong>diode forward drops</strong> (≈ 0.7 V each) and
+$V_{\\text{in}}$ to the output.</p>
+<p>Real circuits have losses from <strong>diode forward drops</strong> (&approx; 0.7 V each) and
 <strong>finite capacitance</strong>. The output voltage converges to:</p>
 <div class="formula-block">
-V<sub>out</sub> = N &middot; V<sub>peak</sub> &minus; N &middot; V<sub>diode</sub> &minus; I<sub>load</sub> &middot; f(N, C, f)
+$$V_{\\text{out}} = N \\cdot V_{\\text{peak}} - N \\cdot V_{\\text{diode}} - I_{\\text{load}} \\cdot f(N, C, f)$$
 </div>
 <p>Load current further reduces the output because each cycle can only replenish
 a finite amount of charge.</p>`;
@@ -49,10 +49,40 @@ a finite amount of charge.</p>`;
       params: { capSize: 40, loadCurrent: 1.0, stages: 4 }
     },
   ];
-  static circuitDiagram = ` AC in ~ ->|-- C1 --|>|-- C2 --|>|-- C3 -- ... --> Vout
-            |          |          |
-           GND        GND        GND
-   (Cockcroft-Walton ladder of diodes and capacitors)`;
+  static circuitSchematic = {
+    width: 22, height: 11,
+    components: [
+      { type: 'ac', id: 'Vin', x: 1.5, y: 4 },
+      { type: 'D', id: 'D1', x: 4.5, y: 2.5, dir: 'right', label: 'D₁' },
+      { type: 'C', id: 'C1', x: 7.5, y: 5, dir: 'down', label: 'C₁' },
+      { type: 'D', id: 'D2', x: 10, y: 2.5, dir: 'right', label: 'D₂' },
+      { type: 'C', id: 'C2', x: 13, y: 5, dir: 'down', label: 'C₂' },
+      { type: 'D', id: 'D3', x: 15.5, y: 2.5, dir: 'right', label: 'D₃' },
+      { type: 'gnd', id: 'G0', x: 1.5, y: 7 },
+      { type: 'gnd', id: 'G1', x: 7.5, y: 7.5 },
+      { type: 'gnd', id: 'G2', x: 13, y: 7.5 },
+    ],
+    wires: [
+      { path: [[1.5, 2.5], [1.5, 2.5], [3, 2.5]] },
+      { path: [[6, 2.5], [7.5, 2.5], [7.5, 3.5]] },
+      { path: [[7.5, 6.5], [7.5, 7.2]] },
+      { path: [[7.5, 2.5], [8.5, 2.5]] },
+      { path: [[11.5, 2.5], [13, 2.5], [13, 3.5]] },
+      { path: [[13, 6.5], [13, 7.2]] },
+      { path: [[13, 2.5], [14, 2.5]] },
+      { path: [[17, 2.5], [18.5, 2.5]] },
+      { path: [[18.5, 2.5], [20, 2.5]], dashed: true },
+      { path: [[1.5, 2.5], [1.5, 2.7]] },
+      { path: [[1.5, 5.5], [1.5, 6.7]] },
+    ],
+    junctions: [[7.5, 2.5], [13, 2.5]],
+    labels: [
+      { x: 1.5, y: 1.8, text: 'AC in', color: '#f472b6' },
+      { x: 20, y: 2.1, text: 'Vout', color: '#22d3ee', anchor: 'start' },
+      { x: 18.5, y: 4, text: '...', color: '#a0aac0', size: 14 },
+    ],
+    notes: 'Cockcroft–Walton voltage multiplier ladder',
+  };
   static probeMap = [
     {
       model: 'vIn',

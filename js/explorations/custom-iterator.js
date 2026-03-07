@@ -94,17 +94,19 @@ class CustomIteratorExploration extends BaseExploration {
   static formulaShort = 'x\' = f(x, y, a, b, c, d)';
   static formula = `<h3>Custom Iterator</h3>
 <div class="formula-block">
-Real mode:<br>
-x<sub>n+1</sub> = f(x, y, a, b, c, d)<br>
-y<sub>n+1</sub> = g(x, y, a, b, c, d)<br><br>
-Complex mode:<br>
-z<sub>n+1</sub> = f(z, c, a, b, c, d)<br><br>
-Escape Time (GPU):<br>
-z<sub>n+1</sub> = f(z, c, a, b, c, d), colored by escape iteration<br><br>
-1D Map:<br>
-x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
+<p><strong>Real mode:</strong></p>
+$$\\begin{aligned}
+x_{n+1} &= f(x, y, a, b, c, d) \\\\
+y_{n+1} &= g(x, y, a, b, c, d)
+\\end{aligned}$$
+<p><strong>Complex mode:</strong></p>
+$$z_{n+1} = f(z, c, a, b, c, d)$$
+<p><strong>Escape Time (GPU):</strong></p>
+$$z_{n+1} = f(z, c, a, b, c, d)\\text{, colored by escape iteration}$$
+<p><strong>1D Map:</strong></p>
+$$x_{n+1} = f(x, r, a, b, c, d)\\text{, bifurcation over } r$$
 </div>
-<p>Define your own iteration formulas using standard math functions. Supported: sin, cos, tan, sqrt, abs, log, exp, atan, asin, acos, sinh, cosh, tanh. Use ^ for powers. Use <em>i</em> for the imaginary unit in complex/GPU modes (e.g. exp(i*a*z)). Parameters a, b, c, d are adjustable via sliders.</p>`;
+<p>Define your own iteration formulas using standard math functions. Supported: sin, cos, tan, sqrt, abs, log, exp, atan, asin, acos, sinh, cosh, tanh. Use ^ for powers. Use <em>i</em> for the imaginary unit in complex/GPU modes (e.g. $\\exp(i \\cdot a \\cdot z)$). Parameters $a, b, c, d$ are adjustable via sliders.</p>`;
   static tutorial = `<h3>How Custom Iterators Work</h3>
 <p>Your expression is parsed into an AST (abstract syntax tree), validated for safety, and compiled to JavaScript (CPU modes) or GLSL (GPU mode).</p>
 <pre><code class="language-js">// Your expression "sin(a*y) + c*cos(a*x)" compiles to:
@@ -165,6 +167,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
       mapDotSize: 1.5
     };
     this._parseError = '';
+    this._naturalBounds = { xMin: preset.xMin, xMax: preset.xMax, yMin: preset.yMin, yMax: preset.yMax };
     this.densityRenderer = null;
     this.worker = null;
     this._debounceTimer = null;
@@ -193,6 +196,23 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     this._mapBounds = { xMin: 2.5, xMax: 4.0, yMin: 0, yMax: 1 };
     this._mapCachedPoints = null;
     this._mapCachedCount = 0;
+  }
+
+  _syncAspect() {
+    const aspect = (this.canvas.width || 1) / (this.canvas.height || 1);
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+    const nb = this._naturalBounds;
+    const xMid = (nb.xMin + nb.xMax) / 2, yMid = (nb.yMin + nb.yMax) / 2;
+    const xRange = nb.xMax - nb.xMin, yRange = nb.yMax - nb.yMin;
+    let xHalf, yHalf;
+    if (xRange / yRange > aspect) {
+      xHalf = xRange / 2; yHalf = xHalf / aspect;
+    } else {
+      yHalf = yRange / 2; xHalf = yHalf * aspect;
+    }
+    this.params.xMin = xMid - xHalf; this.params.xMax = xMid + xHalf;
+    this.params.yMin = yMid - yHalf; this.params.yMax = yMid + yHalf;
   }
 
   shouldRebuildControls(key) {
@@ -323,6 +343,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
   }
 
   _activateCPU() {
+    this._syncAspect();
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => ({
@@ -608,8 +629,13 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
         this.params.a = p.a; this.params.b = p.b;
         this.params.c = p.c; this.params.d = p.d;
         if (p.xMin !== undefined) {
-          this.params.xMin = p.xMin; this.params.xMax = p.xMax;
-          this.params.yMin = p.yMin; this.params.yMax = p.yMax;
+          this._naturalBounds = { xMin: p.xMin, xMax: p.xMax, yMin: p.yMin, yMax: p.yMax };
+          if (p.mode === 'real' || p.mode === 'complex') {
+            this._syncAspect();
+          } else {
+            this.params.xMin = p.xMin; this.params.xMax = p.xMax;
+            this.params.yMin = p.yMin; this.params.yMax = p.yMax;
+          }
         }
         this._parseError = '';
         if (oldMode !== p.mode) {
@@ -670,7 +696,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     }
 
     if (key === 'resolution') {
-      this._densityWidth = value; this._densityHeight = value;
+      this._syncAspect();
     }
 
     if (key === 'exprX' || key === 'exprY' || key === 'exprZ') {
@@ -708,8 +734,8 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
     this.params.exprX = preset.exprX; this.params.exprY = preset.exprY;
     this.params.a = preset.a; this.params.b = preset.b;
     this.params.c = preset.c; this.params.d = preset.d;
-    this.params.xMin = preset.xMin; this.params.xMax = preset.xMax;
-    this.params.yMin = preset.yMin; this.params.yMax = preset.yMax;
+    this._naturalBounds = { xMin: preset.xMin, xMax: preset.xMax, yMin: preset.yMin, yMax: preset.yMax };
+    this._syncAspect();
     this.params.transient = 100;
     this._parseError = '';
     this._gpuZoom = 3.0;
@@ -721,7 +747,12 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
   }
 
   resize() {
-    this.render();
+    if (this.params.mode === 'real' || this.params.mode === 'complex') {
+      this._syncAspect();
+      this._startWorker();
+    } else {
+      this.render();
+    }
   }
 
   render() {

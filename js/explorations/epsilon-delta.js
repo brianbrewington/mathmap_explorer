@@ -10,17 +10,16 @@ class EpsilonDeltaExploration extends BaseExploration {
     'calculus', 'numerical-methods', 'beginner',
   ];
   static formulaShort = '|x\u2212a| < \u03B4 \u27F9 |f(x)\u2212L| < \u03B5';
-  static formula = `<h3>\u03B5-\u03B4 Definition of a Limit</h3>
+  static formula = `<h3>$\\varepsilon$-$\\delta$ Definition of a Limit</h3>
 <div class="formula-block">
-lim<sub>x\u2192a</sub> f(x) = L<br><br>
-\u2200\u03B5 &gt; 0, \u2203\u03B4 &gt; 0 such that<br>
-0 &lt; |x \u2212 a| &lt; \u03B4 &rArr; |f(x) \u2212 L| &lt; \u03B5
+$$\\lim_{x \\to a} f(x) = L$$
+$$\\forall\\,\\varepsilon > 0,\\; \\exists\\,\\delta > 0 \\text{ such that } 0 < |x - a| < \\delta \\;\\Rightarrow\\; |f(x) - L| < \\varepsilon$$
 </div>
 <p>The <strong>epsilon-delta definition</strong> formalizes the intuitive notion of a limit.
-For every tolerance \u03B5 around the limit value L, there must exist a neighborhood \u03B4
+For every tolerance $\\varepsilon$ around the limit value $L$, there must exist a neighborhood $\\delta$
 around <em>a</em> such that all function values within that neighborhood stay within the
-\u03B5-band.</p>
-<p>If no such \u03B4 exists for some \u03B5, the limit does not exist at that point &mdash;
+$\\varepsilon$-band.</p>
+<p>If no such $\\delta$ exists for some $\\varepsilon$, the limit does not exist at that point &mdash;
 as happens at a jump discontinuity.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The horizontal cyan band shows the \u03B5-tolerance around the limit value L.

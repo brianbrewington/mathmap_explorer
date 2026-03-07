@@ -14,15 +14,14 @@ class PascalsTriangleExploration extends BaseExploration {
   static formulaShort = 'C(n,k) = C(n\u22121,k\u22121) + C(n\u22121,k)';
   static formula = `<h3>Pascal's Triangle</h3>
 <div class="formula-block">
-C(n, k) = C(n\u22121, k\u22121) + C(n\u22121, k)<br><br>
-C(n, 0) = C(n, n) = 1
+$$\\binom{n}{k} = \\binom{n-1}{k-1} + \\binom{n-1}{k}, \\quad \\binom{n}{0} = \\binom{n}{n} = 1$$
 </div>
-<p>Each entry is the sum of the two entries above it. When we color entries by their value <strong>mod p</strong>,
+<p>Each entry is the sum of the two entries above it. When we color entries by their value <strong>mod $p$</strong>,
 striking fractal patterns emerge.</p>
-<p>At <strong>mod 2</strong>, the nonzero entries trace out the <em>Sierpinski gasket</em> \u2014 a self-similar
+<p>At <strong>mod 2</strong>, the nonzero entries trace out the <em>Sierpinski gasket</em> — a self-similar
 fractal that appears at every scale as the triangle grows.</p>
-<p>Higher moduli reveal richer, p-adic fractal structures related to
-<strong>Lucas\u2019 theorem</strong> and the fine structure of binomial coefficients.</p>`;
+<p>Higher moduli reveal richer, $p$-adic fractal structures related to
+<strong>Lucas' theorem</strong> and the fine structure of binomial coefficients.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>Each small cell represents one binomial coefficient C(n, k). Rows run top to bottom
 (n = 0 at the top); columns run left to right within each row.</p>

@@ -13,9 +13,7 @@ class TrigIdentitiesCircleExploration extends BaseExploration {
   static formulaShort = 'sin&sup2;&theta; + cos&sup2;&theta; = 1';
   static formula = `<h3>Trigonometric Identities on the Unit Circle</h3>
 <div class="formula-block">
-sin&sup2;&theta; + cos&sup2;&theta; = 1<br>
-tan&theta; = sin&theta; / cos&theta;<br>
-sec&theta; = 1 / cos&theta;, &ensp; csc&theta; = 1 / sin&theta;
+$$\\begin{aligned} \\sin^2\\theta + \\cos^2\\theta &= 1 \\\\ \\tan\\theta &= \\sin\\theta / \\cos\\theta \\\\ \\sec\\theta = 1/\\cos\\theta,\\quad \\csc\\theta &= 1/\\sin\\theta \\end{aligned}$$
 </div>
 <p>Every fundamental trig identity can be read as a geometric relationship on the <strong>unit
 circle</strong>. The Pythagorean identity is simply the statement that the radius is 1; tangent

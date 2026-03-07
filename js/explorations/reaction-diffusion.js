@@ -20,21 +20,26 @@ class ReactionDiffusionExploration extends BaseExploration {
   static formulaShort = '∂u/∂t = D<sub>u</sub>∇²u − uv² + F(1−u)';
   static formula = `<h3>Gray-Scott Reaction-Diffusion</h3>
 <div class="formula-block">
-∂u/∂t = D<sub>u</sub> ∇²u − uv² + F(1 − u)<br><br>
-∂v/∂t = D<sub>v</sub> ∇²v + uv² − (F + k)v
+$$\\begin{aligned} \\frac{\\partial u}{\\partial t} &= D_u \\nabla^2 u - uv^2 + F(1 - u) \\\\ \\frac{\\partial v}{\\partial t} &= D_v \\nabla^2 v + uv^2 - (F + k)v \\end{aligned}$$
 </div>
 <p>Two chemicals <strong>u</strong> and <strong>v</strong> diffuse across a 2D grid and react with each other:</p>
 <ul>
-<li><strong>u</strong> is consumed by the reaction term <em>−uv²</em> and replenished by the feed term <em>F(1−u)</em>.</li>
-<li><strong>v</strong> is produced by the reaction <em>+uv²</em> and removed by the kill term <em>−(F+k)v</em>.</li>
+<li><strong>u</strong> is consumed by the reaction term $-uv^2$ and replenished by the feed term $F(1-u)$.</li>
+<li><strong>v</strong> is produced by the reaction $+uv^2$ and removed by the kill term $-(F+k)v$.</li>
 </ul>
 <div class="formula-block">
-D<sub>u</sub> = 0.21, &nbsp; D<sub>v</sub> = 0.105, &nbsp; dt = 1.0
+$$D_u = 0.21, \\quad D_v = 0.105, \\quad dt = 1.0$$
 </div>
-<p>The balance between <strong>F</strong> (feed rate) and <strong>k</strong> (kill rate) determines the pattern:
+<p>The balance between <strong>$F$</strong> (feed rate) and <strong>$k$</strong> (kill rate) determines the pattern:
 spots, stripes, mitosis, coral, spirals, or chaos.</p>
-<p>The Laplacian ∇² is computed with a 5-point stencil and wrap-around (periodic) boundary conditions.
+<p>The Laplacian $\\nabla^2$ is computed with a 5-point stencil and wrap-around (periodic) boundary conditions.
 Multiple simulation steps per frame keep the computation fast while maintaining visual smoothness.</p>`;
+  static blockDiagram = `graph TD
+  U["Species U"] -->|"feed F"| React["Reaction U + 2V → 3V"]
+  V["Species V"] --> React
+  React -->|"kill k"| Drain["Drain"]
+  U -.->|"Du ∇²"| U
+  V -.->|"Dv ∇²"| V`;
   static tutorial = `<h3>How Nature Paints Patterns</h3>
 <p>Alan Turing proposed in 1952 that biological patterns — spots on a leopard,
 stripes on a zebra, the branching of coral — arise from just two chemicals

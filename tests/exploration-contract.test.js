@@ -78,6 +78,8 @@ import '../js/explorations/random-walk.js';
 import '../js/explorations/law-of-large-numbers.js';
 import '../js/explorations/bayes-theorem.js';
 import '../js/explorations/markov-chain.js';
+import '../js/explorations/network-epidemic.js';
+import '../js/explorations/opinion-dynamics.js';
 import '../js/explorations/normal-distribution.js';
 import '../js/explorations/wave-equation.js';
 import '../js/explorations/vortex-shedding.js';
@@ -108,6 +110,17 @@ import '../js/explorations/least-action-paths.js';
 import '../js/explorations/brachistochrone.js';
 import '../js/explorations/fermats-principle.js';
 import '../js/explorations/laplacian-growth.js';
+import '../js/explorations/ode-integrator.js';
+import '../js/explorations/phase-portrait.js';
+import '../js/explorations/stability-regions.js';
+import '../js/explorations/graph-laplacian.js';
+import '../js/explorations/kuramoto-network.js';
+import '../js/explorations/bifurcation-anatomy.js';
+import '../js/explorations/delay-de.js';
+import '../js/explorations/stochastic-resonance.js';
+import '../js/explorations/ulam-sphere.js';
+import '../js/explorations/ulam-helix.js';
+import '../js/explorations/fourier-analysis.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -130,7 +143,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(87);
+    expect(explorations.length).toBe(100);
   });
 
   it('all ids are unique', () => {
@@ -207,6 +220,23 @@ describe.each(explorations.map(E => [E.id, E]))('exploration "%s"', (_id, ExplCl
   it('overview is a string if present', () => {
     if (ExplClass.overview) {
       expect(typeof ExplClass.overview).toBe('string');
+    }
+  });
+
+  it('circuitSchematic is well-formed if present', () => {
+    if (ExplClass.circuitSchematic) {
+      expect(typeof ExplClass.circuitSchematic).toBe('object');
+      expect(typeof ExplClass.circuitSchematic.width).toBe('number');
+      expect(typeof ExplClass.circuitSchematic.height).toBe('number');
+      expect(Array.isArray(ExplClass.circuitSchematic.components)).toBe(true);
+      expect(Array.isArray(ExplClass.circuitSchematic.wires)).toBe(true);
+    }
+  });
+
+  it('blockDiagram is a non-empty string if present', () => {
+    if (ExplClass.blockDiagram && ExplClass.blockDiagram.length > 0) {
+      expect(typeof ExplClass.blockDiagram).toBe('string');
+      expect(ExplClass.blockDiagram).toMatch(/graph\s+(LR|TD|RL|BT)/);
     }
   });
 

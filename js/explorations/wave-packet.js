@@ -16,24 +16,23 @@ class WavePacketExploration extends BaseExploration {
   static formulaShort = 'y = e<sup>−(x−v<sub>g</sub>t)²/2σ²</sup> cos(kx − ωt)';
   static formula = `<h3>Wave Packet</h3>
 <div class="formula-block">
-y(x, t) = e<sup>−(x − v<sub>g</sub>t)²/(2σ²)</sup> cos(kx − ωt)
+$$y(x, t) = e^{-(x - v_g t)^2/(2\\sigma^2)} \\cos(kx - \\omega t)$$
 </div>
 <p>A <strong>wave packet</strong> is a localized disturbance formed by superposing many
 sinusoidal waves. The Gaussian envelope controls the spatial extent; the carrier
 wave provides the oscillation.</p>
 <div class="formula-block">
-Envelope: &nbsp; A(x, t) = e<sup>−(x − v<sub>g</sub>t)²/(2σ(t)²)</sup><br><br>
-Carrier: &nbsp; cos(kx − ωt)
+$$\\begin{aligned} \\text{Envelope:}\\quad A(x,t) &= e^{-(x - v_g t)^2/(2\\sigma(t)^2)} \\\\ \\text{Carrier:}\\quad &\\cos(kx - \\omega t) \\end{aligned}$$
 </div>
 <h4>Dispersion</h4>
-<p>When <strong>ω = αk²</strong> (quadratic dispersion), different frequency components travel at
-different speeds. The group velocity v<sub>g</sub> = dω/dk carries the envelope, while the
-phase velocity v<sub>p</sub> = ω/k moves the crests. Over time the packet <em>spreads</em>:</p>
+<p>When $\\omega = \\alpha k^2$ (quadratic dispersion), different frequency components travel at
+different speeds. The group velocity $v_g = d\\omega/dk$ carries the envelope, while the
+phase velocity $v_p = \\omega/k$ moves the crests. Over time the packet <em>spreads</em>:</p>
 <div class="formula-block">
-σ(t) = σ₀ √(1 + (t/τ)²), &nbsp;&nbsp; τ = 2σ₀²k
+$$\\sigma(t) = \\sigma_0 \\sqrt{1 + (t/\\tau)^2}, \\quad \\tau = 2\\sigma_0^2 k / v_g$$
 </div>
 <h4>Uncertainty Relation</h4>
-<p>A narrow packet (small σ) has a wide momentum spectrum (large Δk ≈ 1/σ).
+<p>A narrow packet (small $\\sigma$) has a wide momentum spectrum (large $\\Delta k \\approx 1/\\sigma$).
 Making the packet more localized in space necessarily spreads it in wave-number space —
 a classical analogue of the Heisenberg uncertainty principle.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
@@ -138,7 +137,7 @@ by watching which direction the peaks move relative to the envelope center.</li>
   _sigmaT() {
     const { sigma, carrierK, dispersion } = this.params;
     if (dispersion === 'quadratic') {
-      const tau = 2 * sigma * sigma * carrierK;
+      const tau = 2 * sigma * sigma * carrierK / this.params.groupVelocity;
       return sigma * Math.sqrt(1 + (this.time / tau) * (this.time / tau));
     }
     return sigma;

@@ -14,18 +14,17 @@ class NormalDistributionExploration extends BaseExploration {
   static formulaShort = 'f(x) = (1/\u03C3\u221A2\u03C0) e<sup>\u2212(x\u2212\u03BC)\u00B2/2\u03C3\u00B2</sup>';
   static formula = `<h3>Normal (Gaussian) Distribution</h3>
 <div class="formula-block">
-f(x) = (1 / &sigma;&radic;2&pi;) &middot; exp(&minus;(x &minus; &mu;)<sup>2</sup> / 2&sigma;<sup>2</sup>)<br><br>
-F(x) = &frac12; [1 + erf((x &minus; &mu;) / &sigma;&radic;2)]
+$$\\begin{aligned} f(x) &= \\frac{1}{\\sigma\\sqrt{2\\pi}} \\exp\\!\\left(-\\frac{(x - \\mu)^2}{2\\sigma^2}\\right) \\\\ F(x) &= \\tfrac{1}{2}\\left[1 + \\operatorname{erf}\\!\\left(\\frac{x - \\mu}{\\sigma\\sqrt{2}}\\right)\\right] \\end{aligned}$$
 </div>
-<p>The <strong>normal distribution</strong> N(&mu;, &sigma;<sup>2</sup>) is the most important
+<p>The <strong>normal distribution</strong> $N(\\mu, \\sigma^2)$ is the most important
 distribution in statistics. It arises naturally from the
 <strong>Central Limit Theorem</strong>: the sum of many independent random variables
 is approximately normal.</p>
 <p>Key properties:</p>
 <ul>
-<li>Symmetric about the mean &mu;</li>
-<li>The <strong>68-95-99.7 rule</strong>: about 68% of values fall within 1&sigma; of &mu;,
-95% within 2&sigma;, and 99.7% within 3&sigma;.</li>
+<li>Symmetric about the mean $\\mu$</li>
+<li>The <strong>68-95-99.7 rule</strong>: about 68% of values fall within $1\\sigma$ of $\\mu$,
+95% within $2\\sigma$, and 99.7% within $3\\sigma$.</li>
 <li>The CDF is the integral of the PDF and forms a sigmoid shape.</li>
 </ul>`;
   static tutorial = `<h3>Reading the Visualization</h3>

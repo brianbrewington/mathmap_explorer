@@ -16,9 +16,11 @@ class BrachistochroneExploration extends BaseExploration {
   static formulaShort = 'x = R(θ − sinθ), y = R(1 − cosθ)';
   static formula = `<h3>The Brachistochrone Problem</h3>
 <div class="formula-block">
-Cycloid: x(&theta;) = R(&theta; &minus; sin&theta;)<br>
-&emsp;&emsp;&emsp;&emsp; y(&theta;) = R(1 &minus; cos&theta;)<br><br>
-Descent time: T = &int; ds / v = &int; &radic;(1 + y'&sup2;) / &radic;(2gy) &thinsp;dx
+$$\\begin{aligned}
+\\text{Cycloid:}\\quad x(\\theta) &= R(\\theta - \\sin\\theta) \\\\
+y(\\theta) &= R(1 - \\cos\\theta)
+\\end{aligned}$$
+$$T = \\int \\frac{ds}{v} = \\int \\frac{\\sqrt{1 + y'^{\\,2}}}{\\sqrt{2gy}}\\, dx$$
 </div>
 <p>The <strong>brachistochrone</strong> (Greek: &ldquo;shortest time&rdquo;) is the curve of fastest
 descent under gravity between two points. Johann Bernoulli posed it in
@@ -137,19 +139,22 @@ is shown in the right panel.</p>
       parabola.push({ x, y: (by / (bx * bx)) * x * x });
     }
 
-    // Circular arc through (0,0) and (bx,by)
+    // Circular arc through (0,0) and (bx,by), dipping below the straight line
     const circle = [];
-    const midX = bx / 2;
-    const midY = by / 2;
-    const perpLen = Math.sqrt(bx * bx + by * by) / 2;
-    const R_circ = perpLen / Math.sin(Math.atan2(bx, by) || 0.01) || perpLen * 2;
+    const chordLen = Math.sqrt(bx * bx + by * by);
+    const sag = chordLen * 0.3;
+    const R_circ = chordLen * chordLen / (8 * sag) + sag / 2;
+    const nx = -by / chordLen;
+    const ny = bx / chordLen;
+    const cx = bx / 2 + (R_circ - sag) * nx;
+    const cy = by / 2 + (R_circ - sag) * ny;
+    const angStart = Math.atan2(0 - cy, 0 - cx);
+    let angEnd = Math.atan2(by - cy, bx - cx);
+    let sweep = angStart - angEnd;
+    if (sweep < 0) sweep += 2 * Math.PI;
     for (let i = 0; i <= steps; i++) {
-      const f = i / steps;
-      const x = f * bx;
-      const t = x / bx;
-      const yLine = t * by;
-      const bulge = 4 * t * (1 - t) * Math.min(by * 0.3, 1);
-      circle.push({ x, y: yLine + bulge });
+      const ang = angStart - (i / steps) * sweep;
+      circle.push({ x: cx + R_circ * Math.cos(ang), y: cy + R_circ * Math.sin(ang) });
     }
 
     // Cycloid (numerical fit to pass through (bx, by))
@@ -231,7 +236,7 @@ is shown in the right panel.</p>
           dist += segLen;
           prog++;
         }
-        this._beadProgress[ci] = Math.min(prog + 1, pts.length - 1);
+        this._beadProgress[ci] = Math.min(prog, pts.length - 1);
         if (this._beadProgress[ci] >= pts.length - 1 && !this._beadFinished[ci]) {
           this._beadFinished[ci] = true;
           this._beadTimes[ci] = this._t;

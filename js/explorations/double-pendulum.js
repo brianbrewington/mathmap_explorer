@@ -60,12 +60,14 @@ class DoublePendulumExploration extends BaseExploration {
   static formulaShort = "theta'' = f(theta, omega)";
   static formula = `<h3>Double Pendulum Dynamics</h3>
 <div class="formula-block">
-State = (&theta;<sub>1</sub>, &omega;<sub>1</sub>, &theta;<sub>2</sub>, &omega;<sub>2</sub>)<br>
-d&theta;<sub>1</sub>/dt = &omega;<sub>1</sub>, d&theta;<sub>2</sub>/dt = &omega;<sub>2</sub><br>
-d&omega;<sub>1</sub>/dt, d&omega;<sub>2</sub>/dt from coupled nonlinear equations
+$$\\begin{aligned}
+\\text{State} &= (\\theta_1,\\, \\omega_1,\\, \\theta_2,\\, \\omega_2) \\\\
+\\dot{\\theta}_1 &= \\omega_1, \\quad \\dot{\\theta}_2 = \\omega_2 \\\\
+\\dot{\\omega}_1,\\, &\\dot{\\omega}_2 \\text{ from coupled nonlinear equations}
+\\end{aligned}$$
 </div>
 <p>Even tiny changes in initial angles can separate trajectories quickly. The right panel
-plots the phase portrait (&theta;<sub>1</sub> vs &theta;<sub>2</sub>).</p>`;
+plots the phase portrait ($\\theta_1$ vs $\\theta_2$).</p>`;
   static tutorial = `<h3>How To Explore Chaos</h3>
 <p>Use the preset selector to compare nearly identical chaotic starts. Then drag either bob
 to create your own initial condition and press <em>Start</em>.</p>

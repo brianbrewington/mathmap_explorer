@@ -10,7 +10,7 @@ class SpectrogramExploration extends BaseExploration {
   static formulaShort = 'S(t,f) = |STFT{x}(t,f)|\u00B2';
   static formula = `<h3>Short-Time Fourier Transform</h3>
 <div class="formula-block">
-S(t, f) = |&int; x(&tau;) w(&tau; &minus; t) e<sup>&minus;i2&pi;f&tau;</sup> d&tau;|&sup2;
+$$S(t, f) = \\left|\\int x(\\tau)\\, w(\\tau - t)\\, e^{-i2\\pi f\\tau}\\, d\\tau\\right|^2$$
 </div>
 <p>The <strong>spectrogram</strong> breaks a signal into short overlapping windows and computes
 the DFT of each. The result is a 2D time-frequency map: x-axis is time, y-axis is

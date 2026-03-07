@@ -23,12 +23,12 @@ class JuliaSetExploration extends BaseExploration {
   static formulaShort = 'z → z² + c (fixed c)';
   static formula = `<h3>Julia Set</h3>
 <div class="formula-block">
-z<sub>n+1</sub> = z<sub>n</sub>² + c<br>
-z<sub>0</sub> = pixel coordinate, &nbsp; c is a fixed complex constant<br>
-Point z<sub>0</sub> is <em>in</em> the Julia set if |z<sub>n</sub>| remains bounded as n → ∞
+$$z_{n+1} = z_n^2 + c$$
+$$z_0 = \\text{pixel coordinate}, \\quad c \\text{ is a fixed complex constant}$$
+$$z_0 \\in \\mathcal{J} \\iff |z_n| \\text{ remains bounded as } n \\to \\infty$$
 </div>
-<p>The Julia set and the Mandelbrot set are intimately connected. In the Mandelbrot set, we fix z<sub>0</sub> = 0 and vary c across the complex plane. In a Julia set, we fix c and vary z<sub>0</sub> across the plane. Each point c in the complex plane defines a different Julia set.</p>
-<p>If c lies <em>inside</em> the Mandelbrot set, the corresponding Julia set is a connected fractal (a single piece). If c lies <em>outside</em> the Mandelbrot set, the Julia set shatters into a Cantor-like dust of disconnected points. Points on the boundary of the Mandelbrot set produce the most intricate Julia sets.</p>`;
+<p>The Julia set and the Mandelbrot set are intimately connected. In the Mandelbrot set, we fix $z_0 = 0$ and vary $c$ across the complex plane. In a Julia set, we fix $c$ and vary $z_0$ across the plane. Each point $c$ in the complex plane defines a different Julia set.</p>
+<p>If $c$ lies <em>inside</em> the Mandelbrot set, the corresponding Julia set is a connected fractal (a single piece). If $c$ lies <em>outside</em> the Mandelbrot set, the Julia set shatters into a Cantor-like dust of disconnected points. Points on the boundary of the Mandelbrot set produce the most intricate Julia sets.</p>`;
 
   static tutorial = `<h3>How Julia Sets are Computed</h3>
 <p>Each pixel maps to a starting complex number z<sub>0</sub>. We iterate z = z² + c using a <em>fixed</em> value of c and count how many iterations before |z| exceeds 2 (the escape radius). Pixels that never escape are colored black (in the filled Julia set).</p>

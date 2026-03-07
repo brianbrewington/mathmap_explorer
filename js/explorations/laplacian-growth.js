@@ -14,19 +14,19 @@ class LaplacianGrowthExploration extends BaseExploration {
   static formulaShort = 'P(grow) ∝ |∇φ|^η, ∇²φ = 0';
   static formula = `<h3>Dielectric Breakdown / Laplacian Growth</h3>
 <div class="formula-block">
-Potential field: &nabla;&sup2;&phi; = 0 &nbsp; (Laplace eq.)<br>
-Boundary: &phi; = 0 on cluster, &phi; = 1 at boundary<br><br>
-Growth probability: P<sub>i</sub> &prop; |&nabla;&phi;|<sup>&eta;</sup>
+$$\\nabla^2 \\phi = 0 \\quad \\text{(Laplace equation)}$$
+$$\\phi = 0 \\text{ on cluster}, \\quad \\phi = 1 \\text{ at boundary}$$
+$$P_i \\propto |\\nabla\\phi|^{\\eta}$$
 </div>
 <p>The <strong>dielectric breakdown model</strong> grows a conducting cluster inside a
 potential field governed by Laplace&rsquo;s equation. New sites attach with
-probability proportional to the local field gradient raised to the power &eta;.</p>
-<p>&eta; = 1 produces wispy DLA-like branches. Higher &eta; concentrates growth
+probability proportional to the local field gradient raised to the power $\\eta$.</p>
+<p>$\\eta = 1$ produces wispy DLA-like branches. Higher $\\eta$ concentrates growth
 at the sharpest tips, creating dense dendritic patterns resembling
 <strong>lightning</strong>, <strong>tree roots</strong>, or <strong>fracture networks</strong>.</p>
 <p>The key link to the <strong>principle of least action</strong>: Laplace&rsquo;s equation
-&nabla;&sup2;&phi; = 0 is the Euler&ndash;Lagrange equation for the Dirichlet energy
-functional &int; |&nabla;&phi;|&sup2; dA. The field minimizes energy, and growth follows
+$\\nabla^2 \\phi = 0$ is the Euler&ndash;Lagrange equation for the Dirichlet energy
+functional $\\int |\\nabla\\phi|^2 \\, dA$. The field minimizes energy, and growth follows
 the steepest energy gradient &mdash; a variational principle in disguise.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The cluster grows from a seed (center, top edge, or ring) outward. Color

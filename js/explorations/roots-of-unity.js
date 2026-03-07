@@ -12,11 +12,10 @@ class RootsOfUnityExploration extends BaseExploration {
   static formulaShort = 'z<sub>k</sub> = e<sup>i&middot;2&pi;k/n</sup>';
   static formula = `<h3>Roots of Unity</h3>
 <div class="formula-block">
-z<sup>n</sup> = 1<br>
-z<sub>k</sub> = e<sup>i&middot;2&pi;k/n</sup>, &nbsp; k = 0, 1, &hellip;, n&minus;1
+$$\\begin{aligned} z^n &= 1 \\\\ z_k &= e^{i \\cdot 2\\pi k / n}, \\quad k = 0, 1, \\ldots, n-1 \\end{aligned}$$
 </div>
 <p>The <em>n</em>-th roots of unity are the <em>n</em> complex numbers that satisfy
-z<sup>n</sup>&nbsp;=&nbsp;1. They are evenly spaced on the unit circle, forming the vertices
+$z^n = 1$. They are evenly spaced on the unit circle, forming the vertices
 of a regular <em>n</em>-gon.</p>
 <p>These roots are fundamental in algebra, signal processing (the DFT), and number
 theory. Their symmetric arrangement reveals deep connections between complex

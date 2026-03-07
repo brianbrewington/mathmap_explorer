@@ -16,28 +16,27 @@ class VortexSheddingExploration extends BaseExploration {
   static formulaShort = 'Re = UD/\u03BD (Reynolds number)';
   static formula = `<h3>K\u00E1rm\u00E1n Vortex Street</h3>
 <div class="formula-block">
-Re = UD/\u03BD
+$$\\text{Re} = \\frac{UD}{\\nu}$$
 </div>
 <p>The <strong>Reynolds number</strong> Re determines the flow regime past a cylinder:</p>
 <ul>
 <li><strong>Re &lt; 5:</strong> Creeping flow \u2014 no separation, symmetric streamlines.</li>
 <li><strong>5 &lt; Re &lt; 47:</strong> Steady separation \u2014 a pair of symmetric recirculation bubbles form behind the cylinder.</li>
 <li><strong>47 &lt; Re &lt; 190:</strong> Laminar vortex shedding \u2014 the K\u00E1rm\u00E1n vortex street. Alternating vortices peel off
-at a frequency given by the Strouhal number St \u2248 0.2.</li>
+at a frequency given by the Strouhal number $\\text{St} \\approx 0.2$.</li>
 <li><strong>Re &gt; 190:</strong> Turbulent wake \u2014 three-dimensional instabilities develop.</li>
 </ul>
 <h4>Governing Equations</h4>
 <div class="formula-block">
-\u2202<b>v</b>/\u2202t + (<b>v</b>\u00B7\u2207)<b>v</b> = \u2212\u2207p + \u03BD\u2207\u00B2<b>v</b><br><br>
-\u2207\u00B7<b>v</b> = 0
+$$\\begin{aligned} \\frac{\\partial \\mathbf{v}}{\\partial t} + (\\mathbf{v} \\cdot \\nabla)\\mathbf{v} &= -\\nabla p + \\nu\\nabla^2 \\mathbf{v} \\\\ \\nabla \\cdot \\mathbf{v} &= 0 \\end{aligned}$$
 </div>
 <p>The simulation solves the incompressible Navier\u2013Stokes equations on a GPU using the Stable Fluids algorithm,
 with an immersed-boundary method for the cylinder obstacle: velocity is zeroed inside the solid body each timestep.</p>
 <h4>Strouhal Number</h4>
 <div class="formula-block">
-St = fD/U \u2248 0.2
+$$\\text{St} = \\frac{fD}{U} \\approx 0.2$$
 </div>
-<p>The shedding frequency f is remarkably constant across a wide range of Reynolds numbers, making the
+<p>The shedding frequency $f$ is remarkably constant across a wide range of Reynolds numbers, making the
 K\u00E1rm\u00E1n street one of the most universal phenomena in fluid mechanics. It appears behind bridge cables,
 power lines, smokestacks, and even explains the singing of aeolian harps.</p>`;
   static tutorial = `<h3>How This Simulation Works</h3>

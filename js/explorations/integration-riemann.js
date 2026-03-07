@@ -44,15 +44,15 @@ class IntegrationRiemannExploration extends BaseExploration {
   static formulaShort = '\u222B<sub>a</sub><sup>b</sup> f(x)dx \u2248 \u03A3 f(x\u1D62)\u0394x';
   static formula = `<h3>Riemann Sums &amp; Numerical Integration</h3>
 <div class="formula-block">
-&int;<sub>a</sub><sup>b</sup> f(x) dx &asymp; &Sigma;<sub>i</sub> f(x<sub>i</sub>) &Delta;x
+$$\\int_a^b f(x)\\,dx \\approx \\sum_i f(x_i)\\,\\Delta x$$
 </div>
-<p>A <strong>Riemann sum</strong> approximates a definite integral by partitioning [a, b]
-into n subintervals and summing areas of rectangles or trapezoids.</p>
+<p>A <strong>Riemann sum</strong> approximates a definite integral by partitioning $[a, b]$
+into $n$ subintervals and summing areas of rectangles or trapezoids.</p>
 <h4>Five Quadrature Methods</h4>
 <ul>
-<li><strong>Left/Right Riemann:</strong> O(1/n) &mdash; slope &minus;1</li>
-<li><strong>Midpoint/Trapezoidal:</strong> O(1/n&sup2;) &mdash; slope &minus;2</li>
-<li><strong>Simpson&rsquo;s:</strong> (&Delta;x/3)[f(x<sub>0</sub>)+4f(x<sub>1</sub>)+2f(x<sub>2</sub>)+&hellip;+f(x<sub>n</sub>)] &mdash; O(1/n&sup4;), slope &minus;4</li>
+<li><strong>Left/Right Riemann:</strong> $O(1/n)$ &mdash; slope $-1$</li>
+<li><strong>Midpoint/Trapezoidal:</strong> $O(1/n^2)$ &mdash; slope $-2$</li>
+<li><strong>Simpson&rsquo;s:</strong> $\\tfrac{\\Delta x}{3}[f(x_0)+4f(x_1)+2f(x_2)+\\cdots+f(x_n)]$ &mdash; $O(1/n^4)$, slope $-4$</li>
 </ul>`;
   static tutorial = `<h3>Exploring Numerical Integration</h3>
 <pre><code class="language-js">// Left Riemann sum

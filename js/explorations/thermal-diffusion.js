@@ -13,20 +13,18 @@ class ThermalDiffusionExploration extends BaseExploration {
   static formulaShort = 'T = T₀ e<sup>−x/δ</sup> sin(ωt − x/δ)';
   static formula = `<h3>Heat Equation with Periodic Boundary</h3>
 <div class="formula-block">
-∂T/∂t = α ∂²T/∂x²<br><br>
-T(0, t) = T₀ sin(ωt) &nbsp; (surface)<br>
-T → 0 &nbsp; as &nbsp; x → ∞
+$$\\begin{aligned} \\frac{\\partial T}{\\partial t} &= \\alpha \\frac{\\partial^2 T}{\\partial x^2} \\\\ T(0, t) &= T_0 \\sin(\\omega t) \\quad (\\text{surface}) \\\\ T &\\to 0 \\quad \\text{as} \\quad x \\to \\infty \\end{aligned}$$
 </div>
 <p>The exact solution is a <strong>damped traveling wave</strong>:</p>
 <div class="formula-block">
-T(x, t) = T₀ e<sup>−x/δ</sup> sin(ωt − x/δ)
+$$T(x, t) = T_0\\, e^{-x/\\delta} \\sin(\\omega t - x/\\delta)$$
 </div>
-<p>where <strong>δ = √(2α/ω)</strong> is the <em>thermal penetration depth</em> (skin depth).</p>
+<p>where $\\delta = \\sqrt{2\\alpha/\\omega}$ is the <em>thermal penetration depth</em> (skin depth).</p>
 <p>Key physics:</p>
 <ul>
 <li><strong>Amplitude</strong> decays exponentially with depth — deeper layers barely feel the oscillation.</li>
 <li><strong>Phase</strong> lags linearly with depth — deeper layers respond later.</li>
-<li><strong>Penetration depth δ ∝ √(α/ω)</strong> — fast oscillations penetrate less; insulating materials (low α) penetrate less.</li>
+<li><strong>Penetration depth</strong> $\\delta \\propto \\sqrt{\\alpha/\\omega}$ — fast oscillations penetrate less; insulating materials (low $\\alpha$) penetrate less.</li>
 </ul>
 <p>This is exactly how seasonal temperature waves propagate into soil: the surface follows the seasons, 3 m down the signal is
 delayed by months and nearly flat, and below ~10 m the temperature is essentially constant year-round.</p>`;

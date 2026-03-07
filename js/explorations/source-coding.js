@@ -37,16 +37,19 @@ class SourceCodingExploration extends BaseExploration {
   static formulaShort = 'H ≤ L < H + 1';
   static formula = `<h3>Huffman Coding & Source Coding Theorem</h3>
 <div class="formula-block">
-Entropy: H = &minus;&sum; p<sub>i</sub> log<sub>2</sub> p<sub>i</sub><br><br>
-Average code length: L = &sum; p<sub>i</sub> l<sub>i</sub><br><br>
-Shannon bound: H &le; L &lt; H + 1
+$$\\begin{aligned} \\text{Entropy:}\\quad H &= -\\sum p_i \\log_2 p_i \\\\ \\text{Average code length:}\\quad L &= \\sum p_i\\, l_i \\\\ \\text{Shannon bound:}\\quad H &\\le L < H + 1 \\end{aligned}$$
 </div>
 <p><strong>Huffman coding</strong> builds an optimal prefix-free binary code by repeatedly
 merging the two least-probable symbols. The resulting average code length L
 is at most 1 bit above the entropy H.</p>
-<p>Shannon&rsquo;s <strong>source coding theorem</strong> proves no lossless code can beat H bits
+<p>Shannon's <strong>source coding theorem</strong> proves no lossless code can beat H bits
 per symbol on average. Huffman coding gets as close as possible with a
 symbol-by-symbol code.</p>`;
+  static blockDiagram = `graph LR
+  Src["Source symbols"] --> Freq["Frequency count"]
+  Freq --> Tree["Huffman tree"]
+  Tree --> Code["Codewords"]
+  Code --> Comp["Compressed bitstream"]`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>left panel</strong> shows the Huffman binary tree. Each leaf is a symbol;
 internal nodes show merged frequency. The path from root to leaf gives

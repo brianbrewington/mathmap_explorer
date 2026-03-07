@@ -14,8 +14,8 @@ class FermatsPrincipleExploration extends BaseExploration {
   static formulaShort = 'sin θ₁ / sin θ₂ = v₁ / v₂';
   static formula = `<h3>Fermat&rsquo;s Principle</h3>
 <div class="formula-block">
-Total time: T = d<sub>1</sub>/v<sub>1</sub> + d<sub>2</sub>/v<sub>2</sub><br><br>
-Minimum time ⇒ sin &theta;<sub>1</sub> / sin &theta;<sub>2</sub> = v<sub>1</sub> / v<sub>2</sub> &nbsp; (Snell&rsquo;s law)
+$$T = \\frac{d_1}{v_1} + \\frac{d_2}{v_2}$$
+$$\\text{Minimum time} \\;\\Rightarrow\\; \\frac{\\sin\\theta_1}{\\sin\\theta_2} = \\frac{v_1}{v_2} \\quad \\text{(Snell's law)}$$
 </div>
 <p><strong>Fermat&rsquo;s principle</strong> says light travels between two points along the
 path of least time. When crossing an interface between two media with

@@ -16,23 +16,23 @@ class TaylorApproximationExploration extends BaseExploration {
   static formulaShort = 'E(N) = \u222B|f(x)\u2212T<sub>N</sub>(x)|\u00B2 dx';
   static formula = `<h3>Taylor Approximation Error</h3>
 <div class="formula-block">
-T<sub>N</sub>(x) = &sum;<sub>n=0</sub><sup>N</sup> f<sup>(n)</sup>(a) &middot; (x &minus; a)<sup>n</sup> / n!
+$$T_N(x) = \\sum_{n=0}^{N} \\frac{f^{(n)}(a)}{n!}(x - a)^n$$
 </div>
 <p>The <strong>Taylor series</strong> centered at <em>a</em> approximates a smooth function
 by matching its derivatives at that point. The <strong>approximation error</strong> is
 measured as the integrated squared difference:</p>
 <div class="formula-block">
-E(N) = &int;<sub>a&minus;R</sub><sup>a+R</sup> |f(x) &minus; T<sub>N</sub>(x)|&sup2; dx
+$$E(N) = \\int_{a-R}^{a+R} |f(x) - T_N(x)|^2\\, dx$$
 </div>
-<p>As N increases, E(N) decreases &mdash; the polynomial hugs the true function
-over a wider region. The rate of convergence depends on the function&rsquo;s
+<p>As N increases, $E(N)$ decreases — the polynomial hugs the true function
+over a wider region. The rate of convergence depends on the function's
 analyticity and the radius of convergence.</p>
 <h4>Derivative formulas used</h4>
 <ul>
-<li><strong>sin(x):</strong> derivatives cycle: sin, cos, &minus;sin, &minus;cos</li>
-<li><strong>cos(x):</strong> derivatives cycle: cos, &minus;sin, &minus;cos, sin</li>
-<li><strong>e<sup>x</sup>:</strong> all derivatives equal e<sup>a</sup></li>
-<li><strong>ln(1+x):</strong> f(a) = ln(1+a), f<sup>(n)</sup>(a) = (&minus;1)<sup>n+1</sup>(n&minus;1)!/(1+a)<sup>n</sup> for n &ge; 1</li>
+<li><strong>sin(x):</strong> derivatives cycle: $\\sin, \\cos, -\\sin, -\\cos$</li>
+<li><strong>cos(x):</strong> derivatives cycle: $\\cos, -\\sin, -\\cos, \\sin$</li>
+<li><strong>$e^x$:</strong> all derivatives equal $e^a$</li>
+<li><strong>ln(1+x):</strong> $f(a) = \\ln(1+a)$, $f^{(n)}(a) = (-1)^{n+1}(n-1)!/(1+a)^n$ for $n \\ge 1$</li>
 </ul>`;
   static tutorial = `<h3>Exploring Taylor Error</h3>
 <p>This visualization frames the Taylor expansion as an <strong>error minimization</strong>

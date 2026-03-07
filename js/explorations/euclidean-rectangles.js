@@ -14,20 +14,18 @@ class EuclideanRectanglesExploration extends BaseExploration {
   static formulaShort = 'gcd(a, b) via repeated square subtraction';
   static formula = `<h3>Euclidean Algorithm Rectangles</h3>
 <div class="formula-block">
-gcd(a, b):<br>
-&nbsp; while b ≠ 0:<br>
-&nbsp;&nbsp;&nbsp; a, b = b, a mod b<br><br>
-Continued fraction: a/b = q₀ + 1/(q₁ + 1/(q₂ + …))
+$$\\gcd(a, b): \\quad \\text{while } b \\neq 0: \\quad a, b = b,\\; a \\bmod b$$
+$$\\frac{a}{b} = q_0 + \\cfrac{1}{q_1 + \\cfrac{1}{q_2 + \\cdots}}$$
 </div>
-<p>Start with an <em>a × b</em> rectangle. Cut off the largest square that fits
-(side = min(a,b)), and repeat with the leftover rectangle. The squares
+<p>Start with an $a \\times b$ rectangle. Cut off the largest square that fits
+(side $= \\min(a,b)$), and repeat with the leftover rectangle. The squares
 you cut are exactly the <strong>quotients in the Euclidean algorithm</strong>.</p>
 <p>The sequence of quotients gives the <strong>continued fraction expansion</strong>
-of a/b. When a/b = φ (the golden ratio), every quotient is 1 and the
+of $a/b$. When $a/b = \\varphi$ (the golden ratio), every quotient is 1 and the
 subdivision produces the celebrated <em>Fibonacci spiral</em> of squares.</p>
 <p>This connection between arithmetic and geometry was known to the ancient
-Greeks, who used it to prove the <strong>irrationality of √2</strong> via
-the never-terminating subdivision of a 1×√2 rectangle.</p>`;
+Greeks, who used it to prove the <strong>irrationality of $\\sqrt{2}$</strong> via
+the never-terminating subdivision of a $1 \\times \\sqrt{2}$ rectangle.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The large rectangle has dimensions a × b. Colored squares show successive
 cuts of the Euclidean algorithm. The readout shows the continued fraction

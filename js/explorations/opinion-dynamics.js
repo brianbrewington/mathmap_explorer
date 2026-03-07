@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { forceDirectedLayout } from './force-layout.js';
+import { GraphPanZoom } from '../ui/graph-pan-zoom.js';
 
 const TAU = Math.PI * 2;
 
@@ -66,13 +67,11 @@ class OpinionDynamicsExploration extends BaseExploration {
   static formulaShort = "x_i ← x_i + μ·Σ(x_j - x_i) if |x_j - x_i| < ε";
   static formula = `<h3>Bounded Confidence (Deffuant Model)</h3>
 <div class="formula-block">
-If |x<sub>i</sub> − x<sub>j</sub>| < ε:<br>
-x<sub>i</sub> ← x<sub>i</sub> + μ(x<sub>j</sub> − x<sub>i</sub>)<br>
-x<sub>j</sub> ← x<sub>j</sub> + μ(x<sub>i</sub> − x<sub>j</sub>)
+$$\\text{If } |x_i - x_j| < \\varepsilon: \\quad \\begin{cases} x_i \\leftarrow x_i + \\mu(x_j - x_i) \\\\ x_j \\leftarrow x_j + \\mu(x_i - x_j) \\end{cases}$$
 </div>
-<p>Agents only influence each other if their opinions are within a <strong>confidence threshold ε</strong>.
-Small ε → many clusters (polarization). Large ε → consensus.</p>
-<p>The <strong>convergence parameter μ</strong> controls how fast agents adjust. The critical
+<p>Agents only influence each other if their opinions are within a <strong>confidence threshold $\\varepsilon$</strong>.
+Small $\\varepsilon$ $\\to$ many clusters (polarization). Large $\\varepsilon$ $\\to$ consensus.</p>
+<p>The <strong>convergence parameter $\\mu$</strong> controls how fast agents adjust. The critical
 transition from consensus to fragmentation is sharp and topology-dependent.</p>`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
@@ -109,6 +108,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     this._history = [];
     this._step = 0;
     this._lastFrame = 0;
+    this._pz = new GraphPanZoom(() => this.render());
     this._bifurcationMode = false;
     this._bifWorker = null;
     this._bifProgress = 0;
@@ -165,12 +165,14 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
 
   activate() {
     this.ctx = this.canvas.getContext('2d');
+    this._pz.attach(this.canvas);
     this._rebuild();
     this.start();
   }
 
   deactivate() {
     super.deactivate();
+    this._pz.detach();
     this._terminateBifWorker();
     this.ctx = null;
   }
@@ -216,6 +218,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     const rng = this._mulberry32(this.params.seed);
     this._graph = generateGraph(n, this.params.topology, rng);
     this._positions = forceDirectedLayout(n, this._graph.adj, rng);
+    this._pz.reset();
     this._opinions = Array.from({ length: n }, () => rng());
     this._history = [this._opinions.slice()];
     this._step = 0;
@@ -357,10 +360,12 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     ctx.strokeRect(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h);
 
     const gPad = px(20);
-    const gW = graphPanel.w - 2 * gPad;
-    const gH = graphPanel.h - 2 * gPad;
-    const toX = u => graphPanel.x + gPad + u * gW;
-    const toY = v => graphPanel.y + gPad + v * gH;
+    const pz = this._pz;
+    pz.setPanel(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h, gPad);
+    const toX = u => pz.toX(u);
+    const toY = v => pz.toY(v);
+
+    pz.clipToPanel(ctx);
 
     // Edges
     ctx.strokeStyle = 'rgba(100,116,139,0.15)';
@@ -383,6 +388,8 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
       ctx.arc(toX(u), toY(v), px(3.5), 0, TAU);
       ctx.fill();
     }
+
+    pz.unclip(ctx);
 
     ctx.fillStyle = '#d3d8e5';
     ctx.font = this._font(11);

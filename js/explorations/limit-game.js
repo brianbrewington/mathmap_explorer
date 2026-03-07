@@ -48,21 +48,20 @@ class LimitGameExploration extends BaseExploration {
     { type: 'wikipedia', title: 'Limit of a function', url: 'https://en.wikipedia.org/wiki/Limit_of_a_function' },
   ];
   static formulaShort = '∀ε > 0, ∃δ > 0';
-  static formula = `<h3>The ε-δ Game</h3>
+  static formula = `<h3>The $\\varepsilon$-$\\delta$ Game</h3>
 <div class="formula-block">
-lim<sub>x→a</sub> f(x) = L<br><br>
-∀ε &gt; 0, ∃δ &gt; 0 such that<br>
-0 &lt; |x − a| &lt; δ  ⟹  |f(x) − L| &lt; ε
+$$\\lim_{x \\to a} f(x) = L$$
+$$\\forall\\,\\varepsilon > 0,\\; \\exists\\,\\delta > 0 \\text{ such that } 0 < |x - a| < \\delta \\;\\Rightarrow\\; |f(x) - L| < \\varepsilon$$
 </div>
 <p>The formal definition of a limit is really a <strong>game between two players</strong>:</p>
 <ul>
-<li><strong>Challenger (you):</strong> Pick any error tolerance ε &gt; 0, no matter how tiny.</li>
-<li><strong>Prover (computer):</strong> Respond with a neighborhood size δ &gt; 0 such that
-every x within δ of a maps to within ε of L.</li>
+<li><strong>Challenger (you):</strong> Pick any error tolerance $\\varepsilon > 0$, no matter how tiny.</li>
+<li><strong>Prover (computer):</strong> Respond with a neighborhood size $\\delta > 0$ such that
+every $x$ within $\\delta$ of $a$ maps to within $\\varepsilon$ of $L$.</li>
 </ul>
-<p>If the limit exists, the Prover <em>always</em> wins — that is what "∀ε ∃δ" means.
-If the limit does not exist (discontinuity, oscillation), there is some ε
-below which no δ works and the Prover <strong>loses</strong>.</p>`;
+<p>If the limit exists, the Prover <em>always</em> wins &mdash; that is what "$\\forall\\varepsilon\\;\\exists\\delta$" means.
+If the limit does not exist (discontinuity, oscillation), there is some $\\varepsilon$
+below which no $\\delta$ works and the Prover <strong>loses</strong>.</p>`;
   static tutorial = `<h3>How to Play</h3>
 <p>Pick a function and a point <strong>a</strong>. Then:</p>
 <ol>

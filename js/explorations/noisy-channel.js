@@ -14,17 +14,19 @@ class NoisyChannelExploration extends BaseExploration {
   static formulaShort = 'C = 1 − H(ε)';
   static formula = `<h3>Binary Symmetric Channel</h3>
 <div class="formula-block">
-Input X ~ Bernoulli(p), &nbsp; flip prob &epsilon;<br><br>
-H(Y|X) = H(&epsilon;) = &minus;&epsilon; log<sub>2</sub> &epsilon; &minus; (1&minus;&epsilon;) log<sub>2</sub>(1&minus;&epsilon;)<br><br>
-I(X;Y) = H(Y) &minus; H(Y|X)<br><br>
-Capacity C = max<sub>p</sub> I(X;Y) = 1 &minus; H(&epsilon;)
+$$\\begin{aligned} X &\\sim \\text{Bernoulli}(p), \\quad \\text{flip prob } \\varepsilon \\\\ H(Y|X) &= H(\\varepsilon) = -\\varepsilon \\log_2 \\varepsilon - (1-\\varepsilon) \\log_2(1-\\varepsilon) \\\\ I(X;Y) &= H(Y) - H(Y|X) \\\\ C &= \\max_p I(X;Y) = 1 - H(\\varepsilon) \\end{aligned}$$
 </div>
 <p>The <strong>binary symmetric channel</strong> flips each bit independently with
-probability &epsilon;. Mutual information I(X;Y) measures how much knowing Y
-tells you about X.</p>
-<p><strong>Channel capacity</strong> C is the maximum rate at which information can be
-transmitted reliably. Shannon proved that rates below C are achievable
+probability $\\varepsilon$. Mutual information $I(X;Y)$ measures how much knowing $Y$
+tells you about $X$.</p>
+<p><strong>Channel capacity</strong> $C$ is the maximum rate at which information can be
+transmitted reliably. Shannon proved that rates below $C$ are achievable
 with vanishing error probability.</p>`;
+  static blockDiagram = `graph LR
+  X["Source X"] --> Enc["Encoder"]
+  Enc --> Ch["BSC (flip ε)"]
+  Ch --> Dec["Decoder"]
+  Dec --> Y["Output Y"]`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>left panel</strong> shows the channel diagram with animated bit streams and
 crossover arrows. The <strong>right panel</strong> shows the entropy Venn diagram and

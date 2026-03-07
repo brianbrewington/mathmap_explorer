@@ -82,7 +82,9 @@ function rkf45Step(f, t, y, h) {
   const k4 = f(t + 12 * h / 13, y4);
   const y5 = y.map((v, i) => v + h * (439 / 216 * k1[i] - 8 * k2[i] + 3680 / 513 * k3[i] - 845 / 4104 * k4[i]));
   const k5 = f(t + h, y5);
-  return y.map((v, i) => v + h * (16 / 135 * k1[i] + 6656 / 12825 * k3[i] + 28561 / 56430 * k4[i] - 9 / 50 * k5[i]));
+  const y6 = y.map((v, i) => v + h * (-8 / 27 * k1[i] + 2 * k2[i] - 3544 / 2565 * k3[i] + 1859 / 4104 * k4[i] - 11 / 40 * k5[i]));
+  const k6 = f(t + h / 2, y6);
+  return y.map((v, i) => v + h * (16 / 135 * k1[i] + 6656 / 12825 * k3[i] + 28561 / 56430 * k4[i] - 9 / 50 * k5[i] + 2 / 55 * k6[i]));
 }
 
 const METHODS = {
@@ -103,12 +105,17 @@ class ODEIntegratorExploration extends BaseExploration {
   static formulaShort = "dy/dt = f(t,y) — Euler vs Midpoint vs RK4 vs RKF45";
   static formula = `<h3>Numerical ODE Integration</h3>
 <div class="formula-block">
-<strong>Euler:</strong> y<sub>n+1</sub> = y<sub>n</sub> + h·f(t<sub>n</sub>, y<sub>n</sub>)<br>
-<strong>Midpoint:</strong> y<sub>n+1</sub> = y<sub>n</sub> + h·f(t<sub>n</sub>+h/2, y<sub>n</sub>+h/2·f(t<sub>n</sub>, y<sub>n</sub>))<br>
-<strong>RK4:</strong> y<sub>n+1</sub> = y<sub>n</sub> + (h/6)(k₁ + 2k₂ + 2k₃ + k₄)
+$$\\begin{aligned} \\textbf{Euler:}\\quad y_{n+1} &= y_n + h\\,f(t_n, y_n) \\\\ \\textbf{Midpoint:}\\quad y_{n+1} &= y_n + h\\,f\\!\\left(t_n + \\tfrac{h}{2},\\, y_n + \\tfrac{h}{2}f(t_n, y_n)\\right) \\\\ \\textbf{RK4:}\\quad y_{n+1} &= y_n + \\tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4) \\end{aligned}$$
 </div>
 <p>All methods approximate the same continuous ODE. Higher-order methods use more evaluations
-of f per step but achieve much higher accuracy for the same step size.</p>`;
+of $f$ per step but achieve much higher accuracy for the same step size.</p>`;
+  static blockDiagram = `graph LR
+  ODE["dy/dt = f(t,y)"] --> Method["Integrator"]
+  Method --> Sol["y(t) solution"]
+  Method -.-> Euler
+  Method -.-> Midpoint
+  Method -.-> RK4
+  Method -.-> RKF45`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>System:</strong> Pick an ODE system — some have exact solutions for comparison.</li>

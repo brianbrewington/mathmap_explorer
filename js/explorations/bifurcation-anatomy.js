@@ -67,10 +67,12 @@ class BifurcationAnatomyExploration extends BaseExploration {
   static formulaShort = "dx/dt = f(x, μ) — saddle-node, transcritical, pitchfork, Hopf";
   static formula = `<h3>Bifurcation Normal Forms</h3>
 <div class="formula-block">
-<strong>Saddle-node:</strong> dx/dt = μ + x²<br>
-<strong>Transcritical:</strong> dx/dt = μx − x²<br>
-<strong>Pitchfork (super):</strong> dx/dt = μx − x³<br>
-<strong>Hopf:</strong> dz/dt = (μ + i)z − z|z|²
+$$\\begin{aligned}
+\\textbf{Saddle-node:}\\quad \\frac{dx}{dt} &= \\mu + x^2 \\\\
+\\textbf{Transcritical:}\\quad \\frac{dx}{dt} &= \\mu x - x^2 \\\\
+\\textbf{Pitchfork (super):}\\quad \\frac{dx}{dt} &= \\mu x - x^3 \\\\
+\\textbf{Hopf:}\\quad \\frac{dz}{dt} &= (\\mu + i)z - z|z|^2
+\\end{aligned}$$
 </div>
 <p>A <strong>bifurcation</strong> is a qualitative change in the phase portrait as a parameter
 crosses a critical value: fixed points appear, disappear, or change stability.</p>`;

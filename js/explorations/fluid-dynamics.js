@@ -18,15 +18,15 @@ class FluidDynamicsExploration extends BaseExploration {
   static formulaShort = '\u2202v/\u2202t + (v\u00B7\u2207)v = \u2212\u2207p + \u03BD\u2207\u00B2v';
   static formula = `<h3>Navier-Stokes Equations</h3>
 <div class="formula-block">
-\u2202<b>v</b>/\u2202t + (<b>v</b>\u00B7\u2207)<b>v</b> = \u2212\u2207p + \u03BD\u2207\u00B2<b>v</b> + <b>f</b><br><br>
-\u2207\u00B7<b>v</b> = 0 (incompressibility)
+$$\\frac{\\partial \\mathbf{v}}{\\partial t} + (\\mathbf{v} \\cdot \\nabla)\\mathbf{v} = -\\nabla p + \\nu\\nabla^2 \\mathbf{v} + \\mathbf{f}$$
+$$\\nabla \\cdot \\mathbf{v} = 0 \\quad \\text{(incompressibility)}$$
 </div>
 <p>The equation decomposes into four operations per timestep:</p>
-<p><b>Advection:</b> (<b>v</b>\u00B7\u2207)<b>v</b> \u2014 the fluid carries itself<br>
-<b>Diffusion:</b> \u03BD\u2207\u00B2<b>v</b> \u2014 viscosity smooths velocity<br>
-<b>Projection:</b> \u2207\u00B7<b>v</b> = 0 \u2014 pressure enforces incompressibility<br>
-<b>Forces:</b> <b>f</b> \u2014 external input (your mouse, buoyancy)</p>
-<p>\u03BD = viscosity. High \u03BD = honey. Low \u03BD = water. \u03BD = 0 is the Euler equations \u2014 the unsolved Millennium Prize problem.</p>`;
+<p><b>Advection:</b> $(\\mathbf{v} \\cdot \\nabla)\\mathbf{v}$ &mdash; the fluid carries itself<br>
+<b>Diffusion:</b> $\\nu\\nabla^2 \\mathbf{v}$ &mdash; viscosity smooths velocity<br>
+<b>Projection:</b> $\\nabla \\cdot \\mathbf{v} = 0$ &mdash; pressure enforces incompressibility<br>
+<b>Forces:</b> $\\mathbf{f}$ &mdash; external input (your mouse, buoyancy)</p>
+<p>$\\nu$ = viscosity. High $\\nu$ = honey. Low $\\nu$ = water. $\\nu = 0$ is the Euler equations &mdash; the unsolved Millennium Prize problem.</p>`;
   static tutorial = `<h3>How This Simulation Works</h3>
 <p><b>Click and drag</b> to inject velocity and dye into the fluid. The simulation runs the Stable Fluids algorithm (Jos Stam, 1999) entirely on the GPU.</p>
 <p>Each timestep has four stages that you can toggle independently:</p>

@@ -14,13 +14,11 @@ class SurpriseEntropyExploration extends BaseExploration {
   static formulaShort = 'H = −Σ p·log₂p';
   static formula = `<h3>Shannon Entropy</h3>
 <div class="formula-block">
-Surprise of outcome i: &nbsp; s(x<sub>i</sub>) = &minus;log<sub>2</sub> p(x<sub>i</sub>)<br><br>
-Entropy: &nbsp; H(X) = &minus;&sum;<sub>i</sub> p(x<sub>i</sub>) log<sub>2</sub> p(x<sub>i</sub>)<br><br>
-0 &le; H(X) &le; log<sub>2</sub> N
+$$\\begin{aligned} \\text{Surprise of outcome } i\\text{:}\\quad s(x_i) &= -\\log_2 p(x_i) \\\\ \\text{Entropy:}\\quad H(X) &= -\\sum_i p(x_i) \\log_2 p(x_i) \\\\ 0 \\le H(X) &\\le \\log_2 N \\end{aligned}$$
 </div>
 <p>The <strong>surprise</strong> (or self-information) of an event measures how unexpected it is:
 rare events carry high surprise, certain events carry none.</p>
-<p><strong>Shannon entropy</strong> is the <em>expected surprise</em> &mdash; the average number of bits
+<p><strong>Shannon entropy</strong> is the <em>expected surprise</em> — the average number of bits
 needed to encode an outcome. It is maximized when all outcomes are equally likely
 (uniform distribution) and minimized when one outcome is certain.</p>`;
   static tutorial = `<h3>How to Explore</h3>

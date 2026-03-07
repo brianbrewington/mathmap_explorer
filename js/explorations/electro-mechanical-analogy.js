@@ -10,19 +10,33 @@ class ElectroMechanicalAnalogyExploration extends BaseExploration {
   static formulaShort = 'mx″ + bx′ + kx = 0  ↔  L·I″ + R·I′ + I/C = 0';
   static formula = `<h3>The Same Equation, Two Worlds</h3>
 <div class="formula-block">
-Mechanical: m&middot;x'' + b&middot;x' + k&middot;x = 0<br><br>
-Electrical: L&middot;q'' + R&middot;q' + q/C = 0
+$$\\begin{aligned}
+\\text{Mechanical:}\\quad m\\ddot{x} + b\\dot{x} + kx &= 0 \\\\
+\\text{Electrical:}\\quad L\\ddot{q} + R\\dot{q} + \\frac{q}{C} &= 0
+\\end{aligned}$$
 </div>
 <p>The spring-mass system and the series RLC circuit obey <em>identical</em> differential
 equations. The mapping is:</p>
 <table style="color:#8b8fa3;font-size:0.9em;">
 <tr><th>Mechanical</th><th>Electrical</th></tr>
-<tr><td>Mass m</td><td>Inductance L</td></tr>
-<tr><td>Damping b</td><td>Resistance R</td></tr>
-<tr><td>Spring k</td><td>1/Capacitance</td></tr>
-<tr><td>Displacement x</td><td>Charge q</td></tr>
-<tr><td>Velocity v</td><td>Current I</td></tr>
+<tr><td>Mass $m$</td><td>Inductance $L$</td></tr>
+<tr><td>Damping $b$</td><td>Resistance $R$</td></tr>
+<tr><td>Spring $k$</td><td>$1/C$</td></tr>
+<tr><td>Displacement $x$</td><td>Charge $q$</td></tr>
+<tr><td>Velocity $v$</td><td>Current $I$</td></tr>
 </table>`;
+  static blockDiagram = `graph LR
+  subgraph mech ["Mechanical"]
+    mass["Mass m"] --- spring["Spring k"]
+    spring --- damper["Damper b"]
+  end
+  subgraph elec ["Electrical"]
+    inductor["Inductor L"] --- capacitor["Capacitor 1/C"]
+    capacitor --- resistor["Resistor R"]
+  end
+  mass <-->|"m ↔ L"| inductor
+  spring <-->|"k ↔ 1/C"| capacitor
+  damper <-->|"b ↔ R"| resistor`;
   static tutorial = `<h3>One Equation, Two Stories</h3>
 <p>The left panel shows a spring-mass-damper system oscillating. The right panel
 shows the equivalent RLC circuit. Both are governed by the same second-order ODE

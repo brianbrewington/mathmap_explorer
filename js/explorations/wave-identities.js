@@ -13,10 +13,7 @@ class WaveIdentitiesExploration extends BaseExploration {
   static formulaShort = 'sin(&omega;t+a) = sin(&omega;t)cos(a) + cos(&omega;t)sin(a)';
   static formula = `<h3>Wave-Form Trig Identities</h3>
 <div class="formula-block">
-sin(&alpha;+&beta;) = sin&alpha;&middot;cos&beta; + cos&alpha;&middot;sin&beta;<br>
-cos(&alpha;+&beta;) = cos&alpha;&middot;cos&beta; &minus; sin&alpha;&middot;sin&beta;<br>
-sin(2&alpha;) = 2&middot;sin&alpha;&middot;cos&alpha;<br>
-sin&sup2;&alpha; = (1 &minus; cos(2&alpha;)) / 2
+$$\\begin{aligned} \\sin(\\alpha+\\beta) &= \\sin\\alpha\\cos\\beta + \\cos\\alpha\\sin\\beta \\\\ \\cos(\\alpha+\\beta) &= \\cos\\alpha\\cos\\beta - \\sin\\alpha\\sin\\beta \\\\ \\sin(2\\alpha) &= 2\\sin\\alpha\\cos\\alpha \\\\ \\sin^2\\alpha &= (1 - \\cos(2\\alpha))/2 \\end{aligned}$$
 </div>
 <p>Each identity says that a single wave can be decomposed into simpler components, or vice versa.
 The <strong>sum formulas</strong> split a phase-shifted wave into two unshifted ones; the

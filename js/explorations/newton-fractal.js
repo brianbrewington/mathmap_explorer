@@ -15,11 +15,9 @@ class NewtonFractalExploration extends BaseExploration {
   static formulaShort = 'z → z − f(z)/f\'(z)';
   static formula = `<h3>Newton Fractal</h3>
 <div class="formula-block">
-f(z) = z<sup>n</sup> − 1<br>
-z<sub>k+1</sub> = z<sub>k</sub> − α · f(z<sub>k</sub>) / f'(z<sub>k</sub>)<br>
-= z<sub>k</sub> − α · (z<sub>k</sub><sup>n</sup> − 1) / (n · z<sub>k</sub><sup>n−1</sup>)
+$$\\begin{aligned} f(z) &= z^n - 1 \\\\ z_{k+1} &= z_k - \\alpha \\cdot \\frac{f(z_k)}{f'(z_k)} = z_k - \\alpha \\cdot \\frac{z_k^n - 1}{n \\cdot z_k^{n-1}} \\end{aligned}$$
 </div>
-<p>Each pixel is colored by which n-th root of unity Newton's method converges to, shaded by how many iterations it took. The damping factor α (default 1) produces exotic patterns when varied.</p>`;
+<p>Each pixel is colored by which $n$-th root of unity Newton's method converges to, shaded by how many iterations it took. The damping factor $\\alpha$ (default 1) produces exotic patterns when varied.</p>`;
   static tutorial = `<h3>How Newton Fractals are Computed</h3>
 <p>For each pixel z₀ in the complex plane, we iterate Newton's method for f(z) = z^n - 1. The method converges to one of the n roots of unity (equally spaced on the unit circle). We color by which root, shade by speed.</p>
 <pre><code class="language-js">// For each pixel z:

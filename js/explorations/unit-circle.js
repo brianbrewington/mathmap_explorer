@@ -13,10 +13,10 @@ class UnitCircleExploration extends BaseExploration {
   static formulaShort = 'e<sup>i&theta;</sup> = cos&theta; + i&middot;sin&theta;';
   static formula = `<h3>Euler's Formula</h3>
 <div class="formula-block">
-e<sup>i&theta;</sup> = cos &theta; + i &middot; sin &theta;
+$$e^{i\\theta} = \\cos\\theta + i\\sin\\theta$$
 </div>
-<p>Euler&rsquo;s formula bridges exponentials and trigonometry through the complex plane.
-A point on the <strong>unit circle</strong> at angle &theta; has coordinates (cos&nbsp;&theta;, sin&nbsp;&theta;).</p>
+<p>Euler's formula bridges exponentials and trigonometry through the complex plane.
+A point on the <strong>unit circle</strong> at angle $\\theta$ has coordinates $(\\cos\\theta,\\, \\sin\\theta)$.</p>
 <p>The formula unifies the oscillatory behavior of sine and cosine into a single complex
 exponential, which is fundamental to signal processing, quantum mechanics, and electrical
 engineering.</p>`;
@@ -146,7 +146,7 @@ views of the same phenomenon.</p>`;
   _syncAudioParams() {
     if (!this._osc) return;
     const now = this._audioCtx.currentTime;
-    this._osc.frequency.setTargetAtTime(200 + (this.params.speed || 1) * 40, now, 0.05);
+    this._osc.frequency.setTargetAtTime(220 * (this.params.speed || 1), now, 0.05);
   }
 
   updateAudio() {}

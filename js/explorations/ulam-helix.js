@@ -14,11 +14,9 @@ class UlamHelixExploration extends BaseExploration {
   static formulaShort = '(x, y) = spiral(n), z = n · zScale; highlight if prime';
   static formula = `<h3>Ulam Helix</h3>
 <div class="formula-block">
-Place integers on a square spiral:<br>
-(x, y) = spiralCoords(n)<br>
-z = n &middot; zScale<br><br>
-Color point <em>n</em> if <em>n</em> is prime.
+$$\\begin{aligned} (x, y) &= \\text{spiralCoords}(n) \\\\ z &= n \\cdot \\text{zScale} \\end{aligned}$$
 </div>
+<p>Place integers on a square spiral and color point <em>n</em> if <em>n</em> is prime.</p>
 <p>The standard 2D Ulam spiral arranges integers in a square spiral and highlights primes,
 revealing mysterious diagonal patterns. This exploration adds a third dimension: each integer
 rises proportionally to its value, turning the flat spiral into a <strong>helix</strong>.</p>

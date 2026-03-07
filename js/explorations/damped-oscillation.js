@@ -9,36 +9,37 @@ class DampedOscillationExploration extends BaseExploration {
   static tags = [
     'physics', 'ode-integration', 'intermediate', 'oscillation', 'decay',
   ];
-  static formulaShort = 'x = A&middot;e<sup>&minus;bt</sup>&middot;cos(&omega;<sub>d</sub>t)';
+  static formulaShort = 'x = A&middot;e<sup>&minus;bt</sup>(cos&omega;<sub>d</sub>t + (b/&omega;<sub>d</sub>)sin&omega;<sub>d</sub>t)';
   static formula = `<h3>Damped Oscillation</h3>
 <div class="formula-block">
-m&middot;x&Prime; + 2b&middot;x&prime; + &omega;<sub>0</sub>&sup2;&middot;x = 0
+$$m\\ddot{x} + 2b\\dot{x} + \\omega_0^2 x = 0$$
 </div>
-<p>Depending on the damping coefficient <em>b</em> relative to the natural frequency
-<em>&omega;<sub>0</sub></em>, the system falls into one of three regimes:</p>
+<p>Depending on the damping coefficient $b$ relative to the natural frequency
+$\\omega_0$, the system falls into one of three regimes:</p>
 <ul>
-  <li><strong>Underdamped</strong> (b &lt; &omega;<sub>0</sub>): oscillation inside an exponential
-      envelope, x(t) = A&middot;e<sup>&minus;bt</sup>&middot;cos(&omega;<sub>d</sub>&middot;t)</li>
-  <li><strong>Critically damped</strong> (b = &omega;<sub>0</sub>): fastest return to equilibrium
-      without overshoot, x(t) = A&middot;(1 + bt)&middot;e<sup>&minus;bt</sup></li>
-  <li><strong>Overdamped</strong> (b &gt; &omega;<sub>0</sub>): slow exponential decay with
+  <li><strong>Underdamped</strong> ($b < \\omega_0$): oscillation inside an exponential
+      envelope, $x(t) = A e^{-bt}(\\cos(\\omega_d t) + (b/\\omega_d)\\sin(\\omega_d t))$</li>
+  <li><strong>Critically damped</strong> ($b = \\omega_0$): fastest return to equilibrium
+      without overshoot, $x(t) = A(1 + bt)e^{-bt}$</li>
+  <li><strong>Overdamped</strong> ($b > \\omega_0$): slow exponential decay with
       no oscillation</li>
 </ul>`;
   static tutorial = `<h3>Regimes of Damping</h3>
 <p>The character of the motion depends entirely on the discriminant &omega;<sub>0</sub>&sup2; &minus; b&sup2;:</p>
 <pre><code class="language-js">const disc = omega0 * omega0 - b * b;
 if (disc > 0) {
-  // Underdamped: oscillate inside envelope
+  // Underdamped: oscillate inside envelope (x(0)=A, x'(0)=0)
   const omegaD = Math.sqrt(disc);
-  x = A * Math.exp(-b * t) * Math.cos(omegaD * t);
+  x = A * Math.exp(-b * t) * (Math.cos(omegaD * t) + (b / omegaD) * Math.sin(omegaD * t));
 } else if (disc === 0) {
   // Critical: fastest non-oscillatory decay
   x = A * (1 + b * t) * Math.exp(-b * t);
 } else {
-  // Overdamped: two decaying exponentials
-  const s1 = -b + Math.sqrt(-disc);
-  const s2 = -b - Math.sqrt(-disc);
-  x = A * 0.5 * (Math.exp(s1 * t) + Math.exp(s2 * t));
+  // Overdamped: two decaying exponentials (x(0)=A, x'(0)=0)
+  const s = Math.sqrt(-disc);
+  const s1 = -b + s;
+  const s2 = -b - s;
+  x = A / (2 * s) * ((b + s) * Math.exp(s1 * t) + (s - b) * Math.exp(s2 * t));
 }</code></pre>
 <p>Drag the <em>damping</em> slider to transition between regimes and watch the regime label
 update in real time.</p>`;
@@ -145,18 +146,18 @@ update in real time.</p>`;
     const eps = 0.001;
 
     if (disc > eps) {
-      // Underdamped
+      // Underdamped — x(0)=A, x'(0)=0
       const omegaD = Math.sqrt(disc);
-      return A * Math.exp(-b * t) * Math.cos(omegaD * t);
+      return A * Math.exp(-b * t) * (Math.cos(omegaD * t) + (b / omegaD) * Math.sin(omegaD * t));
     } else if (disc > -eps) {
-      // Critically damped
+      // Critically damped — x(0)=A, x'(0)=0
       return A * (1 + b * t) * Math.exp(-b * t);
     } else {
-      // Overdamped
+      // Overdamped — x(0)=A, x'(0)=0
       const s = Math.sqrt(-disc);
       const s1 = -b + s;
       const s2 = -b - s;
-      return A * 0.5 * (Math.exp(s1 * t) + Math.exp(s2 * t));
+      return A / (2 * s) * ((b + s) * Math.exp(s1 * t) + (s - b) * Math.exp(s2 * t));
     }
   }
 

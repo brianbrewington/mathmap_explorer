@@ -6,24 +6,26 @@ import { setupPanZoom } from '../ui/pan-zoom.js';
 class DeJongExploration extends BaseExploration {
   static id = 'dejong';
   static title = 'Peter de Jong';
-  static description = "x' = sin(a*y) + c*cos(a*x), y' = sin(b*x) + d*cos(b*y)";
+  static description = "x' = sin(a·y) − cos(b·x), y' = sin(c·x) − cos(d·y)";
   static category = 'attractor';
   static tags = ['dynamical-systems', 'iteration', 'intermediate', 'strange-attractor', 'discrete-map', '2D', 'density-rendering', 'trigonometric'];
-  static formulaShort = "x' = sin(ay) + c·cos(ax)";
+  static formulaShort = "x' = sin(ay) − cos(bx)";
   static formula = `<h3>Peter de Jong Attractor</h3>
 <div class="formula-block">
-x<sub>n+1</sub> = sin(a · y<sub>n</sub>) + c · cos(a · x<sub>n</sub>)<br>
-y<sub>n+1</sub> = sin(b · x<sub>n</sub>) + d · cos(b · y<sub>n</sub>)
+$$\\begin{aligned}
+x_{n+1} &= \\sin(a \\cdot y_n) - \\cos(b \\cdot x_n) \\\\
+y_{n+1} &= \\sin(c \\cdot x_n) - \\cos(d \\cdot y_n)
+\\end{aligned}$$
 </div>
-<p>A 2D strange attractor discovered by Peter de Jong. The four parameters (a, b, c, d) produce an enormous variety of intricate, swirling patterns. The density of visited points creates the visual structure.</p>`;
+<p>A 2D strange attractor discovered by Peter de Jong. The four parameters $(a, b, c, d)$ produce an enormous variety of intricate, swirling patterns. The density of visited points creates the visual structure.</p>`;
   static tutorial = `<h3>How the De Jong Attractor is Computed</h3>
 <p>Starting from an initial point, we repeatedly apply the iteration formula millions of times. Each visited point increments a counter in a density grid. Brighter areas have been visited more often.</p>
 <pre><code class="language-js">let x = 0.1, y = 0.1;
 const density = new Uint32Array(width * height);
 
 for (let i = 0; i < iterations; i++) {
-  const nx = Math.sin(a * y) + c * Math.cos(a * x);
-  const ny = Math.sin(b * x) + d * Math.cos(b * y);
+  const nx = Math.sin(a * y) - Math.cos(b * x);
+  const ny = Math.sin(c * x) - Math.cos(d * y);
   x = nx;
   y = ny;
 
@@ -41,28 +43,38 @@ for (let i = 0; i < iterations; i++) {
 
   static guidedSteps = [
     {
-      label: 'Classic Swirl',
-      description: 'The default parameters produce a swirling, feathered pattern. Each point comes from x\' = sin(ay) − cos(bx), y\' = sin(cx) − cos(dy) — pure trigonometry generating art.',
+      label: 'Classic',
+      description: 'The default de Jong attractor — Bourke example #0. (a=1.4, b=−2.3, c=2.4, d=−2.1)',
       params: { a: 1.4, b: -2.3, c: 2.4, d: -2.1, colorScheme: 0, brightness: 1.0 }
     },
     {
-      label: 'Butterfly',
-      description: 'Wing-like structures emerge from this parameter combination. The attractor has bilateral symmetry created by the interplay of sine and cosine terms.',
+      label: 'Chicken Legs',
+      description: 'Named by Peter de Jong himself. Bourke example #1. (a=2.01, b=−2.53, c=1.61, d=−0.33)',
       params: { a: 2.01, b: -2.53, c: 1.61, d: -0.33, colorScheme: 0, brightness: 1.0 }
     },
     {
-      label: 'Nebula Cloud',
-      description: 'A diffuse, nebula-like cloud fills the plane. Some parameter combinations produce attractors that cover 2D regions rather than tracing sharp curves.',
+      label: 'Bourke #3',
+      description: 'Bourke example #3. (a=−2.24, b=0.43, c=−0.65, d=−2.43)',
       params: { a: -2.24, b: 0.43, c: -0.65, d: -2.43, colorScheme: 0, brightness: 1.2 }
     },
     {
-      label: 'Tight Loops',
-      description: 'Symmetric integer parameters create more periodic-looking orbits with visible loop structure. The attractor sits inside a more compact region.',
-      params: { a: 1.0, b: -1.0, c: 1.0, d: -1.0, colorScheme: 4, brightness: 1.0 }
+      label: 'Bourke #2',
+      description: 'Bourke example #2. (a=−2.7, b=−0.09, c=−0.86, d=−2.2)',
+      params: { a: -2.7, b: -0.09, c: -0.86, d: -2.2, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Bourke #6',
+      description: 'Bourke example #6. (a=1.641, b=1.902, c=0.316, d=1.525)',
+      params: { a: 1.641, b: 1.902, c: 0.316, d: 1.525, colorScheme: 0, brightness: 1.0 }
+    },
+    {
+      label: 'Bourke #7',
+      description: 'Bourke example #7. (a=−0.709, b=1.638, c=0.452, d=1.740)',
+      params: { a: -0.709, b: 1.638, c: 0.452, d: 1.740, colorScheme: 0, brightness: 1.0 }
     },
     {
       label: 'Fire Palette',
-      description: 'The fire palette maps visit density to warm colors. Bright regions show where the orbit spends the most time — the "hotspots" of the attractor.',
+      description: 'The classic attractor rendered with the Fire color scheme to highlight density hotspots.',
       params: { a: 1.4, b: -2.3, c: 2.4, d: -2.1, colorScheme: 1, brightness: 1.5 }
     }
   ];
@@ -86,6 +98,19 @@ for (let i = 0; i < iterations; i++) {
     this._densityHeight = 2000;
   }
 
+  _syncAspect() {
+    const cw = this.canvas.width || 1;
+    const ch = this.canvas.height || 1;
+    const aspect = cw / ch;
+
+    this._densityHeight = this.params.resolution;
+    this._densityWidth = Math.round(this.params.resolution * aspect);
+
+    const yHalf = 3;
+    const xHalf = yHalf * aspect;
+    this._defaultBounds = { xMin: -xHalf, xMax: xHalf, yMin: -yHalf, yMax: yHalf };
+  }
+
   getControls() {
     return [
       { type: 'slider', key: 'a', label: 'a', min: -5, max: 5, step: 0.01, value: this.params.a },
@@ -106,7 +131,7 @@ for (let i = 0; i < iterations; i++) {
         { value: 3, label: 'Grayscale' },
         { value: 4, label: 'Viridis' },
         { value: 5, label: 'Plasma' }
-      ], value: 0 },
+      ], value: this.params.colorScheme },
       { type: 'slider', key: 'brightness', label: 'Brightness', min: 0.2, max: 3.0, step: 0.1, value: this.params.brightness },
       { type: 'separator' },
       { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
@@ -116,6 +141,8 @@ for (let i = 0; i < iterations; i++) {
   }
 
   activate() {
+    this._syncAspect();
+    this._bounds = { ...this._defaultBounds };
     this.densityRenderer = new DensityRenderer(this.canvas);
     this._cleanupPanZoom = setupPanZoom(this.canvas, {
       getBounds: () => this._bounds,
@@ -145,8 +172,7 @@ for (let i = 0; i < iterations; i++) {
       return;
     }
     if (key === 'resolution') {
-      this._densityWidth = value;
-      this._densityHeight = value;
+      this._syncAspect();
     }
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => this._startWorker(), 150);
@@ -155,14 +181,14 @@ for (let i = 0; i < iterations; i++) {
   reset() {
     this.params.a = 1.4; this.params.b = -2.3;
     this.params.c = 2.4; this.params.d = -2.1;
+    this._syncAspect();
     this._bounds = { ...this._defaultBounds };
     this._startWorker();
   }
 
   resize() {
-    if (this._lastDensity) {
-      this.densityRenderer.render(this._lastDensity, this._densityWidth, this._densityHeight, this._lastMaxDensity, this.params.colorScheme, this.params.brightness);
-    }
+    this._syncAspect();
+    this._startWorker();
   }
 
   _startWorker() {

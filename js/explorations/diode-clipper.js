@@ -35,16 +35,16 @@ class DiodeClipperExploration extends BaseExploration {
   static formulaShort = 'y = f(x) where f is a nonlinear transfer curve';
   static formula = `<h3>Waveshaping &amp; Harmonic Generation</h3>
 <div class="formula-block">
-y(t) = f(x(t))
+$$y(t) = f(x(t))$$
 </div>
 <p>A <strong>nonlinear transfer function</strong> applied to a pure sine tone creates new harmonic
-frequencies that were not present in the input. The shape of f determines which harmonics appear
+frequencies that were not present in the input. The shape of $f$ determines which harmonics appear
 and how strong they are.</p>
 <ul>
-<li><strong>tanh soft clipping</strong> — smoothly saturates toward &plusmn;1, producing primarily odd harmonics.</li>
+<li><strong>tanh soft clipping</strong> — smoothly saturates toward $\\pm 1$, producing primarily odd harmonics.</li>
 <li><strong>Hard clipping</strong> — flat-tops the waveform, generating a rich odd-harmonic series like a square wave.</li>
 <li><strong>Asymmetric clipping</strong> — different gain above and below zero, introducing even harmonics as well.</li>
-<li><strong>Wavefolding</strong> — reflects the signal back at &plusmn;1, creating a complex, drive-dependent harmonic spectrum.</li>
+<li><strong>Wavefolding</strong> — reflects the signal back at $\\pm 1$, creating a complex, drive-dependent harmonic spectrum.</li>
 </ul>`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
@@ -70,12 +70,29 @@ and how strong they are.</p>
       params: { curve: 'asym', drive: 2.5, bias: 0.35, inputFreq: 2 }
     },
   ];
-  static circuitDiagram = ` Vin ~ ---[Rin]---o---- Vout
-                    | 
-                   |>| D1
-                    |
-                   GND
-              (optionally mirrored diode for symmetric clip)`;
+  static circuitSchematic = {
+    width: 18, height: 11,
+    components: [
+      { type: 'ac', id: 'Vin', x: 2, y: 4.5 },
+      { type: 'R', id: 'Rin', x: 6.5, y: 2.5, dir: 'right', label: 'Rin' },
+      { type: 'D', id: 'D1', x: 10.5, y: 5.5, dir: 'down', label: 'D₁' },
+      { type: 'gnd', id: 'G1', x: 2, y: 7 },
+      { type: 'gnd', id: 'G2', x: 10.5, y: 8 },
+    ],
+    wires: [
+      { path: [[2, 3], [2, 2.5], [5, 2.5]] },
+      { path: [[8, 2.5], [10.5, 2.5], [10.5, 4]] },
+      { path: [[10.5, 7], [10.5, 7.7]] },
+      { path: [[10.5, 2.5], [15, 2.5]] },
+      { path: [[2, 6], [2, 6.7]] },
+    ],
+    junctions: [[10.5, 2.5]],
+    labels: [
+      { x: 2, y: 2, text: 'Vin ~', color: '#f472b6' },
+      { x: 15, y: 2.1, text: 'Vout', color: '#22d3ee', anchor: 'start' },
+    ],
+    notes: 'Optionally mirror D₁ for symmetric clipping',
+  };
   static probeMap = [
     {
       model: 'x(t)',

@@ -24,15 +24,12 @@ class MemristorChaosExploration extends BaseExploration {
   static formulaShort = 'dφ/dt = v, W(φ) = a + 3bφ²';
   static formula = `<h3>Memristor-Based Chaotic Circuit</h3>
 <div class="formula-block">
-dx/dt = &alpha;(y &minus; W(&phi;) &middot; x)<br>
-d&phi;/dt = x<br>
-dy/dt = x &minus; y + z<br>
-dz/dt = &minus;&beta; y
+$$\\begin{aligned} \\frac{dx}{dt} &= \\alpha(y - W(\\phi) \\cdot x) \\\\ \\frac{d\\phi}{dt} &= x \\\\ \\frac{dy}{dt} &= x - y + z \\\\ \\frac{dz}{dt} &= -\\beta y \\end{aligned}$$
 </div>
 <p>A <strong>memristor</strong> is a circuit element whose resistance depends on the total
 charge (or flux) that has passed through it. Replace the Chua diode with a
 flux-controlled memristor whose memristance is</p>
-<p class="formula-block">W(&phi;) = a + 3b&phi;&sup2;</p>
+<p class="formula-block">$$W(\\phi) = a + 3b\\phi^2$$</p>
 <p>Different memristor parameters <em>a</em> and <em>b</em> create different attractor
 topologies — from single-wing butterflies to double-wing strange attractors.</p>`;
   static tutorial = `<h3>How To Explore</h3>
@@ -62,17 +59,36 @@ topologies — from single-wing butterflies to double-wing strange attractors.</
       params: { preset: 'periodic', alpha: 8, beta: 12, a: -0.8, b: 0.3 }
     },
   ];
-  static circuitDiagram = `   +V
-    |
-   [R]
-    |
-   o---- C1 ---- GND
-   |
- [Memristor W(phi)]
-   |
-   o---- L ---- C2 ---- GND
-    |
-   GND`;
+  static circuitSchematic = {
+    width: 16, height: 14,
+    components: [
+      { type: 'vcc', id: 'V', x: 3, y: 1.5 },
+      { type: 'R', id: 'R1', x: 3, y: 3.5, dir: 'down', label: 'R' },
+      { type: 'C', id: 'C1', x: 7.5, y: 5.5, dir: 'right', label: 'C₁' },
+      { type: 'block', id: 'M', x: 3, y: 7.5, dir: 'down', label: 'W(φ)', w: 2.6, h: 1.4 },
+      { type: 'L', id: 'L1', x: 7.5, y: 9.5, dir: 'right', label: 'L' },
+      { type: 'C', id: 'C2', x: 11.5, y: 9.5, dir: 'right', label: 'C₂' },
+      { type: 'gnd', id: 'G1', x: 10, y: 6.5 },
+      { type: 'gnd', id: 'G2', x: 14, y: 10.5 },
+      { type: 'gnd', id: 'G3', x: 3, y: 11.5 },
+    ],
+    wires: [
+      { path: [[3, 1.8], [3, 2]] },
+      { path: [[3, 5], [3, 5.5], [6, 5.5]] },
+      { path: [[9, 5.5], [10, 5.5], [10, 6.2]] },
+      { path: [[3, 5.5], [3, 6.8]] },
+      { path: [[3, 8.2], [3, 9.5], [6, 9.5]] },
+      { path: [[9, 9.5], [10, 9.5]] },
+      { path: [[13, 9.5], [14, 9.5], [14, 10.2]] },
+      { path: [[3, 9.5], [3, 11.2]] },
+    ],
+    junctions: [[3, 5.5], [3, 9.5], [10, 9.5]],
+    labels: [
+      { x: 4, y: 5, text: 'v₁', color: '#f472b6' },
+      { x: 10.5, y: 9, text: 'v₂', color: '#22d3ee' },
+      { x: 3, y: 13, text: 'Memristor', color: '#a0aac0', size: 9 },
+    ],
+  };
   static probeMap = [
     {
       model: 'x',
@@ -321,8 +337,13 @@ topologies — from single-wing butterflies to double-wing strange attractors.</
     if (yMin === yMax) { yMin -= 1; yMax += 1; }
 
     const pad = px(30);
-    const toX = v => pad + ((v - xMin) / (xMax - xMin)) * (W - 2 * pad);
-    const toY = v => H - pad - ((v - yMin) / (yMax - yMin)) * (H - 2 * pad);
+    const drawW = W - 2 * pad;
+    const drawH = H - 2 * pad;
+    const uScale = Math.min(drawW / (xMax - xMin), drawH / (yMax - yMin));
+    const midX = (xMin + xMax) / 2, midY = (yMin + yMax) / 2;
+    const cxP = pad + drawW / 2, cyP = pad + drawH / 2;
+    const toX = v => cxP + (v - midX) * uScale;
+    const toY = v => cyP - (v - midY) * uScale;
 
     // Trail with fading opacity — newer segments are brighter
     const len = this._trail.length;

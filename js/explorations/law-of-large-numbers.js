@@ -14,17 +14,17 @@ class LawOfLargeNumbersExploration extends BaseExploration {
   static formulaShort = 'X\u0304<sub>n</sub> \u2192 E[X] as n \u2192 \u221E';
   static formula = `<h3>Law of Large Numbers</h3>
 <div class="formula-block">
-X&#x0304;<sub>n</sub> = (1/n) &sum;<sub>i=1</sub><sup>n</sup> X<sub>i</sub><br><br>
-P(|X&#x0304;<sub>n</sub> &minus; &mu;| &gt; &epsilon;) &rarr; 0 &nbsp; as &nbsp; n &rarr; &infin;
+$$\\bar{X}_n = \\frac{1}{n} \\sum_{i=1}^{n} X_i$$
+$$P\\bigl(|\\bar{X}_n - \\mu| > \\varepsilon\\bigr) \\to 0 \\quad \\text{as } n \\to \\infty$$
 </div>
 <p>The <strong>Law of Large Numbers (LLN)</strong> says that the sample mean of i.i.d.
-random variables converges to the population mean &mu; = E[X] as the
-sample size grows &mdash; <em>provided E[X] exists</em>.</p>
+random variables converges to the population mean $\\mu = E[X]$ as the
+sample size grows &mdash; <em>provided $E[X]$ exists</em>.</p>
 <p>The <strong>weak</strong> form guarantees convergence in probability; the
 <strong>strong</strong> form guarantees almost-sure convergence. In either case,
 the practical consequence is that averages stabilize.</p>
 <p>But not every distribution has a finite mean. The <strong>Cauchy distribution</strong>
-has such heavy tails that E[X] is undefined. For Cauchy samples, the running
+has such heavy tails that $E[X]$ is undefined. For Cauchy samples, the running
 average wanders forever &mdash; a dramatic failure of the LLN&rsquo;s premise.</p>`;
   static tutorial = `<h3>Reading the Visualization</h3>
 <p>The <strong>upper panel</strong> shows the running average X&#x0304;<sub>n</sub> for each

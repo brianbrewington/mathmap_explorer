@@ -45,14 +45,18 @@ class DelayDEExploration extends BaseExploration {
   static formulaShort = "dx/dt = f(x(t), x(t-τ)) — Mackey-Glass, delayed logistic";
   static formula = `<h3>Delay Differential Equations</h3>
 <div class="formula-block">
-dx/dt = f(x(t), x(t − τ))
+$$\\frac{dx}{dt} = f\\!\\left(x(t),\\, x(t - \\tau)\\right)$$
 </div>
 <p>Unlike ordinary ODEs, DDEs have <strong>infinite-dimensional</strong> state spaces — the
-"state" is the entire history function on [t−τ, t]. This is why simple-looking
+"state" is the entire history function on $[t - \\tau,\\, t]$. This is why simple-looking
 equations can produce stunning chaos.</p>
-<p>The <strong>Mackey-Glass equation</strong> models blood cell production with a delay τ
-representing the maturation time. As τ increases past ~17, the dynamics transition
+<p>The <strong>Mackey-Glass equation</strong> models blood cell production with a delay $\\tau$
+representing the maturation time. As $\\tau$ increases past ~17, the dynamics transition
 from a stable fixed point through periodic oscillations to chaos.</p>`;
+  static blockDiagram = `graph LR
+  xt["x(t)"] --> f["f(x)"]
+  f --> delay["Delay τ"]
+  delay --> xt`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>Delay τ:</strong> The main chaos knob. Increase it and watch the route to chaos.</li>

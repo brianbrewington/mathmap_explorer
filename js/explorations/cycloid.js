@@ -12,15 +12,17 @@ class CycloidExploration extends BaseExploration {
   static formulaShort = 'x = r(t &minus; sin t), y = r(1 &minus; cos t)';
   static formula = `<h3>Cycloid</h3>
 <div class="formula-block">
-x(t) = r(t &minus; d&middot;sin t)<br>
-y(t) = r(1 &minus; d&middot;cos t)
+$$\\begin{aligned}
+x(t) &= r(t - d\\sin t) \\\\
+y(t) &= r(1 - d\\cos t)
+\\end{aligned}$$
 </div>
 <p>A cycloid is the curve traced by a point on the rim of a circle rolling along a straight
-line. When the tracing point is on the rim (d&nbsp;=&nbsp;1), it produces the classic
+line. When the tracing point is on the rim ($d = 1$), it produces the classic
 cycloid &mdash; both the <strong>brachistochrone</strong> (fastest descent) and
 <strong>tautochrone</strong> (equal-time descent) curve.</p>
-<p>Varying <em>d</em> (the pen ratio) moves the tracing point inside (d&nbsp;&lt;&nbsp;1,
-<em>curtate</em>) or outside (d&nbsp;&gt;&nbsp;1, <em>prolate</em>) the wheel, producing
+<p>Varying $d$ (the pen ratio) moves the tracing point inside ($d < 1$,
+<em>curtate</em>) or outside ($d > 1$, <em>prolate</em>) the wheel, producing
 different trochoid families.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>The rolling circle animation shows the wheel moving right as the pen traces the curve:</p>

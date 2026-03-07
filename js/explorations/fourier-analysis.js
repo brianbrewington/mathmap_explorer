@@ -10,12 +10,15 @@ class FourierAnalysisExploration extends BaseExploration {
   static formulaShort = 'X[k] = &sum; x[n]&middot;e<sup>&minus;i2&pi;kn/N</sup>';
   static formula = `<h3>Discrete Fourier Transform</h3>
 <div class="formula-block">
-X[k] = &sum;<sub>n=0</sub><sup>N&minus;1</sup> x[n] &middot; e<sup>&minus;i2&pi;kn/N</sup>
+$$X[k] = \\sum_{n=0}^{N-1} x[n] \\cdot e^{-i 2\\pi k n / N}$$
 </div>
 <p>The <strong>DFT</strong> decomposes a signal into its constituent frequencies. Each coefficient
-X[k] measures how much of frequency k is present in the signal.</p>
-<p>The <strong>magnitude</strong> |X[k]| tells the amplitude; the <strong>phase</strong> arg(X[k])
+$X[k]$ measures how much of frequency $k$ is present in the signal.</p>
+<p>The <strong>magnitude</strong> $|X[k]|$ tells the amplitude; the <strong>phase</strong> $\\arg(X[k])$
 tells the time offset of each frequency component.</p>`;
+  static blockDiagram = `graph LR
+  Sig["Time signal x[n]"] --> DFT["DFT"]
+  DFT --> Spec["Frequency spectrum X[k]"]`;
   static tutorial = `<h3>Seeing the Hidden Frequencies</h3>
 <p>Every signal — a square wave, a bird call, a heartbeat — is secretly a sum of pure
 sine waves at different frequencies. The Discrete Fourier Transform reveals those

@@ -12,17 +12,17 @@ class ColpittsOscillatorExploration extends BaseExploration {
   static formulaShort = 'f₀ = 1/(2π√(L·C₁C₂/(C₁+C₂)))';
   static formula = `<h3>Colpitts Oscillator</h3>
 <div class="formula-block">
-f₀ = 1 / (2π √(L · C<sub>series</sub>))
+$$f_0 = \\frac{1}{2\\pi\\sqrt{L \\cdot C_{\\text{series}}}}$$
 </div>
 <p>The Colpitts oscillator uses an <strong>LC tank</strong> where the capacitor is split
-into C<sub>1</sub> and C<sub>2</sub>. The voltage divider formed by C<sub>1</sub>/C<sub>2</sub>
+into $C_1$ and $C_2$. The voltage divider formed by $C_1/C_2$
 provides positive feedback to an amplifier.</p>
 <p>The series capacitance is:</p>
 <div class="formula-block">
-C<sub>series</sub> = C<sub>1</sub> · C<sub>2</sub> / (C<sub>1</sub> + C<sub>2</sub>)
+$$C_{\\text{series}} = \\frac{C_1 \\cdot C_2}{C_1 + C_2}$$
 </div>
 <p>The oscillation frequency is determined by
-f₀ = 1 / (2π √(L · C<sub>series</sub>)). The circuit starts from thermal noise
+$f_0 = \\frac{1}{2\\pi\\sqrt{L \\cdot C_{\\text{series}}}}$. The circuit starts from thermal noise
 and builds to a steady amplitude via <strong>nonlinear limiting</strong> — the
 amplifier saturates once the signal is large enough, stabilising the
 amplitude on a limit cycle.</p>`;
@@ -54,16 +54,31 @@ amplitude on a limit cycle.</p>`;
       params: { gain: 0.7, damping: 0.15 }
     },
   ];
-  static circuitDiagram = `          +V
-           |
-      [Amplifier]
-           |
-           o---- L ----o
-           |           |
-          C1          C2
-           |           |
-          GND         GND
-   (feedback taken from C-divider node)`;
+  static circuitSchematic = {
+    width: 16, height: 13,
+    components: [
+      { type: 'vcc', id: 'V', x: 5, y: 1.5 },
+      { type: 'block', id: 'Amp', x: 5, y: 4, dir: 'down', label: 'Amplifier', w: 3, h: 1.4 },
+      { type: 'L', id: 'L1', x: 8.5, y: 6, dir: 'right', label: 'L' },
+      { type: 'C', id: 'C1', x: 5, y: 8.5, dir: 'down', label: 'C₁' },
+      { type: 'C', id: 'C2', x: 12, y: 8.5, dir: 'down', label: 'C₂' },
+      { type: 'gnd', id: 'G1', x: 5, y: 11 },
+      { type: 'gnd', id: 'G2', x: 12, y: 11 },
+    ],
+    wires: [
+      { path: [[5, 1.8], [5, 3.3]] },
+      { path: [[5, 4.7], [5, 6], [7, 6]] },
+      { path: [[10, 6], [12, 6], [12, 7]] },
+      { path: [[5, 6], [5, 7]] },
+      { path: [[5, 10], [5, 10.7]] },
+      { path: [[12, 10], [12, 10.7]] },
+    ],
+    junctions: [[5, 6], [12, 6]],
+    labels: [
+      { x: 8.5, y: 5.3, text: 'Tank', color: '#a0aac0', size: 9 },
+    ],
+    notes: 'Feedback taken from the capacitive divider node',
+  };
   static probeMap = [
     {
       model: 'x(t)',

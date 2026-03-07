@@ -12,11 +12,11 @@ class BucketBrigadeExploration extends BaseExploration {
   static formulaShort = 'y_k[n] = y_{k-1}[n-1]';
   static formula = `<h3>Bucket Brigade Device</h3>
 <div class="formula-block">
-y<sub>k</sub>[n] = y<sub>k−1</sub>[n−1]
+$$y_k[n] = y_{k-1}[n-1]$$
 </div>
 <p>A BBD is a chain of capacitors. On each clock tick every stage passes its stored voltage
-to the next stage. The input signal enters at stage 0 and exits at stage N with a delay
-of N clock periods.</p>
+to the next stage. The input signal enters at stage 0 and exits at stage $N$ with a delay
+of $N$ clock periods.</p>
 <p>Modulating the clock rate varies the effective delay time, producing chorus and flanger effects.</p>`;
   static tutorial = `<h3>How To Use This Demo</h3>
 <ul>
@@ -42,9 +42,36 @@ of N clock periods.</p>
       params: { stages: 16, clockRate: 30, modDepth: 0.5, modRate: 0.5, inputFreq: 2 }
     },
   ];
-  static circuitDiagram = `Vin -> [S/H1] -> [S/H2] -> [S/H3] -> ... -> [S/HN] -> Vout
-         ^         ^         ^
-      phi1/phi2 non-overlapping clock phases drive the transfers`;
+  static circuitSchematic = {
+    width: 22, height: 10,
+    components: [
+      { type: 'block', id: 'SH1', x: 5, y: 3, label: 'S/H₁', w: 2.4, h: 1.4 },
+      { type: 'block', id: 'SH2', x: 9.5, y: 3, label: 'S/H₂', w: 2.4, h: 1.4 },
+      { type: 'block', id: 'SH3', x: 14, y: 3, label: 'S/H₃', w: 2.4, h: 1.4 },
+      { type: 'block', id: 'SHN', x: 18.5, y: 3, label: 'S/Hn', w: 2.4, h: 1.4 },
+    ],
+    wires: [
+      { path: [[1.5, 3], [3.8, 3]] },
+      { path: [[6.2, 3], [8.3, 3]] },
+      { path: [[10.7, 3], [12.8, 3]] },
+      { path: [[15.2, 3], [16.5, 3]], dashed: true },
+      { path: [[16.5, 3], [17.3, 3]] },
+      { path: [[19.7, 3], [21, 3]] },
+      { path: [[5, 6], [5, 3.7]], dashed: true },
+      { path: [[9.5, 6], [9.5, 3.7]], dashed: true },
+      { path: [[14, 6], [14, 3.7]], dashed: true },
+      { path: [[18.5, 6], [18.5, 3.7]], dashed: true },
+      { path: [[5, 6], [18.5, 6]] },
+    ],
+    junctions: [],
+    labels: [
+      { x: 1.5, y: 2.5, text: 'Vin', color: '#f472b6', anchor: 'start' },
+      { x: 21, y: 2.5, text: 'Vout', color: '#22d3ee', anchor: 'start' },
+      { x: 11.5, y: 7.5, text: 'φ₁/φ₂ clock', color: '#a0aac0', size: 9 },
+      { x: 15.8, y: 2.6, text: '···', color: '#a0aac0', size: 12 },
+    ],
+    notes: 'Non-overlapping clock phases drive charge transfer between stages',
+  };
   static probeMap = [
     {
       model: 'input',

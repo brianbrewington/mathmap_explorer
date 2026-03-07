@@ -1,6 +1,7 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
 import { forceDirectedLayout } from './force-layout.js';
+import { GraphPanZoom } from '../ui/graph-pan-zoom.js';
 
 const TAU = Math.PI * 2;
 const S = 0, I = 1, R = 2;
@@ -56,14 +57,17 @@ class NetworkEpidemicExploration extends BaseExploration {
   static formulaShort = "P(S→I) = 1-(1-β)^{infected neighbors}, P(I→R) = γ";
   static formula = `<h3>SIR Model on Networks</h3>
 <div class="formula-block">
-<strong>Susceptible → Infected:</strong> P = 1 − (1 − β)<sup>k</sup>, k = infected neighbors<br>
-<strong>Infected → Recovered:</strong> P = γ per time step
+<strong>Susceptible $\\to$ Infected:</strong> $P = 1 - (1 - \\beta)^k$, $k$ = infected neighbors<br>
+<strong>Infected $\\to$ Recovered:</strong> $P = \\gamma$ per time step
 </div>
-<p>The <strong>basic reproduction number R₀</strong> ≈ β⟨k⟩/γ determines whether an epidemic
+<p>The <strong>basic reproduction number $R_0$</strong> $\\approx \\beta \\langle k \\rangle / \\gamma$ determines whether an epidemic
 takes off. On scale-free networks, hubs act as superspreaders and lower the epidemic threshold.</p>
 <div class="formula-block">
-Mean-field: dI/dt = βSI − γI, dS/dt = −βSI, dR/dt = γI
+$$\\frac{dI}{dt} = \\beta SI - \\gamma I, \\quad \\frac{dS}{dt} = -\\beta SI, \\quad \\frac{dR}{dt} = \\gamma I$$
 </div>`;
+  static blockDiagram = `graph LR
+  S["Susceptible (S)"] -->|"βSI/N"| I["Infected (I)"]
+  I -->|"γI"| R["Recovered (R)"]`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>Infection rate β:</strong> Probability of transmission per contact per step.</li>
@@ -99,6 +103,7 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
     this._history = { s: [], i: [], r: [] };
     this._step = 0;
     this._lastFrame = 0;
+    this._pz = new GraphPanZoom(() => this.render());
   }
 
   getControls() {
@@ -130,6 +135,7 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
   activate() {
     this.ctx = this.canvas.getContext('2d');
     this.canvas.addEventListener('click', this._onClick);
+    this._pz.attach(this.canvas);
     this._rebuild();
     this.render();
   }
@@ -137,28 +143,22 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
   deactivate() {
     super.deactivate();
     this.canvas.removeEventListener('click', this._onClick);
+    this._pz.detach();
     this.ctx = null;
   }
 
   _onClick = (e) => {
+    if (this._pz.wasDrag()) return;
     const rect = this.canvas.getBoundingClientRect();
-    const W = this.canvas.width;
-    const H = this.canvas.height;
-    const cx = (e.clientX - rect.left) * (W / rect.width);
-    const cy = (e.clientY - rect.top) * (H / rect.height);
+    const cx = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const cy = (e.clientY - rect.top) * (this.canvas.height / rect.height);
     const px = n => this._px(n);
-
-    const graphW = Math.floor(W * 0.6);
-    const gPad = px(25);
-    const gW = graphW - 2 * gPad;
-    const gH = H - px(20) - 2 * gPad;
+    const pz = this._pz;
 
     let closest = -1, closestDist = Infinity;
     for (let i = 0; i < this._positions.length; i++) {
       const [u, v] = this._positions[i];
-      const sx = px(10) + gPad + u * gW;
-      const sy = px(10) + gPad + v * gH;
-      const d = Math.hypot(cx - sx, cy - sy);
+      const d = Math.hypot(cx - pz.toX(u), cy - pz.toY(v));
       if (d < closestDist) { closestDist = d; closest = i; }
     }
     if (closest >= 0 && closestDist < px(25) && this._states[closest] === S) {
@@ -215,6 +215,7 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
     for (let i = 0; i < vaccCount; i++) this._states[indices[i]] = R;
 
     this._positions = forceDirectedLayout(n, this._graph.adj, rng);
+    this._pz.reset();
     this._history = { s: [], i: [], r: [] };
     this._step = 0;
     this._recordHistory();
@@ -300,10 +301,12 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
     ctx.strokeRect(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h);
 
     const gPad = px(25);
-    const gW = graphPanel.w - 2 * gPad;
-    const gH = graphPanel.h - 2 * gPad;
-    const toX = u => graphPanel.x + gPad + u * gW;
-    const toY = v => graphPanel.y + gPad + v * gH;
+    const pz = this._pz;
+    pz.setPanel(graphPanel.x, graphPanel.y, graphPanel.w, graphPanel.h, gPad);
+    const toX = u => pz.toX(u);
+    const toY = v => pz.toY(v);
+
+    pz.clipToPanel(ctx);
 
     ctx.strokeStyle = 'rgba(100,116,139,0.1)';
     ctx.lineWidth = px(0.5);
@@ -326,6 +329,8 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
       }
       ctx.beginPath(); ctx.arc(toX(u), toY(v), r, 0, TAU); ctx.fill();
     }
+
+    pz.unclip(ctx);
 
     let sC = 0, iC = 0, rC = 0;
     for (const s of this._states) { if (s === S) sC++; else if (s === I) iC++; else rC++; }

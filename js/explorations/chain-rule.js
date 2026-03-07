@@ -12,13 +12,13 @@ class ChainRuleExploration extends BaseExploration {
   static formulaShort = "(g\u2218f)'(a) = g'(f(a))\u00B7f'(a)";
   static formula = `<h3>The Chain Rule</h3>
 <div class="formula-block">
-(g \u2218 f)'(a) = g'(f(a)) &middot; f'(a)
+$$(g \\circ f)'(a) = g'(f(a)) \\cdot f'(a)$$
 </div>
 <p>When two functions are <strong>composed</strong>, their derivatives <em>multiply</em>.
-If y&nbsp;=&nbsp;g(f(x)), then the rate of change of y with respect to x is the
-product of the rate of change of g with respect to its input and the rate of
-change of f with respect to x.</p>
-<p>Geometrically, each function "stretches" an infinitesimal interval dx by its
+If $y = g(f(x))$, then the rate of change of $y$ with respect to $x$ is the
+product of the rate of change of $g$ with respect to its input and the rate of
+change of $f$ with respect to $x$.</p>
+<p>Geometrically, each function "stretches" an infinitesimal interval $dx$ by its
 local slope. The composition stretches by the product of both slopes.</p>`;
   static tutorial = `<h3>How The Visualization Works</h3>
 <p>Three panels show the inner function f, the outer function g, and their composition g(f(x)).
