@@ -1,10 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('../js/explorations/registry.js', () => ({
   register: () => {}
 }));
-
-import { vi } from 'vitest';
 import { mulberry32, LSystemExploration } from '../js/explorations/l-system.js';
 
 function makeLSystem() {

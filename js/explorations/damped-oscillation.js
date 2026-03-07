@@ -162,9 +162,12 @@ update in real time.</p>`;
   }
 
   _envelope(t) {
-    const { amplitude: A, damping: b } = this.params;
+    const { amplitude: A, damping: b, omega0 } = this.params;
     if (t < 0) return { upper: A, lower: -A };
-    const env = A * Math.exp(-b * t);
+    const disc = omega0 * omega0 - b * b;
+    // For underdamped, the sinusoid amplitude is A*(omega0/omegaD)
+    const scale = disc > 0 ? omega0 / Math.sqrt(disc) : 1;
+    const env = A * scale * Math.exp(-b * t);
     return { upper: env, lower: -env };
   }
 

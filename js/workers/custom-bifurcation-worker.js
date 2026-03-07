@@ -17,7 +17,7 @@ self.onmessage = function(e) {
 
   try {
     for (let i = 0; i < rSteps; i++) {
-      const r = rMin + (rMax - rMin) * i / (rSteps - 1);
+      const r = rMin + (rMax - rMin) * (rSteps > 1 ? i / (rSteps - 1) : 0);
       let x = 0.5;
 
       // Transient iterations

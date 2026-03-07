@@ -14,11 +14,11 @@ export function fetchOllamaTags() {
 
   tagsPromise = fetch(`${OLLAMA_BASE}/api/tags`, { signal: AbortSignal.timeout(2000) })
     .then(resp => {
-      if (!resp.ok) { cachedTags = null; return null; }
+      if (!resp.ok) { tagsPromise = null; return null; }
       return resp.json();
     })
-    .then(data => { cachedTags = data; return data; })
-    .catch(() => { cachedTags = null; return null; });
+    .then(data => { if (data) cachedTags = data; return data; })
+    .catch(() => { tagsPromise = null; return null; });
 
   return tagsPromise;
 }

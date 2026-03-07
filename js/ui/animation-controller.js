@@ -62,7 +62,7 @@ export class AnimationController {
       this._lastTime = now;
 
       const range = this._max - this._min;
-      if (range <= 0) return;
+      if (range <= 0) { this.stop(); return; }
 
       const step = this._speed * range * dt * this._direction;
       this._value += step;

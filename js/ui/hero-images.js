@@ -11,7 +11,7 @@ function openDB() {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
     req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    req.onerror = () => { dbPromise = null; reject(req.error); };
   });
   return dbPromise;
 }

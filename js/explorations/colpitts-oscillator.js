@@ -191,6 +191,10 @@ amplitude on a limit cycle.</p>`;
 
     this._x = x + (h / 6) * (k1.dx + 2 * k2.dx + 2 * k3.dx + k4.dx);
     this._y = y + (h / 6) * (k1.dy + 2 * k2.dy + 2 * k3.dy + k4.dy);
+    if (!isFinite(this._x) || !isFinite(this._y)) {
+      this._x = 0.001 * (Math.random() - 0.5);
+      this._y = 0;
+    }
     this._time += h;
   }
 

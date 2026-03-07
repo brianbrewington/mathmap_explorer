@@ -94,12 +94,16 @@ The <strong>bottom-left</strong> shows D<sub>KL</sub>(P‖Q) with per-bin contri
     if (key === 'preset') {
       this._applyPreset(value);
     }
-    if (key === 'swap') {
+    this.render();
+  }
+
+  onAction(action) {
+    if (action === 'swap') {
       const tmp = this.P;
       this.P = this.Q;
       this.Q = tmp;
+      this.render();
     }
-    this.render();
   }
 
   reset() { this._applyPreset(this.params.preset); this.render(); }

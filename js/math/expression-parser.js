@@ -360,15 +360,17 @@ function _compileComplexNode(ast) {
             im: '0'
           };
         case 'asin': {
-          // asin(z) = -i * log(iz + sqrt(1-z^2))
-          // Simplified inline for practical use
-          const re = arg.re, im = arg.im;
+          // asin(z) = -i * log(iz + sqrt(1 - z^2))
+          const a = arg.re, b = arg.im;
+          // iz = (-b, a); 1-z^2 = (1 - a^2 + b^2, -2ab)
+          // sqrt(1-z^2) via polar; sum with iz; log; multiply by -i
           return {
-            re: `(Math.atan2(${re}, Math.sqrt(Math.max(0, 1 - ${re}*${re} + ${im}*${im}))))`,
-            im: `(Math.log(Math.sqrt((Math.sqrt(Math.max(0,1-${re}*${re}+${im}*${im})))*(Math.sqrt(Math.max(0,1-${re}*${re}+${im}*${im}))) + (-(${im}))*(-(${im})))) ))`
+            re: `(function(){var a=${a},b=${b},u=1-a*a+b*b,v=-2*a*b,r=Math.sqrt(u*u+v*v),th=Math.atan2(v,u),sr=Math.sqrt(r),sth=th/2,sx=sr*Math.cos(sth),sy=sr*Math.sin(sth),wx=-b+sx,wy=a+sy,lr=Math.log(Math.sqrt(wx*wx+wy*wy)),lt=Math.atan2(wy,wx);return lt}())`,
+            im: `(function(){var a=${a},b=${b},u=1-a*a+b*b,v=-2*a*b,r=Math.sqrt(u*u+v*v),th=Math.atan2(v,u),sr=Math.sqrt(r),sth=th/2,sx=sr*Math.cos(sth),sy=sr*Math.sin(sth),wx=-b+sx,wy=a+sy,lr=Math.log(Math.sqrt(wx*wx+wy*wy));return -lr}())`
           };
         }
         case 'acos': {
+          // acos(z) = pi/2 - asin(z)
           const as = _compileComplexNode({ type: 'call', name: 'asin', arg: ast.arg });
           return {
             re: `(${Math.PI / 2} - (${as.re}))`,
@@ -376,10 +378,11 @@ function _compileComplexNode(ast) {
           };
         }
         case 'atan': {
-          // Simplified: use real atan for real part, approximate for imaginary
+          // atan(z) = (i/2) * log((1 - iz) / (1 + iz))
+          const a = arg.re, b = arg.im;
           return {
-            re: `(Math.atan2(${arg.re}, 1))`,
-            im: `(${arg.im} / (1 + ${arg.re}*${arg.re}))`
+            re: `(function(){var a=${a},b=${b},nx=1+b,ny=-a,dx=1-b,dy=a,dd=dx*dx+dy*dy,qx=(nx*dx+ny*dy)/dd,qy=(ny*dx-nx*dy)/dd,lr=Math.log(Math.sqrt(qx*qx+qy*qy)),lt=Math.atan2(qy,qx);return -lt/2}())`,
+            im: `(function(){var a=${a},b=${b},nx=1+b,ny=-a,dx=1-b,dy=a,dd=dx*dx+dy*dy,qx=(nx*dx+ny*dy)/dd,qy=(ny*dx-nx*dy)/dd,lr=Math.log(Math.sqrt(qx*qx+qy*qy));return lr/2}())`
           };
         }
         default:

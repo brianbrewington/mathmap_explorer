@@ -42,11 +42,11 @@ describe('iterateMap', () => {
   });
 
   describe('dejong map', () => {
-    it('computes sin/cos attractor equations', () => {
+    it('computes Peter de Jong attractor: sin(a*y)-cos(b*x), sin(c*x)-cos(d*y)', () => {
       const params = { a: 1.4, b: -2.3, c: 2.4, d: -2.1 };
       const result = iterateMap('dejong', 0.5, 0.5, params);
-      expect(result.x).toBeCloseTo(Math.sin(1.4 * 0.5) + 2.4 * Math.cos(1.4 * 0.5), 10);
-      expect(result.y).toBeCloseTo(Math.sin(-2.3 * 0.5) + (-2.1) * Math.cos(-2.3 * 0.5), 10);
+      expect(result.x).toBeCloseTo(Math.sin(1.4 * 0.5) - Math.cos(-2.3 * 0.5), 10);
+      expect(result.y).toBeCloseTo(Math.sin(2.4 * 0.5) - Math.cos(-2.1 * 0.5), 10);
       expect(result.dim).toBe(2);
     });
   });

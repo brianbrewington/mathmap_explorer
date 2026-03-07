@@ -129,17 +129,21 @@ to critically damped to overdamped.</li>
   resize() { this.render(); }
 
   _solution(t) {
+    // x(0) = 1, x'(0) = 0 for all regimes
     const { omega0, zeta } = this.params;
     const w0 = omega0, z = zeta;
     if (z < 1) {
       const wd = w0 * Math.sqrt(1 - z * z);
-      return Math.exp(-z * w0 * t) * Math.cos(wd * t);
+      return Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t));
     } else if (Math.abs(z - 1) < 0.01) {
       return (1 + w0 * t) * Math.exp(-w0 * t);
     } else {
-      const s1 = -z * w0 + w0 * Math.sqrt(z * z - 1);
-      const s2 = -z * w0 - w0 * Math.sqrt(z * z - 1);
-      return 0.5 * (Math.exp(s1 * t) + Math.exp(s2 * t));
+      const s = w0 * Math.sqrt(z * z - 1);
+      const s1 = -z * w0 + s;
+      const s2 = -z * w0 - s;
+      const c1 = (z * w0 + s) / (2 * s);
+      const c2 = (s - z * w0) / (2 * s);
+      return c1 * Math.exp(s1 * t) + c2 * Math.exp(s2 * t);
     }
   }
 

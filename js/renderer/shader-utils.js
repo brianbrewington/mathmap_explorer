@@ -19,6 +19,8 @@ export function createProgram(gl, vertSource, fragSource) {
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     const info = gl.getProgramInfoLog(program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
     gl.deleteProgram(program);
     throw new Error('Program link error: ' + info);
   }

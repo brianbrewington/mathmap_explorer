@@ -4,11 +4,15 @@ self.onmessage = function(e) {
   let idx = 0;
 
   for (let i = 0; i < rSteps; i++) {
-    const r = rMin + (rMax - rMin) * i / (rSteps - 1);
+    const r = rMin + (rMax - rMin) * (rSteps > 1 ? i / (rSteps - 1) : 0);
     let x = 0.5;
-    for (let j = 0; j < transient; j++) x = r * x * (1 - x);
+    for (let j = 0; j < transient; j++) {
+      x = r * x * (1 - x);
+      if (!isFinite(x)) { x = 0.5; break; }
+    }
     for (let j = 0; j < samples; j++) {
       x = r * x * (1 - x);
+      if (!isFinite(x)) { x = 0.5; }
       points[idx++] = r;
       points[idx++] = x;
     }

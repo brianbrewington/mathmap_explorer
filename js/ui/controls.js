@@ -45,7 +45,7 @@ export function buildControls(container, descriptors, callbacks) {
         const option = document.createElement('option');
         option.value = opt.value;
         option.textContent = opt.label;
-        if (opt.value == desc.value) option.selected = true;
+        if (String(opt.value) === String(desc.value)) option.selected = true;
         select.appendChild(option);
       });
       select.addEventListener('change', () => {

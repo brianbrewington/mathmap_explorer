@@ -8,6 +8,7 @@ vec2 cmul(vec2 a, vec2 b) {
 // Complex division: (a+bi)/(c+di)
 vec2 cdiv(vec2 a, vec2 b) {
   float d = dot(b, b);
+  if (d < 1e-30) return vec2(1e10);
   return vec2(a.x*b.x + a.y*b.y, a.y*b.x - a.x*b.y) / d;
 }
 

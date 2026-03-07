@@ -483,7 +483,7 @@ function getAnimParamsForExploration(id) {
 }
 
 function rebuildControls() {
-  const controls = currentInstance.getControls();
+  const controls = [...currentInstance.getControls()];
 
   // Add animation control if this exploration has animatable params
   const animParams = getAnimParamsForExploration(currentExploration);
@@ -637,10 +637,10 @@ function showRecipeLoader() {
   if (r.d !== undefined) currentInstance.params.d = r.d;
   if (r.xMin !== undefined) { currentInstance.params.xMin = r.xMin; currentInstance.params.xMax = r.xMax; }
   if (r.yMin !== undefined) { currentInstance.params.yMin = r.yMin; currentInstance.params.yMax = r.yMax; }
-  if (r.iterations) currentInstance.params.iterations = r.iterations;
+  if (r.iterations !== undefined) currentInstance.params.iterations = r.iterations;
   if (r.transient !== undefined) currentInstance.params.transient = r.transient;
   if (r.colorScheme !== undefined) currentInstance.params.colorScheme = r.colorScheme;
-  if (r.maxIter) currentInstance.params.maxIter = r.maxIter;
+  if (r.maxIter !== undefined) currentInstance.params.maxIter = r.maxIter;
   if (r.gpuColorScheme !== undefined) currentInstance.params.gpuColorScheme = r.gpuColorScheme;
   currentInstance.params.preset = 'custom';
 
@@ -709,11 +709,7 @@ function selectExploration(id) {
     if (step.bounds && currentInstance._bounds) {
       Object.assign(currentInstance._bounds, step.bounds);
     }
-    if (currentInstance.shouldRebuildControls?.('preset')) {
-      rebuildControls();
-    } else {
-      rebuildControls();
-    }
+    rebuildControls();
     if (currentInstance._startWorker) currentInstance._startWorker();
   });
 
@@ -727,7 +723,9 @@ function selectExploration(id) {
   currentInstance.render();
   showTeaser(ExplClass.teaserQuestion);
 
-  currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
+  if (!audioEngine.isMuted) {
+    currentInstance.setupAudio(audioEngine.ctx, audioEngine.masterGain);
+  }
 
   // Auto-capture hero only when one doesn't already exist (or existing is blank).
   // Two attempts with increasing delay for worker-based explorations.

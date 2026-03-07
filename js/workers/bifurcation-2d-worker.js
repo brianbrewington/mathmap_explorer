@@ -7,7 +7,7 @@ self.onmessage = function(e) {
   let idx = 0;
 
   for (let i = 0; i < sweepSteps; i++) {
-    const sweepVal = sweepMin + (sweepMax - sweepMin) * i / (sweepSteps - 1);
+    const sweepVal = sweepMin + (sweepMax - sweepMin) * (sweepSteps > 1 ? i / (sweepSteps - 1) : 0);
     const p = { ...fixedParams, [sweepParam]: sweepVal };
 
     let x = 0.1, y = 0.1;

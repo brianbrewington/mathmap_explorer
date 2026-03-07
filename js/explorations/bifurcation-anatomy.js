@@ -254,17 +254,24 @@ as parameters change.</p>`;
     ctx.lineWidth = px(1);
     ctx.beginPath(); ctx.moveTo(panel.x + pad, centerY); ctx.lineTo(panel.x + panel.w - pad, centerY); ctx.stroke();
 
-    // dx/dt curve
+    // dx/dt curve — scale to fit panel height
     const N = 200;
+    let maxAbs = 0;
+    for (let i = 0; i <= N; i++) {
+      const x = xRange[0] + (i / N) * (xRange[1] - xRange[0]);
+      maxAbs = Math.max(maxAbs, Math.abs(bif.deriv(x, mu)));
+    }
+    if (maxAbs < 1e-8) maxAbs = 1;
+    const halfH = panel.h / 2 - pad;
+
     ctx.strokeStyle = '#22d3ee';
     ctx.lineWidth = px(1.5);
     ctx.beginPath();
     for (let i = 0; i <= N; i++) {
       const x = xRange[0] + (i / N) * (xRange[1] - xRange[0]);
       const dxdt = bif.deriv(x, mu);
-      const clamp = Math.max(-3, Math.min(3, dxdt));
       const screenX = toX(x);
-      const screenY = centerY - (clamp / 3) * (panel.h / 2 - pad);
+      const screenY = centerY - (dxdt / maxAbs) * halfH;
       if (i === 0) ctx.moveTo(screenX, screenY); else ctx.lineTo(screenX, screenY);
     }
     ctx.stroke();

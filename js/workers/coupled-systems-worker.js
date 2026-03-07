@@ -49,8 +49,8 @@ self.onmessage = function(e) {
       // parametric: B's state modulates A's primary parameter
       const modA = { ...systemA.params };
       const modB = { ...systemB.params };
-      modA[systemA.primaryParam] = (modA[systemA.primaryParam] || 0) + epsilon * xB;
-      if (bidir) modB[systemB.primaryParam] = (modB[systemB.primaryParam] || 0) + epsilon * xA;
+      modA[systemA.primaryParam] = (modA[systemA.primaryParam] ?? 0) + epsilon * xB;
+      if (bidir) modB[systemB.primaryParam] = (modB[systemB.primaryParam] ?? 0) + epsilon * xA;
       const pA = iterateMap(systemA.type, xA, yA, modA);
       const pB = iterateMap(systemB.type, xB, yB, bidir ? modB : systemB.params);
       nxA = pA.x; nyA = pA.y;
@@ -61,7 +61,7 @@ self.onmessage = function(e) {
     xB = nxB; yB = nyB;
 
     // Bail on divergence
-    if (!isFinite(xA) || !isFinite(xB)) { xA = 0.1; yA = 0.1; xB = 0.3; yB = 0.3; continue; }
+    if (!isFinite(xA) || !isFinite(yA) || !isFinite(xB) || !isFinite(yB)) { xA = 0.1; yA = 0.1; xB = 0.3; yB = 0.3; continue; }
 
     if (i < 200) continue;
 
@@ -96,20 +96,20 @@ self.onmessage = function(e) {
 function iterateMap(type, x, y, params) {
   switch (type) {
     case 'logistic': {
-      const r = params.r || 3.9;
+      const r = params.r ?? 3.9;
       return { x: r * x * (1 - x), y: x, dim: 1 };
     }
     case 'henon': {
-      const a = params.a || 1.4, b = params.b || 0.3;
+      const a = params.a ?? 1.4, b = params.b ?? 0.3;
       return { x: 1 - a * x * x + y, y: b * x, dim: 2 };
     }
     case 'dejong': {
       const { a, b, c, d } = params;
-      return { x: Math.sin(a * y) + c * Math.cos(a * x), y: Math.sin(b * x) + d * Math.cos(b * y), dim: 2 };
+      return { x: Math.sin(a * y) - Math.cos(b * x), y: Math.sin(c * x) - Math.cos(d * y), dim: 2 };
     }
     case 'tinkerbell': {
-      return { x: x * x - y * y + (params.a || 0.9) * x + (params.b || -0.6013) * y,
-               y: 2 * x * y + (params.c || 2.0) * x + (params.d || 0.5) * y, dim: 2 };
+      return { x: x * x - y * y + (params.a ?? 0.9) * x + (params.b ?? -0.6013) * y,
+               y: 2 * x * y + (params.c ?? 2.0) * x + (params.d ?? 0.5) * y, dim: 2 };
     }
     default:
       return { x, y, dim: 1 };

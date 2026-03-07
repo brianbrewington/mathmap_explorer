@@ -104,8 +104,8 @@ describe('Cross-Module: Tag Coverage', () => {
     }
   });
 
-  it('majority of tags are recognized (TAG_NEIGHBORHOODS or taxonomy facets)', () => {
-    const { isFacetTag } = require('../js/explorations/taxonomy.js');
+  it('majority of tags are recognized (TAG_NEIGHBORHOODS or taxonomy facets)', async () => {
+    const { isFacetTag } = await import('../js/explorations/taxonomy.js');
     const allTags = new Set(explorations.flatMap(E => E.tags));
     const recognized = [...allTags].filter(t => t in TAG_NEIGHBORHOODS || isFacetTag(t));
     expect(recognized.length / allTags.size).toBeGreaterThan(0.3);

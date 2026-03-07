@@ -77,7 +77,7 @@ function symbolGround() {
 function symbolVcc(label = '+V') {
   return `
     <line x1="0" y1="0" x2="0" y2="${-0.35 * GRID}" stroke="${COLORS.vcc}" stroke-width="1.5"/>
-    <text x="0" y="${-0.5 * GRID}" text-anchor="middle" fill="${COLORS.vcc}" font-size="10" font-family="'Lexend', sans-serif" font-weight="500">${label}</text>`;
+    <text x="0" y="${-0.5 * GRID}" text-anchor="middle" fill="${COLORS.vcc}" font-size="10" font-family="'Lexend', sans-serif" font-weight="500">${escSvg(label)}</text>`;
 }
 
 function symbolAcSource() {

@@ -140,12 +140,13 @@ export class FluidSolver {
       }
     }
 
-    // Diffusion
+    // Diffusion — snapshot the pre-diffusion velocity as the fixed RHS
     if (this.params.enableDiffusion && viscosity > 0) {
       const alpha = (texelX * texelX) / (viscosity * dt);
       const rBeta = 1.0 / (4.0 + alpha);
+      const origVel = { read: { texture: this.velocity.read.texture } };
       for (let i = 0; i < 20; i++) {
-        this._jacobi(this.velocity, this.velocity, alpha, rBeta);
+        this._jacobi(this.velocity, origVel, alpha, rBeta);
       }
     }
 

@@ -53,8 +53,8 @@ ellipse collapse into a spiral.</p>`;
       params: { freq: 3, damping: 0.5, amplitude: 3 }
     },
     {
-      label: 'Overdamped',
-      description: 'Very heavy damping — the system barely oscillates. The phase trajectory spirals tightly to the origin in just one or two loops.',
+      label: 'Heavy Damping',
+      description: 'High damping relative to frequency — the system decays quickly with only a few oscillation cycles. The phase trajectory spirals tightly to the origin.',
       params: { freq: 3, damping: 1.0, amplitude: 3 }
     }
   ];

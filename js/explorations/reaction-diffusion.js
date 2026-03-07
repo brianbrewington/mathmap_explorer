@@ -182,11 +182,19 @@ what emerges. Tiny changes in these parameters produce qualitatively different w
     this.time = 0;
     this._lastFrame = performance.now();
     this._initGrids();
+    this._onPointerDown = (e) => this.onPointerDown(e);
+    this._onPointerMove = (e) => this.onPointerMove(e);
+    this.canvas.addEventListener('pointerdown', this._onPointerDown);
+    this.canvas.addEventListener('pointermove', this._onPointerMove);
     this.render();
   }
 
   deactivate() {
     super.deactivate();
+    if (this._onPointerDown) {
+      this.canvas.removeEventListener('pointerdown', this._onPointerDown);
+      this.canvas.removeEventListener('pointermove', this._onPointerMove);
+    }
     this.ctx = null;
   }
 

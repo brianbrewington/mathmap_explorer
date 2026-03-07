@@ -151,8 +151,7 @@ current drive frequency.</p>
       ], value: this.params.topology },
       { type: 'slider', key: 'R', label: 'R (Ω)', min: 10, max: 1000, step: 1, value: this.params.R },
       { type: 'slider', key: 'L', label: 'L (H)', min: 0.001, max: 0.1, step: 0.001, value: this.params.L },
-      { type: 'slider', key: 'C', label: 'C (μF)', min: 0.1, max: 10, step: 0.1, value: this.params.C,
-        toParam: v => v * 1e-6, fromParam: v => v * 1e6 },
+      { type: 'slider', key: 'C', label: 'C (μF)', min: 0.1, max: 10, step: 0.1, value: this.params.C * 1e6 },
       { type: 'slider', key: 'driveFreq', label: 'Drive Freq (Hz)', min: 10, max: 50000, step: 10, value: this.params.driveFreq },
       { type: 'separator' },
     ];
@@ -209,6 +208,7 @@ current drive frequency.</p>
   }
 
   onParamChange(key, value) {
+    if (key === 'C') value = value * 1e-6;
     super.onParamChange(key, value);
     this.render();
   }

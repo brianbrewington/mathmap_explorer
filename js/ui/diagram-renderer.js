@@ -67,7 +67,8 @@ export async function renderBlockDiagram(container, definition) {
     return svg;
   } catch (err) {
     console.warn('Mermaid rendering failed:', err);
-    container.innerHTML = `<pre class="diagram-fallback">${definition}</pre>`;
+    const escaped = definition.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    container.innerHTML = `<pre class="diagram-fallback">${escaped}</pre>`;
     return '';
   }
 }

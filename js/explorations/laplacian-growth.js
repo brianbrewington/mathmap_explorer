@@ -58,6 +58,7 @@ is shown as a faint background gradient.</p>
     this._tick = 0;
     this._maxTick = 0;
     this._frontier = [];
+    this._frontierSet = new Set();
     this._animTimer = null;
     this._imageData = null;
   }
@@ -129,6 +130,7 @@ is shown as a faint background gradient.</p>
     this._tick = 0;
     this._maxTick = 0;
     this._frontier = [];
+    this._frontierSet = new Set();
 
     // seed
     if (this.params.seedShape === 'point') {
@@ -175,6 +177,7 @@ is shown as a faint background gradient.</p>
   _buildFrontier() {
     const N = this._N;
     this._frontier = [];
+    this._frontierSet = new Set();
     const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
     for (let y = 0; y < N; y++) {
       for (let x = 0; x < N; x++) {
@@ -183,7 +186,9 @@ is shown as a faint background gradient.</p>
           const nx = x + dx;
           const ny = y + dy;
           if (nx >= 0 && nx < N && ny >= 0 && ny < N && this._grid[ny * N + nx]) {
-            this._frontier.push(y * N + x);
+            const idx = y * N + x;
+            this._frontier.push(idx);
+            this._frontierSet.add(idx);
             break;
           }
         }
@@ -258,6 +263,7 @@ is shown as a faint background gradient.</p>
     this._setCluster(x, y);
 
     // update frontier: remove this site, add new empty neighbors
+    this._frontierSet.delete(idx);
     this._frontier.splice(chosen, 1);
     const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
     for (const [dx, dy] of dirs) {
@@ -265,8 +271,9 @@ is shown as a faint background gradient.</p>
       const ny = y + dy;
       if (nx >= 0 && nx < N && ny >= 0 && ny < N) {
         const nIdx = ny * N + nx;
-        if (!this._grid[nIdx] && !this._frontier.includes(nIdx)) {
+        if (!this._grid[nIdx] && !this._frontierSet.has(nIdx)) {
           this._frontier.push(nIdx);
+          this._frontierSet.add(nIdx);
         }
       }
     }

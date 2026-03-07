@@ -52,6 +52,9 @@ self.onmessage = function(e) {
         }
         break;
       }
+      default:
+        nx = x; ny = y;
+        break;
     }
     x = nx; y = ny;
 

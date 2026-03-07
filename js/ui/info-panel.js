@@ -294,7 +294,7 @@ function buildGuidedSteps(steps) {
       <span class="guided-step-number">${i + 1}</span>
       <span class="guided-step-content">
         <span class="guided-step-label">${escHtml(step.label)}</span>
-        ${step.description ? `<span class="guided-step-desc">${step.description}</span>` : ''}
+        ${step.description ? `<span class="guided-step-desc">${escHtml(step.description)}</span>` : ''}
       </span>
     </button>`;
   }).join('');
@@ -309,7 +309,7 @@ function buildTellMeMore(steps) {
     <div class="wt-step${i === 0 ? ' active' : ''}" data-wt-step="${i}">
       <div class="wt-step-badge">Step ${i + 1} of ${total}</div>
       <h4 class="wt-step-label">${escHtml(step.label)}</h4>
-      <p class="wt-step-desc">${step.description || ''}</p>
+      <p class="wt-step-desc">${escHtml(step.description || '')}</p>
       <button class="wt-try-btn" data-step-index="${i}">&#x25B6; Try It</button>
     </div>`).join('');
 

@@ -105,6 +105,7 @@ amplitude vs. driving frequency &mdash; the classic resonance curve.</p>
       const a = force - 2 * zeta * omega0 * this._v - omega0 * omega0 * this._x;
       this._v += a * h;
       this._x += this._v * h;
+      if (!isFinite(this._x) || !isFinite(this._v)) { this._x = 0; this._v = 0; }
       this.time += h;
     }
     this._history.push({ t: this.time, x: this._x });
