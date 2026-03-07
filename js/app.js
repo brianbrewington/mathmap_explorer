@@ -124,6 +124,18 @@ import './explorations/brachistochrone.js';
 import './explorations/fermats-principle.js';
 import './explorations/laplacian-growth.js';
 
+// Numerical DE foundations & dynamics on networks (batch 7)
+import './explorations/ode-integrator.js';
+import './explorations/phase-portrait.js';
+import './explorations/stability-regions.js';
+import './explorations/opinion-dynamics.js';
+import './explorations/graph-laplacian.js';
+import './explorations/kuramoto-network.js';
+import './explorations/network-epidemic.js';
+import './explorations/bifurcation-anatomy.js';
+import './explorations/delay-de.js';
+import './explorations/stochastic-resonance.js';
+
 let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
 const listEl = document.getElementById('exploration-list');
@@ -402,6 +414,43 @@ const ANIM_PARAMS = {
   ],
   'gaussian-primes': [
     { key: 'range', label: 'Range', min: 10, max: 100 },
+  ],
+  'ode-integrator': [
+    { key: 'h', label: 'Step Size (h)', min: 0.01, max: 1.0 },
+  ],
+  'phase-portrait': [
+    { key: 'arrowDensity', label: 'Arrow Density', min: 8, max: 40 },
+  ],
+  'stability-regions': [
+    { key: 'eigenReal', label: 'Re(λ)', min: -10, max: 2 },
+    { key: 'eigenImag', label: 'Im(λ)', min: -10, max: 10 },
+    { key: 'h', label: 'Step size h', min: 0.01, max: 2.0 },
+  ],
+  'opinion-dynamics': [
+    { key: 'epsilon', label: 'Confidence ε', min: 0.02, max: 0.5 },
+    { key: 'mu', label: 'Convergence μ', min: 0.05, max: 0.5 },
+  ],
+  'graph-laplacian': [
+    { key: 'mode', label: 'Eigenmode k', min: 0, max: 39 },
+  ],
+  'kuramoto-network': [
+    { key: 'coupling', label: 'Coupling K', min: 0, max: 5 },
+    { key: 'freqSpread', label: 'Freq Spread σ', min: 0.01, max: 1.5 },
+  ],
+  'network-epidemic': [
+    { key: 'beta', label: 'Infection β', min: 0.01, max: 0.5 },
+    { key: 'gamma', label: 'Recovery γ', min: 0.01, max: 0.3 },
+    { key: 'vaccination', label: 'Vaccination %', min: 0, max: 0.9 },
+  ],
+  'bifurcation-anatomy': [
+    { key: 'mu', label: 'Parameter μ', min: -2, max: 2 },
+  ],
+  'delay-de': [
+    { key: 'tau', label: 'Delay τ', min: 1, max: 40 },
+  ],
+  'stochastic-resonance': [
+    { key: 'sigma', label: 'Noise σ', min: 0, max: 2.0 },
+    { key: 'amplitude', label: 'Forcing A', min: 0, max: 0.8 },
   ],
 };
 
