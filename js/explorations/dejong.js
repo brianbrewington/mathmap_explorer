@@ -37,6 +37,7 @@ for (let i = 0; i < iterations; i++) {
 <p>The density buffer is then rendered with a logarithmic color map on the GPU for smooth visualization.</p>`;
   static extensions = ['henon', 'custom-iterator'];
   static teaserQuestion = 'What patterns hide inside four numbers and two equations?';
+  static resources = [{ type: 'wikipedia', title: 'De Jong attractor', url: 'https://en.wikipedia.org/wiki/De_Jong_attractor' }];
 
   static guidedSteps = [
     {

@@ -33,9 +33,75 @@ the phase error, Δω is the frequency offset, and K is the loop gain.</p>`;
   <li><strong>Cycle slipping:</strong> increase the frequency offset until the loop can no longer lock — the phase winds continuously.</li>
   <li><strong>Damping &amp; bandwidth:</strong> tune ζ and ω<sub>n</sub> to see underdamped ringing vs. overdamped sluggishness.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Establish lock',
+      description: 'Start with small offset and verify phase error settles near zero.',
+      params: { freqOffset: 0.05, loopBandwidth: 1.2, damping: 0.707 }
+    },
+    {
+      label: 'Observe cycle slips',
+      description: 'Increase offset beyond capture range and watch phase continuously wrap.',
+      params: { freqOffset: 0.35, loopBandwidth: 1.0, damping: 0.707 }
+    },
+    {
+      label: 'Measure damping tradeoff',
+      description: 'Use low damping to see ringing, then increase damping and compare lock time.',
+      params: { freqOffset: 0.1, loopBandwidth: 1.5, damping: 0.2 }
+    },
+  ];
+  static circuitDiagram = `Ref in -> [Phase Detector] -> [Loop Filter] -> [VCO] -> Divider ->|
+             ^                                                    |
+             |----------------------------------------------------|`;
+  static probeMap = [
+    {
+      model: 'phi',
+      node: 'Phase detector output (after scaling)',
+      measure: 'Probe PD output against reference edge timing',
+      expect: 'Error signal tends to zero when locked',
+    },
+    {
+      model: 'omegaErr',
+      node: 'VCO control frequency deviation',
+      measure: 'Measure VCO frequency minus reference frequency',
+      expect: 'Approaches zero in lock, ramps during slips',
+    },
+    {
+      model: 'loopBandwidth,damping',
+      node: 'Filter control node',
+      measure: 'Scope control voltage step response after frequency jump',
+      expect: 'Underdamped ringing for low zeta, smoother settle for high zeta',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'freqOffset',
+      component: 'Reference minus free-run VCO mismatch',
+      benchRange: 'A few percent around nominal carrier',
+      impact: 'Large mismatch causes unlock and cycle slips',
+    },
+    {
+      control: 'loopBandwidth',
+      component: 'Loop filter corner / VCO gain product',
+      benchRange: 'Adjust charge-pump current or RC filter',
+      impact: 'Higher bandwidth locks faster but passes more noise',
+    },
+    {
+      control: 'damping',
+      component: 'Second-order filter damping ratio',
+      benchRange: 'Tune R/C ratio in loop filter network',
+      impact: 'Controls overshoot vs sluggishness',
+    },
+  ];
+  static benchChecklist = [
+    'Check VCO free-run frequency before closing the loop.',
+    'Verify phase detector polarity; wrong polarity drives control in the wrong direction.',
+    'Look for control-voltage rail clipping when lock is lost.',
+  ];
   static foundations = ['simple-harmonic', 'coupled-systems'];
   static extensions = [];
   static teaserQuestion = 'How does your radio stay tuned to exactly the right frequency?';
+  static resources = [{ type: 'wikipedia', title: 'Phase-locked loop', url: 'https://en.wikipedia.org/wiki/Phase-locked_loop' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

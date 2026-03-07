@@ -19,18 +19,55 @@ It is defined as the limit of the <em>difference quotient</em> &mdash; the slope
 through two points on the curve &mdash; as the two points merge.</p>
 <p>When h is large the secant line is a coarse approximation; as h shrinks toward zero the
 secant rotates into the <strong>tangent line</strong>, whose slope is the derivative.</p>`;
-  static tutorial = `<h3>How The Visualization Works</h3>
-<p>The upper panel shows the function curve with a secant line through
-(x\u2080,&nbsp;f(x\u2080)) and (x\u2080+h,&nbsp;f(x\u2080+h)):</p>
-<pre><code class="language-js">const slope = (f(x0 + h) - f(x0)) / h;</code></pre>
-<p>As you decrease h, the secant pivots into the tangent. The slope readout converges
-to the true derivative f'(x\u2080).</p>
-<p>The lower panel accumulates derivative sample points as you drag x\u2080 across the
-domain. The dashed cyan curve shows the exact analytical derivative for comparison.
-Change the function to clear and start a new derivative trace.</p>`;
+  static tutorial = `<h3>From Slope to Speed</h3>
+<p>What does "instantaneous rate of change" mean? You can measure average speed between two
+points — that's the slope of the <strong>secant line</strong>. But what about speed at a single
+instant? The derivative answers this by taking the limit as the two points merge.</p>
+<pre><code class="language-js">const slope = (f(x0 + h) - f(x0)) / h;
+// As h \u2192 0, this slope approaches f'(x\u2080)</code></pre>
+<h4>Experiments</h4>
+<ul>
+<li>Start with large h and watch the secant line cut roughly through the curve.</li>
+<li>Shrink h toward zero — the secant pivots into the tangent. The slope readout converges to f'(x\u2080).</li>
+<li>Press <strong>Animate h\u21920</strong> to watch the transition happen smoothly.</li>
+<li>Drag x\u2080 across the domain — green dots accumulate in the lower panel, tracing out the entire derivative function.</li>
+<li>Switch to sin(x): the green dots should trace cos(x).</li>
+</ul>`;
   static foundations = ['epsilon-delta'];
   static extensions = [];
   static teaserQuestion = 'What does "instantaneous speed" actually mean?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Essence of calculus, Ch. 2', url: 'https://www.youtube.com/watch?v=9vKqVkMQHKk' },
+    { type: 'wikipedia', title: 'Derivative', url: 'https://en.wikipedia.org/wiki/Derivative' },
+  ];
+
+  static guidedSteps = [
+    {
+      label: 'Coarse Secant',
+      description: 'Start with h = 3. The orange secant line cuts through the curve at two distant points — a rough estimate of the slope. Notice how far the secant slope is from the true derivative shown in gray.',
+      params: { func: 'x2', x0: 1.0, h: 3.0 },
+    },
+    {
+      label: 'Shrinking h',
+      description: 'At h = 1 the secant is closer to the tangent. The rise/run bracket shrinks but the slope readout is already much closer to f\'(x₀). The gap between orange and gray numbers narrows.',
+      params: { func: 'x2', x0: 1.0, h: 1.0 },
+    },
+    {
+      label: 'Nearly Tangent',
+      description: 'With h = 0.1 the two points are almost on top of each other. The secant is visually indistinguishable from the tangent — this is the derivative. Compare the slope readout to f\'(x₀).',
+      params: { func: 'x2', x0: 1.0, h: 0.1 },
+    },
+    {
+      label: 'Trace the Derivative',
+      description: 'Now drag x₀ slowly across the domain. Green dots accumulate in the lower panel, tracing out the derivative function. They should land on the dashed cyan curve — the analytical f\'(x).',
+      params: { func: 'x2', x0: -2.5, h: 0.05 },
+    },
+    {
+      label: 'Try sin(x)',
+      description: 'Switch to sin(x) and trace its derivative. The green dots should trace cos(x) — confirming that d/dx sin(x) = cos(x). This is one of the most beautiful facts in calculus.',
+      params: { func: 'sin', x0: 0, h: 0.05 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

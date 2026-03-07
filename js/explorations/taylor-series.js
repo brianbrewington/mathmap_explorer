@@ -20,8 +20,13 @@ wider interval.</p>
 <p>For <em>sin(x)</em>: T(x) = x &minus; x&sup3;/3! + x&sup5;/5! &minus; &hellip;<br>
 For <em>cos(x)</em>: T(x) = 1 &minus; x&sup2;/2! + x&sup4;/4! &minus; &hellip;<br>
 For <em>e<sup>x</sup></em>: T(x) = 1 + x + x&sup2;/2! + x&sup3;/3! + &hellip;</p>`;
-  static tutorial = `<h3>Visualizing Convergence</h3>
-<p>Each term in the Taylor series adds one more degree of polynomial accuracy:</p>
+  static tutorial = `<h3>Infinite Polynomials That Capture Functions</h3>
+<p>A Taylor series is a polynomial of infinite degree that matches a function
+perfectly — at least near one point. Each additional term captures one more
+derivative, extending the approximation a little farther.</p>
+<p>For sin(x), the first term is just the line y&nbsp;=&nbsp;x. Add the cubic
+correction x&sup3;/6 and the curve bends. Add more terms and the polynomial
+hugs the sine wave over an ever-wider range.</p>
 <pre><code class="language-js">function taylorSin(x, N) {
   let sum = 0;
   for (let n = 0; n &lt; N; n++) {
@@ -29,11 +34,48 @@ For <em>e<sup>x</sup></em>: T(x) = 1 + x + x&sup2;/2! + x&sup3;/3! + &hellip;</p
   }
   return sum;
 }</code></pre>
-<p>Increase the number of terms and watch the polynomial hug the true curve over an
-ever-wider range. The error (shaded region) shrinks fastest near x&nbsp;=&nbsp;0.</p>`;
+<h4>Experiments</h4>
+<ul>
+<li>Start with 1 term: just a line. It matches near the origin and nowhere else.</li>
+<li>Add terms one at a time — watch the polynomial extend its reach.</li>
+<li>Zoom out (increase x range) to see where the approximation breaks down.</li>
+<li>Switch to e<sup>x</sup> — its Taylor series converges everywhere, but slowly for large x.</li>
+</ul>`;
   static foundations = ['unit-circle'];
   static extensions = ['fourier-synthesis', 'taylor-approximation'];
   static teaserQuestion = 'Can you rebuild any function from its derivatives at one point?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Taylor series', url: 'https://www.youtube.com/watch?v=3d6DsjIBzJ4' },
+    { type: 'wikipedia', title: 'Taylor series', url: 'https://en.wikipedia.org/wiki/Taylor_series' },
+  ];
+
+  static guidedSteps = [
+    {
+      label: 'Just One Term',
+      description: 'A single Taylor term for sin(x) is just the line y = x. It matches near the origin but diverges quickly. The shaded error region is enormous beyond x ≈ 1.',
+      params: { numTerms: 1, xRange: 6.28, func: 'sin' },
+    },
+    {
+      label: 'Three Terms',
+      description: 'With three terms (x − x³/6 + x⁵/120) the polynomial hugs sin(x) over nearly the whole visible range. Each term corrects the previous overshoot — a self-correcting series.',
+      params: { numTerms: 3, xRange: 6.28, func: 'sin' },
+    },
+    {
+      label: 'Ten Terms',
+      description: 'At ten terms the approximation is virtually perfect from −6 to 6. The individual terms (faint lines) grow wild at the edges, but their sum cancels beautifully.',
+      params: { numTerms: 10, xRange: 6.28, func: 'sin' },
+    },
+    {
+      label: 'Zoom Out',
+      description: 'Widen the range to ±20 and keep 10 terms. Now you see the polynomial peel away from sin(x) beyond its radius of good approximation. Taylor series are local approximations pushed to their limits.',
+      params: { numTerms: 10, xRange: 20, func: 'sin' },
+    },
+    {
+      label: 'Exponential Growth',
+      description: 'Switch to eˣ. Unlike sin(x), the Taylor series for eˣ converges everywhere — but it takes more terms to keep up with exponential growth at large x. Watch the polynomial race to catch up.',
+      params: { numTerms: 8, xRange: 6.28, func: 'exp' },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

@@ -67,6 +67,7 @@ half-plane, explaining why they handle stiff problems.</p>`;
   static foundations = ['ode-integrator'];
   static extensions = ['phase-portrait', 'lorenz-attractor'];
   static teaserQuestion = 'Why do some ODEs require tiny step sizes even when the solution changes slowly?';
+  static resources = [{ type: 'wikipedia', title: 'Stability region', url: 'https://en.wikipedia.org/wiki/Stiff_equation#A-stability' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

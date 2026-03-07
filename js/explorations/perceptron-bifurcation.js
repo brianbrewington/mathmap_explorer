@@ -35,6 +35,7 @@ analytically predicted first bifurcation at &eta;<sub>1</sub>.</p>`;
   static foundations = ['logistic-map'];
   static extensions = ['coupled-systems'];
   static teaserQuestion = 'Is gradient descent a chaotic system in disguise?';
+  static resources = [{ type: 'wikipedia', title: 'Perceptron', url: 'https://en.wikipedia.org/wiki/Perceptron' }];
   static overview = `Gradient descent on even the simplest neural network \u2014 a single
 perceptron \u2014 is a 1D iterated map. The sigmoid derivative \u03C3(1\u2212\u03C3) is the logistic
 map\u2019s nonlinearity x(1\u2212x), so Feigenbaum universality guarantees the same

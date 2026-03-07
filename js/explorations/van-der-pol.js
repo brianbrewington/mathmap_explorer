@@ -42,9 +42,79 @@ every trajectory onto a stable <em>limit cycle</em> whose shape depends on &mu;.
   <li><strong>Watch transients:</strong> start far from the cycle and see how quickly orbits spiral inward or outward.</li>
   <li><strong>Time waveform:</strong> compare the right-panel x(t) trace at &mu;=0.1 vs &mu;=5 — how does the period change?</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Probe near-linear regime',
+      description: 'Use small mu and verify almost sinusoidal waveform and near-elliptic phase portrait.',
+      params: { preset: 'near_linear', mu: 0.1 }
+    },
+    {
+      label: 'Measure standard limit cycle',
+      description: 'Move to mu around 1.5 and observe stable self-limited amplitude from any start.',
+      params: { preset: 'standard', mu: 1.5 }
+    },
+    {
+      label: 'Observe relaxation jumps',
+      description: 'Increase mu to reveal slow-fast charging/discharging behavior in x(t).',
+      params: { preset: 'relaxation', mu: 5.0 }
+    },
+  ];
+  static circuitDiagram = `       +V
+        |
+   [Active negative-R element]
+        |
+        o---- LC/RC energy storage ---- GND
+        |
+      Output x(t)`;
+  static probeMap = [
+    {
+      model: 'x',
+      node: 'Oscillator output voltage',
+      measure: 'Scope CH1 on output node to ground',
+      expect: 'Self-starting oscillation converging to fixed amplitude',
+    },
+    {
+      model: "x'",
+      node: 'Current-like state (via sense resistor)',
+      measure: 'Measure voltage across small series sense resistor',
+      expect: 'Quadrature-like companion to x in phase portrait',
+    },
+    {
+      model: 'mu',
+      node: 'Effective nonlinear damping control',
+      measure: 'Adjust active-device bias and monitor waveform shape',
+      expect: 'Higher mu yields sharper relaxation oscillation',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'mu',
+      component: 'Negative-resistance nonlinearity strength',
+      benchRange: 'Set by transistor/op-amp feedback gain',
+      impact: 'Controls waveform shape and limit-cycle stiffness',
+    },
+    {
+      control: 'dt,speed',
+      component: 'Simulation integration only',
+      benchRange: 'Not a physical knob',
+      impact: 'Use as visualization playback controls',
+    },
+    {
+      control: 'trail',
+      component: 'Scope persistence equivalent',
+      benchRange: 'Display persistence length',
+      impact: 'Longer history clarifies convergence to cycle',
+    },
+  ];
+  static benchChecklist = [
+    'Bias active element in its linear region before expecting stable self-oscillation.',
+    'Use a small sense resistor if you want a current proxy for phase portrait reconstruction.',
+    'If oscillation does not self-start, check power rails and nonlinear feedback polarity.',
+  ];
   static foundations = ['damped-oscillation', 'phase-space'];
   static extensions = ['chua-circuit', 'relaxation-oscillator'];
   static teaserQuestion = 'What happens when a circuit fights its own damping?';
+  static resources = [{ type: 'wikipedia', title: 'Van der Pol oscillator', url: 'https://en.wikipedia.org/wiki/Van_der_Pol_oscillator' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

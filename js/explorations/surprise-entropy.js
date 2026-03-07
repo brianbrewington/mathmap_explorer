@@ -10,6 +10,7 @@ class SurpriseEntropyExploration extends BaseExploration {
   static foundations = [];
   static extensions = ['source-coding', 'noisy-channel', 'kl-divergence'];
   static teaserQuestion = 'Which distribution is the most surprising on average?';
+  static resources = [{ type: 'youtube', title: 'Khan Academy — Information entropy', url: 'https://www.youtube.com/watch?v=2s3aJfRr9gE' }, { type: 'wikipedia', title: 'Entropy (information theory)', url: 'https://en.wikipedia.org/wiki/Entropy_(information_theory)' }];
   static formulaShort = 'H = −Σ p·log₂p';
   static formula = `<h3>Shannon Entropy</h3>
 <div class="formula-block">

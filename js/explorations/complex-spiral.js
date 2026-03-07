@@ -30,6 +30,34 @@ magnitude grows or shrinks.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['roots-of-unity'];
   static teaserQuestion = 'What does multiplication look like in the complex plane?';
+  static resources = [{ type: 'youtube', title: '3B1B — e^(iπ) in 3.14 minutes', url: 'https://www.youtube.com/watch?v=v0YEaeIClKY' }, { type: 'wikipedia', title: 'Euler\'s formula', url: 'https://en.wikipedia.org/wiki/Euler%27s_formula' }];
+  static guidedSteps = [
+    {
+      label: 'Pure Rotation',
+      description: 'σ = 0: the magnitude stays constant at 1. The point traces the unit circle — pure rotation without growth or decay. This is Euler\'s formula: e^(iωt) = cos(ωt) + i·sin(ωt).',
+      params: { sigma: 0, omega: 2, trailLength: 100 },
+    },
+    {
+      label: 'Inward Spiral',
+      description: 'σ = −0.3: the exponential envelope shrinks over time. The point spirals inward toward the origin — this is a damped oscillation viewed in the complex plane.',
+      params: { sigma: -0.3, omega: 2, trailLength: 100 },
+    },
+    {
+      label: 'Outward Spiral',
+      description: 'σ = +0.3: the envelope grows. The spiral expands outward — an unstable oscillation gaining energy with each revolution. Positive σ means instability.',
+      params: { sigma: 0.3, omega: 2, trailLength: 100 },
+    },
+    {
+      label: 'Fast Rotation',
+      description: 'Increase ω to 8. The spiral winds tighter — more revolutions per unit time. The frequency (ω) and growth rate (σ) are independent knobs.',
+      params: { sigma: -0.1, omega: 8, trailLength: 150 },
+    },
+    {
+      label: 'Pure Decay',
+      description: 'Set ω = 0. No rotation at all — the point moves straight along the real axis, decaying (σ < 0) or growing (σ > 0). The spiral degenerates into a ray.',
+      params: { sigma: -1, omega: 0, trailLength: 80 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

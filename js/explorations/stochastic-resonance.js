@@ -40,6 +40,7 @@ the particle hops between wells in phase with the signal.</p>
   static foundations = ['random-walk', 'damped-oscillation'];
   static extensions = ['delay-de', 'phase-space'];
   static teaserQuestion = 'When does adding noise to a signal make it clearer?';
+  static resources = [{ type: 'wikipedia', title: 'Stochastic resonance', url: 'https://en.wikipedia.org/wiki/Stochastic_resonance' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

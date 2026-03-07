@@ -23,15 +23,28 @@ restoring force is proportional to displacement. It is the foundation of nearly 
 vibrating systems &mdash; from springs and pendulums to molecules and electrical circuits.</p>
 <p>The <strong>angular frequency &omega;</strong> is derived from the spring stiffness <em>k</em>
 and mass <em>m</em>. A stiffer spring or lighter mass means faster oscillation.</p>`;
-  static tutorial = `<h3>Visualizing SHM</h3>
-<p>The left side shows a spring-mass system; the right shows x(t) as a waveform:</p>
+  static tutorial = `<h3>The Simplest Oscillation</h3>
+<p>Every vibration in nature — a guitar string, a pendulum, the atoms in a crystal —
+begins with the same equation: a restoring force proportional to displacement.
+The result is <strong>simple harmonic motion</strong>, a pure sinusoidal oscillation.</p>
+<p>This is the atom of periodic motion. Fourier showed that <em>any</em> periodic signal
+can be decomposed into a sum of these simple oscillations.</p>
 <pre><code class="language-js">const omega = Math.sqrt(k / m);
 const x = A * Math.cos(omega * t + phi);</code></pre>
-<p>Increase <em>k</em> (stiffness) to speed up the oscillation; increase <em>m</em> (mass) to slow
-it down. The derived &omega; is shown as a readout beneath the sliders.</p>`;
-  static foundations = [];
+<h4>Experiments</h4>
+<ul>
+<li>Increase <em>stiffness</em> (k) and watch the oscillation speed up — stiffer springs vibrate faster.</li>
+<li>Increase <em>mass</em> (m) and watch it slow down — heavier objects are harder to accelerate.</li>
+<li>Adjust the <em>phase</em> to shift the starting point — this is the difference between sine and cosine.</li>
+<li>The derived frequency &omega; = &radic;(k/m) is shown below the sliders.</li>
+</ul>`;
+  static foundations = ['sine-cosine'];
   static extensions = ['phase-space'];
   static teaserQuestion = 'Why does everything vibrate like a spring?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — But what is a Fourier series?', url: 'https://www.youtube.com/watch?v=r6sGWTCMz2k' },
+    { type: 'wikipedia', title: 'Simple harmonic motion', url: 'https://en.wikipedia.org/wiki/Simple_harmonic_motion' },
+  ];
 
   static guidedSteps = [
     {

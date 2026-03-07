@@ -36,6 +36,7 @@ for (let i = 0; i < iterations; i++) {
 <p>The resulting pattern is a perfect Sierpinski triangle — demonstrating how randomness and a simple rule can generate precise fractal structure.</p>`;
   static extensions = ['affine-ifs', 'barnsley', 'pascals-triangle'];
   static teaserQuestion = 'Can you build something infinitely complex from one simple rule?';
+  static resources = [{ type: 'wikipedia', title: 'Sierpiński triangle', url: 'https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle' }];
 
   static guidedSteps = [
     {

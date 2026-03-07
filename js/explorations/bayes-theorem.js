@@ -7,9 +7,40 @@ class BayesTheoremExploration extends BaseExploration {
   static description = 'Watch a prior distribution sharpen into a posterior as coin flip evidence accumulates';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
-  static foundations = [];
-  static extensions = [];
+  static foundations = ['normal-distribution'];
+  static extensions = ['kl-divergence'];
   static teaserQuestion = 'How should you update your beliefs when new evidence arrives?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Bayes theorem', url: 'https://www.youtube.com/watch?v=HZGCoVF3YvM' },
+    { type: 'wikipedia', title: 'Bayesian inference', url: 'https://en.wikipedia.org/wiki/Bayesian_inference' },
+  ];
+  static guidedSteps = [
+    {
+      label: 'Flat Prior',
+      description: 'Start with a uniform prior Beta(1,1) — total ignorance about θ. The prior is flat: every value of θ is equally likely. Press Start and watch the posterior sharpen as coin flips arrive.',
+      params: { prior: 'uniform', trueTheta: 0.6, speed: 5 },
+    },
+    {
+      label: 'Strong Prior',
+      description: 'Use a strong prior Beta(10,10) centered at 0.5. The prior is a sharp bump — you are initially confident the coin is fair. Even though θ* = 0.7, the posterior resists at first.',
+      params: { prior: 'strong', trueTheta: 0.7, speed: 5 },
+    },
+    {
+      label: 'Data Overwhelms Prior',
+      description: 'Keep the strong prior but increase speed. After hundreds of flips, even a strong prior yields to the data. The posterior concentrates around the true θ* regardless of where it started.',
+      params: { prior: 'strong', trueTheta: 0.7, speed: 30 },
+    },
+    {
+      label: 'Biased Coin',
+      description: 'Set θ* = 0.2 — a very biased coin. With a uniform prior, the posterior quickly moves to the left side of the plot. The posterior mean converges to 0.2, far from the naive guess of 0.5.',
+      params: { prior: 'uniform', trueTheta: 0.2, speed: 10 },
+    },
+    {
+      label: 'Prior vs Data Tug-of-War',
+      description: 'Strong prior at 0.5, true θ* = 0.9. Watch the posterior slowly migrate from 0.5 to 0.9. Early on the prior dominates; eventually the data wins. The crossover is visible in the curve\'s journey.',
+      params: { prior: 'strong', trueTheta: 0.9, speed: 5 },
+    },
+  ];
   static formulaShort = 'P(\u03B8|data) \u221D P(data|\u03B8)\u00B7P(\u03B8)';
   static formula = `<h3>Bayesian Updating (Beta-Binomial)</h3>
 <div class="formula-block">

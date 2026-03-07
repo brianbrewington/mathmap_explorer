@@ -77,6 +77,32 @@ to create your own initial condition and press <em>Start</em>.</p>
   static foundations = ['simple-harmonic', 'phase-space'];
   static extensions = ['coupled-systems', 'damped-oscillation'];
   static teaserQuestion = 'Can two nearly identical starts diverge completely?';
+  static resources = [
+    { type: 'wikipedia', title: 'Double pendulum', url: 'https://en.wikipedia.org/wiki/Double_pendulum' },
+    { type: 'youtube', title: 'Numberphile — Chaos', url: 'https://www.youtube.com/watch?v=fDek6cYijxI' },
+  ];
+  static guidedSteps = [
+    {
+      label: 'Gentle Motion',
+      description: 'Small initial angles produce regular, almost periodic motion. The phase portrait (right) shows a tight loop. This is the pendulum behaving predictably.',
+      params: { preset: 'gentle', damping: 0.02, gravity: 9.81, length1: 1, length2: 1, trail: 500 },
+    },
+    {
+      label: 'Chaotic A',
+      description: 'Large initial angles launch the pendulum into chaos. The arms flip wildly and the phase portrait fills a broad region. No two runs look the same.',
+      params: { preset: 'chaotic_a', damping: 0.02, gravity: 9.81, length1: 1, length2: 1, trail: 500 },
+    },
+    {
+      label: 'Chaotic B (Near A)',
+      description: 'θ₂ differs from Chaotic A by only 0.004 radians. Initially the motion looks identical. Wait a few seconds — the trajectories diverge completely. This is sensitive dependence on initial conditions.',
+      params: { preset: 'chaotic_b', damping: 0.02, gravity: 9.81, length1: 1, length2: 1, trail: 500 },
+    },
+    {
+      label: 'High Damping',
+      description: 'Increase damping to suppress the chaos. The pendulum swings wildly at first but energy drains away. Eventually it hangs motionless. Damping tames chaos by removing energy.',
+      params: { preset: 'chaotic_a', damping: 0.15, gravity: 9.81, length1: 1, length2: 1, trail: 500 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

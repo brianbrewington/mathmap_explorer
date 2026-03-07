@@ -72,16 +72,28 @@ z' = h(x, y, z, &sigma;, &rho;, &beta;)
 </div>
 <p>Default equations are the classical Lorenz model. You can edit all three right-hand sides
 to run your own nonlinear flow experiments.</p>`;
-  static tutorial = `<h3>Micro-Experiments</h3>
+  static tutorial = `<h3>The Butterfly That Changed Physics</h3>
+<p>In 1963, Edward Lorenz discovered that a simple system of three equations —
+modeling atmospheric convection — produced motion that never repeated and was
+exquisitely sensitive to initial conditions. Two trajectories starting
+0.000001 apart would eventually trace completely different paths. This is
+<strong>deterministic chaos</strong>: the equations are exact, but prediction is impossible.</p>
+<p>The twin trajectories (cyan and pink) start nearly identically. Watch them
+track together, then suddenly diverge — the "butterfly effect" in action.</p>
+<h4>Experiments</h4>
 <ul>
-  <li><strong>Twin trajectories:</strong> keep everything fixed, then compare starts separated by a tiny delta.</li>
-  <li><strong>Regime sweep:</strong> move &rho; from below 1 to 15 to 28 and watch sink &rarr; fixed points &rarr; chaos.</li>
-  <li><strong>Equation tinkering:</strong> slightly modify one term and ask: does the butterfly survive?</li>
-  <li><strong>Poincare section:</strong> how does the crossing cloud change as parameters move?</li>
+<li>Watch the <strong>twin trajectories</strong> — how long before they separate?</li>
+<li>Sweep &rho; from 1 to 28: stable point → two fixed points → chaos.</li>
+<li><strong>Edit the equations</strong> slightly — does the butterfly survive?</li>
+<li>The Poincaré section shows how the attractor's cross-section changes with parameters.</li>
 </ul>`;
   static foundations = ['phase-space', 'coupled-systems'];
   static extensions = ['double-pendulum', 'firefly-synchrony'];
   static teaserQuestion = 'What tiny change flips the future?';
+  static resources = [
+    { type: 'youtube', title: 'Veritasium — Chaos: The Science of the Butterfly Effect', url: 'https://www.youtube.com/watch?v=fDek6cYijxI' },
+    { type: 'wikipedia', title: 'Lorenz system', url: 'https://en.wikipedia.org/wiki/Lorenz_system' },
+  ];
 
   static guidedSteps = [
     {

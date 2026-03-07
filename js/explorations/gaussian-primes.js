@@ -10,6 +10,7 @@ class GaussianPrimesExploration extends BaseExploration {
   static foundations = ['roots-of-unity'];
   static extensions = [];
   static teaserQuestion = 'Which primes can be written as the sum of two squares?';
+  static resources = [{ type: 'wikipedia', title: 'Gaussian integer', url: 'https://en.wikipedia.org/wiki/Gaussian_integer' }];
   static formulaShort = 'N(a + bi) = a² + b²; prime if N is prime form';
   static formula = `<h3>Gaussian Primes</h3>
 <div class="formula-block">

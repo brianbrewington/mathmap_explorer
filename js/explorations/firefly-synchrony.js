@@ -63,6 +63,7 @@ The order parameter R measures how synchronized the population is.</p>`;
   static foundations = ['coupled-systems', 'phase-space'];
   static extensions = ['coupled-metronomes', 'reaction-diffusion'];
   static teaserQuestion = 'How strong must coupling be before a crowd blinks together?';
+  static resources = [{ type: 'youtube', title: 'Veritasium — Synchronization', url: 'https://www.youtube.com/watch?v=t-_VPRCtiUg' }, { type: 'wikipedia', title: 'Firefly synchronization', url: 'https://en.wikipedia.org/wiki/Firefly#Synchronization' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

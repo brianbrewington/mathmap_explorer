@@ -7,9 +7,40 @@ class IntegrationRiemannExploration extends BaseExploration {
   static description = 'Five quadrature methods converging to the integral — watch convergence rates on a log-log plot';
   static category = 'map';
   static tags = ['calculus', 'numerical-methods', 'beginner'];
-  static foundations = [];
-  static extensions = [];
+  static foundations = ['derivative-definition'];
+  static extensions = ['taylor-series'];
   static teaserQuestion = 'What if you measured area with infinitely many rectangles?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Integration and the fundamental theorem', url: 'https://www.youtube.com/watch?v=rfG8ce4nNh0' },
+    { type: 'wikipedia', title: 'Riemann sum', url: 'https://en.wikipedia.org/wiki/Riemann_sum' },
+  ];
+  static guidedSteps = [
+    {
+      label: 'Four Rectangles',
+      description: 'Left Riemann sum with just 4 subdivisions of x². The rectangles are a crude approximation — large gaps and overshoots are visible. The error is substantial.',
+      params: { func: 'x2', method: 'left', n: 4, xMin: 0, xMax: 3.14 },
+    },
+    {
+      label: 'Twenty Rectangles',
+      description: 'Increase to 20 subdivisions. The rectangles hug the curve much better. The error shrinks — check the log-log plot below to see where this point falls on the convergence line.',
+      params: { func: 'x2', method: 'left', n: 20, xMin: 0, xMax: 3.14 },
+    },
+    {
+      label: 'Midpoint Rule',
+      description: 'Switch to the midpoint rule. Each rectangle samples the function at the center of its interval. The approximation is visibly better than left Riemann — the log-log slope is steeper (−2 vs −1).',
+      params: { func: 'x2', method: 'midpoint', n: 10, xMin: 0, xMax: 3.14 },
+    },
+    {
+      label: 'Simpson\'s Rule',
+      description: 'Simpson\'s rule fits parabolas through triplets of points. For x², a polynomial of degree 2, Simpson\'s gives the exact answer even with n = 2. The error drops to machine precision.',
+      params: { func: 'x2', method: 'simpson', n: 4, xMin: 0, xMax: 3.14 },
+    },
+    {
+      label: 'Convergence Race',
+      description: 'Use sin(x) with the trapezoidal rule and 100 subdivisions. The log-log plot shows how different methods converge at different rates. Simpson\'s reaches high accuracy with far fewer subdivisions.',
+      params: { func: 'sin', method: 'trapezoidal', n: 100, xMin: 0, xMax: 3.14 },
+    },
+  ];
   static formulaShort = '\u222B<sub>a</sub><sup>b</sup> f(x)dx \u2248 \u03A3 f(x\u1D62)\u0394x';
   static formula = `<h3>Riemann Sums &amp; Numerical Integration</h3>
 <div class="formula-block">

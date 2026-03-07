@@ -8,8 +8,9 @@ class WaveEquationExploration extends BaseExploration {
   static category = 'pde';
   static tags = ['pde-simulation', 'numerical-methods', 'intermediate'];
   static foundations = ['thermal-diffusion'];
-  static extensions = [];
+  static extensions = ['reaction-diffusion'];
   static teaserQuestion = 'What law governs every ripple, every sound, every vibration?';
+  static resources = [{ type: 'wikipedia', title: 'Wave equation', url: 'https://en.wikipedia.org/wiki/Wave_equation' }];
   static formulaShort = '\u2202\u00B2u/\u2202t\u00B2 = c\u00B2\u2202\u00B2u/\u2202x\u00B2';
   static formula = `<h3>1D Wave Equation</h3>
 <div class="formula-block">
@@ -50,6 +51,33 @@ white = zero.</p>
 it oscillates in place forever (zero damping).</li>
 <li>Increase <strong>wave speed c</strong> to see faster propagation in the waterfall diagram.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Pulse and Reflect',
+      description: 'A Gaussian pulse on a fixed string. Watch it split into two pulses traveling in opposite directions. At the walls each pulse inverts — fixed boundaries flip the sign.',
+      params: { c: 1.0, boundary: 'fixed', initial: 'gaussian', damping: 0, speed: 3 },
+    },
+    {
+      label: 'Free Boundaries',
+      description: 'Same pulse, but with free ends. Now the reflections preserve sign — no inversion. Compare the waterfall diagram to the fixed case. The standing wave patterns differ.',
+      params: { c: 1.0, boundary: 'free', initial: 'gaussian', damping: 0, speed: 3 },
+    },
+    {
+      label: 'Absorbing Boundaries',
+      description: 'Waves leave the domain without bouncing back. The pulse splits, hits the walls, and vanishes. The waterfall shows clean propagation lines ending at the edges.',
+      params: { c: 1.0, boundary: 'absorbing', initial: 'gaussian', damping: 0, speed: 3 },
+    },
+    {
+      label: 'Standing Wave',
+      description: 'A perfect sinusoidal mode shape on a fixed string. It oscillates in place — nodes stay at zero, antinodes swing to maximum. This is a pure eigenmode of the wave equation.',
+      params: { c: 1.0, boundary: 'fixed', initial: 'standing', damping: 0, speed: 3 },
+    },
+    {
+      label: 'Damped Waves',
+      description: 'Add damping to a Gaussian pulse. Energy drains away with each reflection. The waterfall diagram shows the amplitude fading over time. Eventually the string falls silent.',
+      params: { c: 1.0, boundary: 'fixed', initial: 'gaussian', damping: 0.5, speed: 3 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

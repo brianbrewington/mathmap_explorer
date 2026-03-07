@@ -107,6 +107,7 @@ for (let i = 0; i < maxIter; i++) {
 <p>The group of all M\u00F6bius transforms with ad\u2212bc=1 is PSL(2,\u2102). A Kleinian group is a <em>discrete</em> subgroup. Discreteness means orbits don\u2019t fill space \u2014 they accumulate on a fractal limit set. The complement of the limit set is the <em>ordinary set</em> (or domain of discontinuity), where the group acts properly discontinuously.</p>`;
   static foundations = ['mandelbrot'];
   static teaserQuestion = 'What lives at the boundary of infinite reflections?';
+  static resources = [{ type: 'wikipedia', title: 'Kleinian group', url: 'https://en.wikipedia.org/wiki/Kleinian_group' }];
 
   static guidedSteps = [
     {

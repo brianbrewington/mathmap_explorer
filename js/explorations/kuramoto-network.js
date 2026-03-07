@@ -1,5 +1,6 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
+import { forceDirectedLayout } from './force-layout.js';
 
 const TAU = Math.PI * 2;
 
@@ -63,6 +64,7 @@ and network topology.</p>`;
   static foundations = ['firefly-synchrony', 'phase-space'];
   static extensions = ['graph-laplacian', 'opinion-dynamics'];
   static teaserQuestion = 'Can half a network synchronize while the other half drifts?';
+  static resources = [{ type: 'wikipedia', title: 'Kuramoto model', url: 'https://en.wikipedia.org/wiki/Kuramoto_model' }, { type: 'youtube', title: 'Steven Strogatz — Sync', url: 'https://www.youtube.com/watch?v=aSNrKS-sCE0' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -138,11 +140,7 @@ and network topology.</p>`;
     this._graph = generateGraph(n, this.params.topology, rng);
     this._phases = Array.from({ length: n }, () => rng() * TAU);
     this._omegas = Array.from({ length: n }, () => 1 + this._randn(rng) * this.params.freqSpread);
-    this._positions = [];
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * TAU - Math.PI / 2;
-      this._positions.push([0.5 + 0.38 * Math.cos(a), 0.5 + 0.38 * Math.sin(a)]);
-    }
+    this._positions = forceDirectedLayout(n, this._graph.adj, rng);
     this._orderHistory = [];
   }
 

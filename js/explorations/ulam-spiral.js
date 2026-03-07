@@ -10,6 +10,7 @@ class UlamSpiralExploration extends BaseExploration {
   static foundations = ['pascals-triangle'];
   static extensions = ['gaussian-primes'];
   static teaserQuestion = 'Why do primes line up in diagonals when you spiral the integers?';
+  static resources = [{ type: 'youtube', title: 'Numberphile — Ulam Spiral', url: 'https://www.youtube.com/watch?v=iFuR97YcSLM' }, { type: 'wikipedia', title: 'Ulam spiral', url: 'https://en.wikipedia.org/wiki/Ulam_spiral' }];
   static formulaShort = 'n ↦ spiral position; highlight if prime';
   static formula = `<h3>Ulam Spiral</h3>
 <div class="formula-block">

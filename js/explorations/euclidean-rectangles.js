@@ -10,6 +10,7 @@ class EuclideanRectanglesExploration extends BaseExploration {
   static foundations = [];
   static extensions = ['ford-circles'];
   static teaserQuestion = 'What does the greatest common divisor look like as a picture?';
+  static resources = [{ type: 'wikipedia', title: 'Euclidean algorithm', url: 'https://en.wikipedia.org/wiki/Euclidean_algorithm' }];
   static formulaShort = 'gcd(a, b) via repeated square subtraction';
   static formula = `<h3>Euclidean Algorithm Rectangles</h3>
 <div class="formula-block">

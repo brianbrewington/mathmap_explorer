@@ -28,7 +28,33 @@ function generateGraph(n, type, rng) {
     for (let i = half; i < n; i++)
       for (let j = i + 1; j < n; j++) addEdge(i, j);
     addEdge(half - 1, half);
+  } else if (type === 'scale-free') {
+    // Barabási-Albert preferential attachment
+    const m = 2; // edges per new node
+    // Seed clique of 3 nodes
+    for (let i = 0; i < Math.min(3, n); i++)
+      for (let j = i + 1; j < Math.min(3, n); j++) addEdge(i, j);
+    for (let v = 3; v < n; v++) {
+      // Degree sum for preferential attachment
+      let degSum = 0;
+      for (let i = 0; i < v; i++) degSum += adj[i].length;
+      let added = 0;
+      const tried = new Set();
+      while (added < m && tried.size < v) {
+        let r = rng() * degSum, cum = 0, target = 0;
+        for (let i = 0; i < v; i++) {
+          cum += adj[i].length;
+          if (cum >= r) { target = i; break; }
+        }
+        if (!tried.has(target)) {
+          tried.add(target);
+          addEdge(v, target);
+          added++;
+        }
+      }
+    }
   } else {
+    // small-world
     for (let i = 0; i < n; i++) addEdge(i, (i + 1) % n);
     for (let i = 0; i < n; i++) {
       if (rng() < 0.2) addEdge(i, Math.floor(rng() * n));
@@ -37,7 +63,7 @@ function generateGraph(n, type, rng) {
   return { adj, edges };
 }
 
-function layoutGraph(n, type) {
+function layoutGraph(n, type, adj) {
   const pos = new Array(n);
   if (type === 'ring' || type === 'small-world') {
     for (let i = 0; i < n; i++) {
@@ -51,7 +77,57 @@ function layoutGraph(n, type) {
       const r = Math.floor(i / cols), c = i % cols;
       pos[i] = [0.1 + 0.8 * c / Math.max(1, cols - 1), 0.1 + 0.8 * r / Math.max(1, rows - 1)];
     }
+  } else if (type === 'scale-free' && adj) {
+    // Force-directed layout for scale-free graphs
+    for (let i = 0; i < n; i++) pos[i] = [0.5 + 0.3 * Math.cos(i * TAU / n), 0.5 + 0.3 * Math.sin(i * TAU / n)];
+    const k = 0.8 / Math.sqrt(n); // ideal edge length
+    for (let iter = 0; iter < 50; iter++) {
+      const temp = 0.05 * (1 - iter / 50);
+      const disp = Array.from({ length: n }, () => [0, 0]);
+      // Repulsion between all pairs
+      for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+          let dx = pos[i][0] - pos[j][0], dy = pos[i][1] - pos[j][1];
+          const dist = Math.max(0.001, Math.hypot(dx, dy));
+          const force = (k * k) / dist;
+          dx /= dist; dy /= dist;
+          disp[i][0] += dx * force; disp[i][1] += dy * force;
+          disp[j][0] -= dx * force; disp[j][1] -= dy * force;
+        }
+      }
+      // Attraction along edges
+      for (let i = 0; i < n; i++) {
+        for (const j of adj[i]) {
+          if (j <= i) continue;
+          let dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1];
+          const dist = Math.max(0.001, Math.hypot(dx, dy));
+          const force = (dist * dist) / k;
+          dx /= dist; dy /= dist;
+          disp[i][0] += dx * force; disp[i][1] += dy * force;
+          disp[j][0] -= dx * force; disp[j][1] -= dy * force;
+        }
+      }
+      // Apply with cooling
+      for (let i = 0; i < n; i++) {
+        const len = Math.max(0.001, Math.hypot(disp[i][0], disp[i][1]));
+        const cap = Math.min(len, temp);
+        pos[i][0] += (disp[i][0] / len) * cap;
+        pos[i][1] += (disp[i][1] / len) * cap;
+      }
+    }
+    // Normalize to [0.05, 0.95]
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i < n; i++) {
+      minX = Math.min(minX, pos[i][0]); maxX = Math.max(maxX, pos[i][0]);
+      minY = Math.min(minY, pos[i][1]); maxY = Math.max(maxY, pos[i][1]);
+    }
+    const rangeX = Math.max(1e-6, maxX - minX), rangeY = Math.max(1e-6, maxY - minY);
+    for (let i = 0; i < n; i++) {
+      pos[i][0] = 0.05 + 0.9 * (pos[i][0] - minX) / rangeX;
+      pos[i][1] = 0.05 + 0.9 * (pos[i][1] - minY) / rangeY;
+    }
   } else {
+    // barbell
     const half = Math.floor(n / 2);
     for (let i = 0; i < half; i++) {
       const a = (i / half) * TAU;
@@ -161,6 +237,39 @@ graph signal processing, and diffusion-based community detection.</p>`;
   static foundations = ['reaction-diffusion', 'thermal-diffusion'];
   static extensions = ['opinion-dynamics', 'kuramoto-network'];
   static teaserQuestion = 'How does a network reveal its communities through vibration?';
+  static resources = [{ type: 'wikipedia', title: 'Laplacian matrix', url: 'https://en.wikipedia.org/wiki/Laplacian_matrix' }];
+  static guidedSteps = [
+    {
+      label: 'Ring Graph, Mode 1',
+      description: 'The second-smallest eigenvalue (Fiedler value) on a ring. Nodes color smoothly from one side to the other — this eigenvector partitions the graph in two. It is the most connected cut.',
+      params: { n: 16, topology: 'ring', mode: 1 },
+    },
+    {
+      label: 'Higher Modes',
+      description: 'Increase to mode 3. The eigenvector oscillates more rapidly around the ring — like higher harmonics on a string. Each mode captures finer-grained structure.',
+      params: { n: 16, topology: 'ring', mode: 3 },
+    },
+    {
+      label: 'Barbell Graph',
+      description: 'Two cliques connected by a single bridge. The Fiedler vector colors one clique positive and the other negative — it finds the bottleneck. The bridge edge carries all the information.',
+      params: { n: 12, topology: 'barbell', mode: 1 },
+    },
+    {
+      label: 'Grid Graph',
+      description: 'Eigenmodes on a grid look like 2D sine functions. Mode 1 splits the grid into halves. Higher modes tile it into smaller regions — exactly like the modes of a vibrating membrane.',
+      params: { n: 25, topology: 'grid', mode: 1 },
+    },
+    {
+      label: 'Scale-Free Network',
+      description: 'Hub-and-spoke topology from preferential attachment. The Fiedler vector often isolates the highest-degree hub — spectral methods reveal structural hierarchy.',
+      params: { n: 20, topology: 'scale-free', mode: 1 },
+    },
+    {
+      label: 'Heat Diffusion',
+      description: 'Enable heat diffusion. An initial heat distribution spreads along edges according to du/dt = −Lu. The graph Laplacian governs diffusion — the same operator that defines the eigenmodes.',
+      params: { n: 16, topology: 'ring', mode: 1, showDiffusion: true },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -191,6 +300,7 @@ graph signal processing, and diffusion-based community detection.</p>`;
           { value: 'grid', label: 'Grid' },
           { value: 'barbell', label: 'Barbell (two cliques)' },
           { value: 'small-world', label: 'Small-World' },
+          { value: 'scale-free', label: 'Scale-Free (BA)' },
         ],
         value: this.params.topology,
       },
@@ -251,6 +361,7 @@ graph signal processing, and diffusion-based community detection.</p>`;
   onParamChange(key, value) {
     this.params[key] = value;
     if (key === 'n' || key === 'topology') this._rebuild();
+    if (key === 'showDiffusion' && value) this.start();
     this.render();
   }
 
@@ -261,6 +372,12 @@ graph signal processing, and diffusion-based community detection.</p>`;
   }
 
   start() {
+    if (!this._heatState) {
+      this._heatState = new Float64Array(this.params.n);
+      this._heatState[0] = 1;
+    }
+    this.params.showDiffusion = true;
+    this.params.diffusionTime = 0;
     super.start();
     this._lastFrame = performance.now();
     this._animate();
@@ -270,7 +387,7 @@ graph signal processing, and diffusion-based community detection.</p>`;
     const n = this.params.n;
     const rng = this._mulberry32(this.params.seed);
     this._graph = generateGraph(n, this.params.topology, rng);
-    this._positions = layoutGraph(n, this.params.topology);
+    this._positions = layoutGraph(n, this.params.topology, this._graph.adj);
     const L = buildLaplacian(n, this._graph.adj);
     this._eigen = eigenDecompose(L, n);
     this._heatState = null;

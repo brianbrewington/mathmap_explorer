@@ -10,6 +10,7 @@ class FordCirclesExploration extends BaseExploration {
   static foundations = ['roots-of-unity'];
   static extensions = ['euclidean-rectangles'];
   static teaserQuestion = 'How can you pack a circle for every fraction without any overlaps?';
+  static resources = [{ type: 'wikipedia', title: 'Ford circles', url: 'https://en.wikipedia.org/wiki/Ford_circle' }];
   static formulaShort = 'C(p/q): center (p/q, 1/(2q²)), radius 1/(2q²)';
   static formula = `<h3>Ford Circles</h3>
 <div class="formula-block">

@@ -212,6 +212,7 @@ its own onset of chaos.</p>`;
   static foundations = ['perceptron-bifurcation'];
   static extensions = [];
   static teaserQuestion = 'Does the route to chaos survive in deeper networks?';
+  static resources = [{ type: 'wikipedia', title: 'Gradient descent', url: 'https://en.wikipedia.org/wiki/Gradient_descent' }];
   static overview = `Full-batch gradient descent on any fixed-architecture, fixed-data MLP is a
 deterministic dynamical system. The single-perceptron case is equivalent to the logistic
 map. This exploration generalises that result: as you add hidden layers and neurons, each

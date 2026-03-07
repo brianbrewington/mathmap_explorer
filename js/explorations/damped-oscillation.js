@@ -45,6 +45,34 @@ update in real time.</p>`;
   static foundations = ['simple-harmonic'];
   static extensions = ['phase-space'];
   static teaserQuestion = 'How does friction steal energy from a pendulum?';
+  static resources = [{ type: 'wikipedia', title: 'Damped harmonic oscillator', url: 'https://en.wikipedia.org/wiki/Harmonic_oscillator#Damped_harmonic_oscillator' }];
+  static guidedSteps = [
+    {
+      label: 'No Damping',
+      description: 'Set damping to zero. The oscillation continues forever at constant amplitude — a pure sinusoid. This is simple harmonic motion, the idealized baseline.',
+      params: { omega0: 3, damping: 0, amplitude: 1, timeWindow: 15 },
+    },
+    {
+      label: 'Underdamped',
+      description: 'Light damping (b = 0.3). The oscillation persists but the envelope decays exponentially. Each peak is smaller than the last. The frequency is slightly lower than ω₀.',
+      params: { omega0: 3, damping: 0.3, amplitude: 1, timeWindow: 15 },
+    },
+    {
+      label: 'Critical Damping',
+      description: 'Set b = ω₀ = 3. The system returns to zero as fast as possible without oscillating. One smooth swoop — this is the ideal for door closers and shock absorbers.',
+      params: { omega0: 3, damping: 3, amplitude: 1, timeWindow: 15 },
+    },
+    {
+      label: 'Overdamped',
+      description: 'Increase damping above ω₀. The system decays without oscillating, but more slowly than critical. Like pushing through molasses — too much friction actually slows the return.',
+      params: { omega0: 3, damping: 4.5, amplitude: 1, timeWindow: 15 },
+    },
+    {
+      label: 'Phase Transition',
+      description: 'Slowly drag the damping slider from 0 to 5 and watch the regime label change: underdamped → critical → overdamped. The transition at b = ω₀ is sharp — oscillation vanishes instantly.',
+      params: { omega0: 3, damping: 2.5, amplitude: 1, timeWindow: 15 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

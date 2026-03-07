@@ -34,9 +34,76 @@ current drive frequency.</p>
 <li>Switch between <strong>Low-pass / High-pass / Band-pass</strong> to compare filter shapes.</li>
 <li>Drag the <strong>drive frequency</strong> across the resonance and watch the output waveform change amplitude and phase.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Find resonance in band-pass mode',
+      description: 'Switch to band-pass and set drive near f0. Measure the output peak at the resistor node.',
+      params: { topology: 'bandpass', R: 100, L: 0.01, C: 1e-6, driveFreq: 1590 }
+    },
+    {
+      label: 'Measure damping from R',
+      description: 'Raise R and observe the resonance flatten; this is lower Q in a physical build.',
+      params: { topology: 'bandpass', R: 600, driveFreq: 1590 }
+    },
+    {
+      label: 'Compare low-pass output node',
+      description: 'Move output to capacitor node and sweep high frequency to verify attenuation.',
+      params: { topology: 'lowpass', R: 100, driveFreq: 10000 }
+    },
+  ];
+  static circuitDiagram = ` AC Vin ~ -- R -- L -- C -- GND
+               |    |    |
+            VoutR VoutL VoutC
+            (BP)  (HP)  (LP)`;
+  static probeMap = [
+    {
+      model: 'driveFreq',
+      node: 'Function generator output',
+      measure: 'Inject sine Vin and monitor with scope CH1',
+      expect: 'Reference amplitude and phase baseline',
+    },
+    {
+      model: 'H(jw) magnitude',
+      node: 'Selected output node (R/L/C)',
+      measure: 'Scope CH2 on selected output; compute CH2/CH1',
+      expect: 'Gain follows Bode curve for selected topology',
+    },
+    {
+      model: 'phase',
+      node: 'Phase lag between CH1 and CH2',
+      measure: 'Use scope phase or cursor time shift',
+      expect: 'Lead/lag flips around resonance depending on topology',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'R',
+      component: 'Series resistor',
+      benchRange: '100 Ohm to 1 kOhm',
+      impact: 'Higher R lowers Q and broadens resonance',
+    },
+    {
+      control: 'L',
+      component: 'Series inductor',
+      benchRange: '1 mH to 100 mH',
+      impact: 'Shifts resonance down as L increases',
+    },
+    {
+      control: 'C',
+      component: 'Series capacitor',
+      benchRange: '0.1 uF to 10 uF',
+      impact: 'Shifts resonance down as C increases',
+    },
+  ];
+  static benchChecklist = [
+    'Probe ground clip must share the same circuit ground for CH1 and CH2.',
+    'Verify measured resonance near 1/(2*pi*sqrt(LC)) before changing topology.',
+    'If peak is too flat, check inductor DCR and capacitor ESR as hidden damping.',
+  ];
   static foundations = ['simple-harmonic', 'damped-oscillation'];
   static extensions = ['colpitts-oscillator', 'charge-pump'];
   static teaserQuestion = 'How does a capacitor decide which frequencies to let through?';
+  static resources = [{ type: 'wikipedia', title: 'RLC circuit', url: 'https://en.wikipedia.org/wiki/RLC_circuit' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

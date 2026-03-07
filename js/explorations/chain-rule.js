@@ -34,6 +34,10 @@ Notice that when either f' or g' is zero, the composition's derivative is also z
   static foundations = ['derivative-definition'];
   static extensions = [];
   static teaserQuestion = 'Why do rates of change multiply when functions compose?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Chain rule, visualized', url: 'https://www.youtube.com/watch?v=YG15m2VwSjA' },
+    { type: 'wikipedia', title: 'Chain rule', url: 'https://en.wikipedia.org/wiki/Chain_rule' },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

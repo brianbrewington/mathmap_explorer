@@ -47,6 +47,38 @@ function findDelta(f, a, L, epsilon) {
   static foundations = [];
   static extensions = ['limit-game'];
   static teaserQuestion = 'How close is close enough to prove a limit exists?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Essence of calculus, Ch. 7', url: 'https://www.youtube.com/watch?v=kfF40MiS7zA' },
+    { type: 'wikipedia', title: 'Epsilon-delta definition', url: 'https://en.wikipedia.org/wiki/(%CE%B5,_%CE%B4)-definition_of_limit' },
+  ];
+
+  static guidedSteps = [
+    {
+      label: 'Wide Tolerance',
+      description: 'Start with a large ε = 1.5. The cyan band is wide — almost any δ works because we are asking very little of the function. The yellow δ-band stretches comfortably.',
+      params: { func: 'x2', a: 1.0, epsilon: 1.5 },
+    },
+    {
+      label: 'Tighter Epsilon',
+      description: 'Shrink ε to 0.3. The cyan band narrows and the yellow δ-band must shrink too. The function must stay closer to L, so x must stay closer to a. This is the heart of the definition.',
+      params: { func: 'x2', a: 1.0, epsilon: 0.3 },
+    },
+    {
+      label: 'Very Small Epsilon',
+      description: 'At ε = 0.05, both bands are thin. For x², which is continuous everywhere, a valid δ always exists. The limit is L = a² = 1.',
+      params: { func: 'x2', a: 1.0, epsilon: 0.05 },
+    },
+    {
+      label: 'A Discontinuity',
+      description: 'Switch to the piecewise function and set a = 1. The function jumps from 2 to 3 at x = 1. No δ can keep f(x) within any ε < 1 — the limit does not exist. Watch δ collapse to 0.',
+      params: { func: 'piecewise', a: 1.0, epsilon: 0.5 },
+    },
+    {
+      label: 'sinc at the Origin',
+      description: 'Try sin(x)/x at a = 0. The function is not defined at 0, but the limit exists (L = 1). The ε-δ definition does not require f(a) to exist — only that nearby values are close to L.',
+      params: { func: 'sinc', a: 0.0, epsilon: 0.3 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

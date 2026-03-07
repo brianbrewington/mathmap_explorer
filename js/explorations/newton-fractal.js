@@ -33,6 +33,10 @@ for (let i = 0; i < maxIter; i++) {
 // Color by angle of z (which root)</code></pre>`;
   static foundations = ['mandelbrot', 'julia-set'];
   static teaserQuestion = "What happens when Newton's method meets the complex plane?";
+  static resources = [
+    { type: 'wikipedia', title: 'Newton fractal', url: 'https://en.wikipedia.org/wiki/Newton_fractal' },
+    { type: 'wolfram', title: 'Newton\'s Method', url: 'https://mathworld.wolfram.com/NewtonsMethod.html' },
+  ];
 
   static guidedSteps = [
     {

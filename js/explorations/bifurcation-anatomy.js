@@ -88,6 +88,9 @@ as parameters change.</p>`;
   static foundations = ['logistic-map', 'phase-space'];
   static extensions = ['phase-portrait', 'lorenz-attractor'];
   static teaserQuestion = 'What happens to an equilibrium when it collides with another?';
+  static resources = [
+    { type: 'wikipedia', title: 'Bifurcation theory', url: 'https://en.wikipedia.org/wiki/Bifurcation_theory' },
+  ];
 
   static guidedSteps = [
     { label: 'Saddle-Node', description: 'Two fixed points collide and vanish.', params: { type: 'saddle-node', mu: -0.5 } },

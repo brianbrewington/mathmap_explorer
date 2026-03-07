@@ -25,9 +25,75 @@ of N clock periods.</p>
   <li><strong>Clock Rate:</strong> controls how many shift-ticks occur per second.</li>
   <li><strong>Clock Modulation:</strong> enable to sweep the clock rate and hear a chorus effect in the waveform panel.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure base delay',
+      description: 'Use moderate stage count and compare output lag against clock period * stages.',
+      params: { stages: 16, clockRate: 30, modDepth: 0, inputFreq: 2 }
+    },
+    {
+      label: 'Increase delay with stages',
+      description: 'Double stage count and verify output lag increases.',
+      params: { stages: 32, clockRate: 30, modDepth: 0, inputFreq: 2 }
+    },
+    {
+      label: 'Observe modulation effect',
+      description: 'Enable clock modulation and watch delay vary over time (chorus/flanger behavior).',
+      params: { stages: 16, clockRate: 30, modDepth: 0.5, modRate: 0.5, inputFreq: 2 }
+    },
+  ];
+  static circuitDiagram = `Vin -> [S/H1] -> [S/H2] -> [S/H3] -> ... -> [S/HN] -> Vout
+         ^         ^         ^
+      phi1/phi2 non-overlapping clock phases drive the transfers`;
+  static probeMap = [
+    {
+      model: 'input',
+      node: 'Stage 0 sample node',
+      measure: 'Scope CH1 at BBD input',
+      expect: 'Original waveform before sampling delay',
+    },
+    {
+      model: 'buckets[k]',
+      node: 'Intermediate sample-and-hold stage',
+      measure: 'Probe internal tap (or emulator stage output)',
+      expect: 'Time-shifted staircase approximation of input',
+    },
+    {
+      model: 'output',
+      node: 'Final stage output',
+      measure: 'Scope CH2 at BBD output',
+      expect: 'Delayed waveform with sampling-related smoothing/aliasing',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'stages',
+      component: 'Number of switched-capacitor stages',
+      benchRange: '32 to 1024 in classic BBD ICs',
+      impact: 'More stages increase delay time',
+    },
+    {
+      control: 'clockRate',
+      component: 'Two-phase clock frequency',
+      benchRange: 'kHz to MHz depending on part',
+      impact: 'Higher clock shortens delay',
+    },
+    {
+      control: 'modDepth',
+      component: 'Clock-rate modulation depth',
+      benchRange: 'Small LFO modulation',
+      impact: 'Creates chorus/flange time-varying delay',
+    },
+  ];
+  static benchChecklist = [
+    'Use anti-alias filtering before and after BBD stages in audio builds.',
+    'Ensure non-overlapping clock phases to prevent charge-sharing distortion.',
+    'Bias signal around BBD mid-supply when using single-supply chips.',
+  ];
   static foundations = ['wave-equation'];
   static extensions = [];
   static teaserQuestion = 'What if you could literally pass a voltage from hand to hand?';
+  static resources = [{ type: 'wikipedia', title: 'Bucket-brigade device', url: 'https://en.wikipedia.org/wiki/Bucket-brigade_device' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

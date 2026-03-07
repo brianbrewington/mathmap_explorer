@@ -10,6 +10,7 @@ class LawOfLargeNumbersExploration extends BaseExploration {
   static foundations = [];
   static extensions = ['central-limit-theorem'];
   static teaserQuestion = 'Do averages always stabilize?';
+  static resources = [{ type: 'wikipedia', title: 'Law of large numbers', url: 'https://en.wikipedia.org/wiki/Law_of_large_numbers' }];
   static formulaShort = 'X\u0304<sub>n</sub> \u2192 E[X] as n \u2192 \u221E';
   static formula = `<h3>Law of Large Numbers</h3>
 <div class="formula-block">

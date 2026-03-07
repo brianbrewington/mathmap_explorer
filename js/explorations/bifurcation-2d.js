@@ -54,6 +54,7 @@ Supported maps: Henon, Tinkerbell, Ikeda
   static foundations = ['logistic-map'];
   static extensions = ['coupled-systems'];
   static teaserQuestion = 'What does chaos look like in two dimensions?';
+  static resources = [{ type: 'wikipedia', title: 'Hénon map', url: 'https://en.wikipedia.org/wiki/H%C3%A9non_map' }];
 
   static guidedSteps = [
     {

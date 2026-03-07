@@ -32,6 +32,7 @@ center, and <em>turns</em> to control how many revolutions are drawn.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
   static teaserQuestion = 'What curve does a point make moving steadily along a spinning arm?';
+  static resources = [{ type: 'wikipedia', title: 'Archimedean spiral', url: 'https://en.wikipedia.org/wiki/Archimedean_spiral' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

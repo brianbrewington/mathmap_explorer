@@ -60,6 +60,10 @@ for (let i = 0; i < maxIter; i++) {
   static foundations = ['mandelbrot'];
   static extensions = ['newton-fractal'];
   static teaserQuestion = 'How does one tiny number reshape an entire fractal?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Fractals are typically not self-similar', url: 'https://www.youtube.com/watch?v=gB9n2gHsHN4' },
+    { type: 'wikipedia', title: 'Julia set', url: 'https://en.wikipedia.org/wiki/Julia_set' },
+  ];
 
   static guidedSteps = [
     {

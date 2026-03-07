@@ -33,6 +33,7 @@ class SourceCodingExploration extends BaseExploration {
   static foundations = ['surprise-entropy'];
   static extensions = ['noisy-channel'];
   static teaserQuestion = 'Can you compress a message below its entropy?';
+  static resources = [{ type: 'wikipedia', title: 'Shannon\'s source coding theorem', url: 'https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem' }];
   static formulaShort = 'H ≤ L < H + 1';
   static formula = `<h3>Huffman Coding & Source Coding Theorem</h3>
 <div class="formula-block">

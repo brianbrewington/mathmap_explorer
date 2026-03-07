@@ -1,5 +1,6 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
+import { forceDirectedLayout } from './force-layout.js';
 
 const TAU = Math.PI * 2;
 
@@ -54,28 +55,6 @@ function generateGraph(n, type, rng) {
   return { edges, adj };
 }
 
-function layoutGraph(n, type, rng) {
-  const pos = new Array(n);
-  if (type === 'small-world') {
-    for (let i = 0; i < n; i++) {
-      const angle = (i / n) * TAU;
-      pos[i] = [0.5 + 0.38 * Math.cos(angle), 0.5 + 0.38 * Math.sin(angle)];
-    }
-  } else if (type === 'grid') {
-    const rows = Math.round(Math.sqrt(n));
-    const cols = Math.ceil(n / rows);
-    for (let i = 0; i < n; i++) {
-      const r = Math.floor(i / cols), c = i % cols;
-      pos[i] = [0.1 + 0.8 * c / Math.max(1, cols - 1), 0.1 + 0.8 * r / Math.max(1, rows - 1)];
-    }
-  } else {
-    for (let i = 0; i < n; i++) {
-      pos[i] = [0.1 + 0.8 * rng(), 0.1 + 0.8 * rng()];
-    }
-  }
-  return pos;
-}
-
 class OpinionDynamicsExploration extends BaseExploration {
   static id = 'opinion-dynamics';
   static title = 'Opinion Dynamics';
@@ -109,6 +88,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
   static foundations = ['markov-chain'];
   static extensions = ['kuramoto-network', 'network-epidemic'];
   static teaserQuestion = 'How narrow must the confidence threshold be before a population splinters?';
+  static resources = [{ type: 'wikipedia', title: 'Deffuant model', url: 'https://en.wikipedia.org/wiki/Deffuant_model' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -118,6 +98,8 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
       epsilon: 0.3,
       mu: 0.3,
       speed: 5,
+      bifSeeds: 5,
+      sweepSteps: 150,
       seed: 42,
     };
     this.ctx = null;
@@ -127,10 +109,17 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     this._history = [];
     this._step = 0;
     this._lastFrame = 0;
+    this._bifurcationMode = false;
+    this._bifWorker = null;
+    this._bifProgress = 0;
+    this._bifComputing = false;
+    this._bifPoints = null;
+    this._bifCount = 0;
+    this._bifError = '';
   }
 
   getControls() {
-    return [
+    const controls = [
       { type: 'slider', key: 'n', label: 'Agents (N)', min: 20, max: 200, step: 5, value: this.params.n },
       {
         type: 'select', key: 'topology', label: 'Network Topology',
@@ -144,12 +133,32 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
       },
       { type: 'slider', key: 'epsilon', label: 'Confidence Threshold (ε)', min: 0.02, max: 0.5, step: 0.01, value: this.params.epsilon },
       { type: 'slider', key: 'mu', label: 'Convergence Rate (μ)', min: 0.05, max: 0.5, step: 0.01, value: this.params.mu },
-      { type: 'slider', key: 'speed', label: 'Interactions / Frame', min: 1, max: 50, step: 1, value: this.params.speed },
-      { type: 'separator' },
-      { type: 'button', key: 'start', label: 'Start', action: 'start' },
-      { type: 'button', key: 'stop', label: 'Stop', action: 'stop' },
-      { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
     ];
+
+    if (!this._bifurcationMode) {
+      controls.push({ type: 'slider', key: 'speed', label: 'Interactions / Frame', min: 1, max: 50, step: 1, value: this.params.speed });
+    }
+
+    controls.push(
+      { type: 'slider', key: 'bifSeeds', label: 'Seeds / ε (Sweep)', min: 1, max: 10, step: 1, value: this.params.bifSeeds },
+      { type: 'slider', key: 'sweepSteps', label: 'Sweep Steps', min: 50, max: 300, step: 10, value: this.params.sweepSteps },
+      { type: 'separator' },
+    );
+
+    if (this._bifurcationMode) {
+      controls.push(
+        { type: 'button', key: 'backToSimulation', label: 'Back to Simulation', action: 'backToSimulation' },
+        { type: 'button', key: 'runSweep', label: 'Run Epsilon Sweep', action: 'runSweep' }
+      );
+    } else {
+      controls.push(
+        { type: 'button', key: 'start', label: 'Start', action: 'start' },
+        { type: 'button', key: 'stop', label: 'Stop', action: 'stop' },
+        { type: 'button', key: 'reset', label: 'Reset', action: 'reset' },
+        { type: 'button', key: 'runSweep', label: 'Run Epsilon Sweep', action: 'runSweep' }
+      );
+    }
+    return controls;
   }
 
   shouldRebuildControls(key) { return key === 'n' || key === 'topology'; }
@@ -162,6 +171,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
 
   deactivate() {
     super.deactivate();
+    this._terminateBifWorker();
     this.ctx = null;
   }
 
@@ -169,13 +179,29 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     this.params[key] = value;
     if (key === 'n' || key === 'topology') {
       this._rebuild();
+      this._invalidateBifurcation();
+    } else if (key === 'mu' || key === 'bifSeeds' || key === 'sweepSteps') {
+      this._invalidateBifurcation();
     }
     this.render();
+  }
+
+  onAction(action) {
+    if (action === 'runSweep') {
+      this._startBifurcationSweep();
+      return true;
+    }
+    if (action === 'backToSimulation') {
+      this._exitBifurcationMode();
+      return true;
+    }
+    return false;
   }
 
   reset() {
     this.params.seed++;
     this._rebuild();
+    this._invalidateBifurcation();
     this.render();
   }
 
@@ -189,7 +215,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     const n = this.params.n;
     const rng = this._mulberry32(this.params.seed);
     this._graph = generateGraph(n, this.params.topology, rng);
-    this._positions = layoutGraph(n, this.params.topology, rng);
+    this._positions = forceDirectedLayout(n, this._graph.adj, rng);
     this._opinions = Array.from({ length: n }, () => rng());
     this._history = [this._opinions.slice()];
     this._step = 0;
@@ -224,6 +250,77 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     }
   }
 
+  _startBifurcationSweep() {
+    this._terminateBifWorker();
+    this.stop();
+    this._bifurcationMode = true;
+    this._bifComputing = true;
+    this._bifError = '';
+    this._bifProgress = 0;
+    this._bifPoints = null;
+    this._bifCount = 0;
+    this.render();
+
+    this._bifWorker = new Worker('js/workers/opinion-bifurcation-worker.js');
+    this._bifWorker.onmessage = (e) => {
+      const data = e.data || {};
+      if (data.type === 'progress') {
+        this._bifProgress = Math.max(0, Math.min(1, data.pct || 0));
+        this.render();
+        return;
+      }
+      if (data.type === 'done') {
+        this._bifComputing = false;
+        this._bifProgress = 1;
+        this._bifCount = data.count || 0;
+        this._bifPoints = data.points ? new Float32Array(data.points) : null;
+        this._terminateBifWorker();
+        this.render();
+      }
+    };
+    this._bifWorker.onerror = () => {
+      this._bifError = 'Sweep failed. Try fewer sweep steps or seeds.';
+      this._bifComputing = false;
+      this._terminateBifWorker();
+      this.render();
+    };
+
+    this._bifWorker.postMessage({
+      n: this.params.n,
+      topology: this.params.topology,
+      mu: this.params.mu,
+      epsilonMin: 0.02,
+      epsilonMax: 0.5,
+      epsilonSteps: this.params.sweepSteps,
+      seedsPerEpsilon: this.params.bifSeeds,
+      seedBase: this.params.seed,
+      maxEpochs: 500,
+      deltaThreshold: 1e-6,
+      stableEpochsRequired: 2,
+    });
+  }
+
+  _terminateBifWorker() {
+    if (this._bifWorker) {
+      this._bifWorker.terminate();
+      this._bifWorker = null;
+    }
+  }
+
+  _invalidateBifurcation() {
+    this._bifPoints = null;
+    this._bifCount = 0;
+    this._bifProgress = 0;
+  }
+
+  _exitBifurcationMode() {
+    this._terminateBifWorker();
+    this._bifComputing = false;
+    this._bifError = '';
+    this._bifurcationMode = false;
+    this.render();
+  }
+
   _opinionColor(v) {
     const t = Math.max(0, Math.min(1, v));
     const r = Math.round(30 + 225 * t);
@@ -238,6 +335,11 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
     const W = this.canvas.width;
     const H = this.canvas.height;
     const px = n => this._px(n);
+
+    if (this._bifurcationMode) {
+      this._renderBifurcation(ctx, W, H, px);
+      return;
+    }
 
     ctx.fillStyle = '#0f1117';
     ctx.fillRect(0, 0, W, H);
@@ -342,6 +444,125 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
         }
       }
       ctx.globalAlpha = 1;
+    }
+  }
+
+  _renderBifurcation(ctx, W, H, px) {
+    ctx.fillStyle = '#0f1117';
+    ctx.fillRect(0, 0, W, H);
+
+    const panel = { x: px(14), y: px(10), w: W - px(28), h: H - px(20) };
+    ctx.fillStyle = '#121722';
+    ctx.fillRect(panel.x, panel.y, panel.w, panel.h);
+    ctx.strokeStyle = '#2a3348';
+    ctx.lineWidth = px(1);
+    ctx.strokeRect(panel.x, panel.y, panel.w, panel.h);
+
+    const padL = px(46);
+    const padR = px(18);
+    const padT = px(28);
+    const padB = px(30);
+    const plot = {
+      x: panel.x + padL,
+      y: panel.y + padT,
+      w: panel.w - padL - padR,
+      h: panel.h - padT - padB,
+    };
+
+    const epsMin = 0.02;
+    const epsMax = 0.5;
+    const toX = (eps) => plot.x + ((eps - epsMin) / (epsMax - epsMin)) * plot.w;
+    const toY = (op) => plot.y + (1 - op) * plot.h;
+
+    ctx.strokeStyle = 'rgba(115,132,166,0.22)';
+    ctx.lineWidth = px(1);
+    for (let i = 0; i <= 8; i++) {
+      const t = i / 8;
+      const gx = plot.x + t * plot.w;
+      ctx.beginPath();
+      ctx.moveTo(gx, plot.y);
+      ctx.lineTo(gx, plot.y + plot.h);
+      ctx.stroke();
+    }
+    for (let i = 0; i <= 5; i++) {
+      const t = i / 5;
+      const gy = plot.y + t * plot.h;
+      ctx.beginPath();
+      ctx.moveTo(plot.x, gy);
+      ctx.lineTo(plot.x + plot.w, gy);
+      ctx.stroke();
+    }
+
+    if (this._bifPoints && this._bifCount > 0) {
+      ctx.globalAlpha = 0.22;
+      const dot = Math.max(px(1), 1);
+      for (let i = 0; i < this._bifCount; i++) {
+        const eps = this._bifPoints[i * 2];
+        const op = this._bifPoints[i * 2 + 1];
+        const x = toX(eps);
+        const y = toY(op);
+        ctx.fillStyle = this._opinionColor(op);
+        ctx.fillRect(x, y, dot, dot);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.fillStyle = '#d3d8e5';
+    ctx.font = this._font(11);
+    ctx.textAlign = 'left';
+    ctx.fillText('Opinion Bifurcation: Stabilized Opinions vs Confidence Threshold', panel.x + px(8), panel.y + px(16));
+    ctx.font = this._font(10);
+    ctx.fillText(
+      `N=${this.params.n}  topology=${this.params.topology}  μ=${this.params.mu.toFixed(2)}  seeds=${this.params.bifSeeds}  steps=${this.params.sweepSteps}`,
+      panel.x + px(8),
+      panel.y + px(30)
+    );
+    if (this._bifCount > 0) {
+      ctx.fillText(`Samples plotted: ${this._bifCount}`, panel.x + px(8), panel.y + px(44));
+    }
+    if (this._bifError) {
+      ctx.fillStyle = '#f99';
+      ctx.fillText(this._bifError, panel.x + px(8), panel.y + px(58));
+    }
+
+    ctx.fillStyle = '#d3d8e5';
+    ctx.font = this._font(10);
+    ctx.textAlign = 'center';
+    ctx.fillText('Confidence threshold ε', plot.x + plot.w * 0.5, panel.y + panel.h - px(8));
+    ctx.save();
+    ctx.translate(panel.x + px(12), plot.y + plot.h * 0.5);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Stabilized opinion', 0, 0);
+    ctx.restore();
+
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 4; i++) {
+      const t = i / 4;
+      const eps = epsMin + t * (epsMax - epsMin);
+      ctx.fillText(eps.toFixed(2), plot.x + t * plot.w, plot.y + plot.h + px(14));
+    }
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+      const t = i / 5;
+      const op = 1 - t;
+      ctx.fillText(op.toFixed(1), plot.x - px(6), plot.y + t * plot.h + px(3));
+    }
+
+    if (this._bifComputing) {
+      const barW = Math.floor(plot.w * 0.5);
+      const barH = px(10);
+      const bx = plot.x + Math.floor((plot.w - barW) / 2);
+      const by = plot.y + Math.floor(plot.h * 0.5) - Math.floor(barH / 2);
+      ctx.fillStyle = 'rgba(16, 20, 32, 0.85)';
+      ctx.fillRect(bx - px(10), by - px(18), barW + px(20), barH + px(38));
+      ctx.strokeStyle = '#2a3348';
+      ctx.strokeRect(bx, by, barW, barH);
+      ctx.fillStyle = '#6b7cff';
+      ctx.fillRect(bx, by, Math.floor(barW * this._bifProgress), barH);
+      ctx.fillStyle = '#d3d8e5';
+      ctx.textAlign = 'center';
+      ctx.font = this._font(11);
+      ctx.fillText(`Computing sweep... ${(this._bifProgress * 100).toFixed(0)}%`, bx + barW / 2, by - px(6));
     }
   }
 

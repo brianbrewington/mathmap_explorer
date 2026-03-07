@@ -10,6 +10,7 @@ import { embedAllExplorations } from './embeddings/exploration-embeddings.js';
 import { recordVisit, hasVisited, getSnapshots, getLastExploration, setLastExploration } from './ui/user-state.js';
 import { initChatPanel } from './ui/chat-panel.js';
 import { AudioEngine } from './audio/engine.js';
+import { initTrailPicker } from './ui/trail-picker.js';
 
 // Import all explorations (self-registering)
 import './explorations/mandelbrot.js';
@@ -135,6 +136,26 @@ import './explorations/network-epidemic.js';
 import './explorations/bifurcation-anatomy.js';
 import './explorations/delay-de.js';
 import './explorations/stochastic-resonance.js';
+
+// Signal processing branch
+import './explorations/fourier-analysis.js';
+import './explorations/resonance.js';
+import './explorations/additive-synthesis.js';
+import './explorations/acoustic-beats.js';
+import './explorations/spectrogram.js';
+
+// Bridge explorations
+import './explorations/electro-mechanical-analogy.js';
+import './explorations/doppler-effect.js';
+
+// Learning trails (self-registering)
+import './trails/circles-to-fourier.js';
+import './trails/road-to-chaos.js';
+import './trails/calculus-from-scratch.js';
+import './trails/fractal-worlds.js';
+import './trails/oscillations-and-circuits.js';
+import './trails/networks.js';
+import './trails/information-theory.js';
 
 let canvas = document.getElementById('render-canvas');
 const controlsPanel = document.getElementById('controls-panel');
@@ -273,7 +294,10 @@ const ANIM_PARAMS = {
   'coupled-metronomes': [
     { key: 'count', label: 'Count', min: 2, max: 12 },
     { key: 'mismatch', label: 'Mismatch', min: 0, max: 0.6 },
-    { key: 'coupling', label: 'Coupling', min: 0, max: 4 },
+    { key: 'coupling', label: 'Coupling', min: 0, max: 2 },
+    { key: 'escapement', label: 'Escapement', min: 0, max: 1.5 },
+    { key: 'bobMass', label: 'Bob Mass', min: 0.5, max: 20 },
+    { key: 'platformMass', label: 'Platform Mass', min: 0.1, max: 10 },
   ],
   'lorenz-attractor': [
     { key: 'sigma', label: 'sigma', min: 0.1, max: 30 },
@@ -512,6 +536,10 @@ function rebuildControls() {
       }
       else if (action === 'saveRecipe') saveCurrentRecipe();
       else if (action === 'loadRecipe') showRecipeLoader();
+      else if (currentInstance.onAction) {
+        const shouldRebuild = currentInstance.onAction(action);
+        if (shouldRebuild) rebuildControls();
+      }
     },
     onAnimAction(action, data) {
       handleAnimAction(action, data);
@@ -766,6 +794,25 @@ setSaveViewCallback(() => {
     triggerSaveSnapshot(name, currentInstance.params);
   });
 });
+
+// Trail navigation callback: select an exploration and seed its params
+function trailNavigate(explorationId, params) {
+  if (!explorationId) {
+    if (currentExplClass) updateInfoPanel(currentExplClass);
+    return;
+  }
+  selectExploration(explorationId);
+  if (params && currentInstance) {
+    for (const [key, value] of Object.entries(params)) {
+      currentInstance.params[key] = value;
+      currentInstance.onParamChange(key, value);
+    }
+    rebuildControls();
+  }
+  if (currentExplClass) updateInfoPanel(currentExplClass);
+}
+
+initTrailPicker(document.getElementById('info-panel'), trailNavigate);
 
 // buildSidebar is async (loads hero images from IndexedDB)
 buildSidebar(listEl, selectExploration).then(() => {

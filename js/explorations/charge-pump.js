@@ -32,9 +32,76 @@ a finite amount of charge.</p>`;
 <li>Increase <strong>Load Current</strong> to see voltage droop under load.</li>
 <li>Larger <strong>Cap Size</strong> means faster convergence and less ripple.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure baseline multiplication',
+      description: 'Use 4 stages and verify output rises toward the ideal N*(Vpeak - Vdiode).',
+      params: { stages: 4, vPeak: 5, capSize: 10, loadCurrent: 0 }
+    },
+    {
+      label: 'Observe load droop',
+      description: 'Add load current and compare steady output against unloaded case.',
+      params: { stages: 4, loadCurrent: 1.0, capSize: 10 }
+    },
+    {
+      label: 'Increase capacitance',
+      description: 'Raise cap size to reduce ripple and improve hold-up under load.',
+      params: { capSize: 40, loadCurrent: 1.0, stages: 4 }
+    },
+  ];
+  static circuitDiagram = ` AC in ~ ->|-- C1 --|>|-- C2 --|>|-- C3 -- ... --> Vout
+            |          |          |
+           GND        GND        GND
+   (Cockcroft-Walton ladder of diodes and capacitors)`;
+  static probeMap = [
+    {
+      model: 'vIn',
+      node: 'AC input node',
+      measure: 'Scope CH1 at source input',
+      expect: 'Sinusoidal drive used to pump charge',
+    },
+    {
+      model: 'caps[i]',
+      node: 'Each ladder stage capacitor voltage',
+      measure: 'Probe stage nodes sequentially to ground',
+      expect: 'Stair-stepped DC levels increasing with stage index',
+    },
+    {
+      model: 'vOut',
+      node: 'Final output node',
+      measure: 'Scope CH2 on output with DC + ripple view',
+      expect: 'High DC level with ripple that grows under load',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'stages',
+      component: 'Number of multiplier ladder sections',
+      benchRange: '1 to 8 stages',
+      impact: 'Higher ideal output, slower startup, higher impedance',
+    },
+    {
+      control: 'capSize',
+      component: 'Stage capacitor value',
+      benchRange: '1 uF to 50 uF',
+      impact: 'Larger C reduces ripple and droop',
+    },
+    {
+      control: 'loadCurrent',
+      component: 'Equivalent output load',
+      benchRange: '0 to 2 mA (scaled model)',
+      impact: 'Higher load lowers steady output voltage',
+    },
+  ];
+  static benchChecklist = [
+    'Ensure diode orientation is consistent stage-to-stage before power-up.',
+    'Use high-voltage-rated capacitors when scaling to many stages.',
+    'Measure output with high-impedance probe; low-impedance meters can collapse voltage.',
+  ];
   static foundations = ['rlc-filter'];
   static extensions = [];
   static teaserQuestion = 'Can capacitors multiply voltage out of thin air?';
+  static resources = [{ type: 'wikipedia', title: 'Cockcroft–Walton generator', url: 'https://en.wikipedia.org/wiki/Cockcroft%E2%80%93Walton_generator' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

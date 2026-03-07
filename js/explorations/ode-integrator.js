@@ -125,6 +125,7 @@ no reference — watch how quickly the trajectories separate from each other.</p
   static foundations = ['derivative-definition', 'phase-space'];
   static extensions = ['lorenz-attractor', 'double-pendulum'];
   static teaserQuestion = 'How many steps before Euler diverges from the true solution?';
+  static resources = [{ type: 'wikipedia', title: 'Runge-Kutta methods', url: 'https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

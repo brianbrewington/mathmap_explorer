@@ -139,6 +139,7 @@ F(0.1) = F
 // F+F-F-F+F + F+F-F-F+F - ...</code></pre>`;
   static foundations = ['sierpinski'];
   static teaserQuestion = 'Can a grammar grow a tree?';
+  static resources = [{ type: 'wikipedia', title: 'L-system', url: 'https://en.wikipedia.org/wiki/L-system' }];
 
   static guidedSteps = [
     {

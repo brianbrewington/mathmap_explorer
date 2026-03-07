@@ -24,9 +24,79 @@ around a single threshold, giving clean, decisive switching.</p>`;
   <li><strong>Thresholds:</strong> narrow the hysteresis band (V<sub>high</sub> &minus; V<sub>low</sub>) to see faster switching.</li>
   <li><strong>Hysteresis Loop:</strong> the right panel traces V<sub>c</sub> vs Output — watch the rectangular path and directional arrows.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure RC ramp',
+      description: 'Use default thresholds and verify capacitor ramp between Vlow and Vhigh.',
+      params: { rc: 0.3, vHigh: 3.3, vLow: 1.7 }
+    },
+    {
+      label: 'Narrow hysteresis band',
+      description: 'Bring thresholds closer and observe faster toggling with smaller ramp excursion.',
+      params: { vHigh: 2.8, vLow: 2.2 }
+    },
+    {
+      label: 'Slow oscillator by RC',
+      description: 'Increase RC and confirm period grows while thresholds stay fixed.',
+      params: { rc: 0.8, vHigh: 3.3, vLow: 1.7 }
+    },
+  ];
+  static circuitDiagram = ` Vcc -- R --o-- C -- GND
+             |
+         SchmittTrigger
+             |
+           Output
+             |
+          (feedback to node o)`;
+  static probeMap = [
+    {
+      model: 'Vc',
+      node: 'Capacitor node',
+      measure: 'Scope CH1 at capacitor top node to ground',
+      expect: 'Exponential-like charge/discharge ramp',
+    },
+    {
+      model: 'Output',
+      node: 'Schmitt trigger output',
+      measure: 'Scope CH2 at logic output',
+      expect: 'Square wave switching at threshold crossings',
+    },
+    {
+      model: 'Vhigh,Vlow',
+      node: 'Comparator thresholds',
+      measure: 'Use reference cursors to mark trigger levels on CH1',
+      expect: 'Switches near upper and lower thresholds',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'rc',
+      component: 'R*C time constant',
+      benchRange: '1 ms to 100 ms equivalent',
+      impact: 'Sets oscillator period',
+    },
+    {
+      control: 'vHigh',
+      component: 'Upper Schmitt threshold',
+      benchRange: 'Set by feedback resistor ratio',
+      impact: 'Higher threshold increases charge time',
+    },
+    {
+      control: 'vLow',
+      component: 'Lower Schmitt threshold',
+      benchRange: 'Set by hysteresis network',
+      impact: 'Lower threshold increases discharge swing',
+    },
+  ];
+  static benchChecklist = [
+    'Confirm hysteresis exists; no hysteresis causes noisy chatter near threshold.',
+    'Check capacitor leakage if ramps do not reach expected threshold levels.',
+    'Verify output swing matches comparator supply rails.',
+  ];
   static foundations = ['simple-harmonic'];
   static extensions = ['ring-oscillator'];
   static teaserQuestion = 'How do you build a clock from a capacitor and a switch?';
+  static resources = [{ type: 'wikipedia', title: 'Relaxation oscillator', url: 'https://en.wikipedia.org/wiki/Relaxation_oscillator' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

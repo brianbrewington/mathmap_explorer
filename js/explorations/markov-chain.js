@@ -7,9 +7,32 @@ class MarkovChainExploration extends BaseExploration {
   static description = 'Animated state transitions converging to the stationary distribution';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
-  static foundations = [];
-  static extensions = [];
+  static foundations = ['random-walk'];
+  static extensions = ['network-epidemic', 'opinion-dynamics'];
   static teaserQuestion = 'Does a random process always forget where it came from?';
+  static resources = [{ type: 'wikipedia', title: 'Markov chain', url: 'https://en.wikipedia.org/wiki/Markov_chain' }];
+  static guidedSteps = [
+    {
+      label: 'Weather Chain',
+      description: 'A 3-state weather model: Sunny, Rainy, Cloudy. Press Start and watch the visit frequencies (bars) converge to the stationary distribution (hollow rectangles). After a few hundred steps they match.',
+      params: { preset: 'weather', speed: 5 },
+    },
+    {
+      label: 'PageRank',
+      description: 'A 4-page web graph. The random surfer follows links. The stationary distribution IS the PageRank — the page visited most often ranks highest. Watch which page wins.',
+      params: { preset: 'pagerank', speed: 5 },
+    },
+    {
+      label: 'Symmetric Chain',
+      description: 'All transition probabilities are equal. The stationary distribution must be uniform — each state gets the same fraction of visits. The bars should level out to equal height.',
+      params: { preset: 'symmetric', speed: 10 },
+    },
+    {
+      label: 'Gambler\'s Ruin',
+      description: 'States 0 and 4 are absorbing — once entered, the walker is trapped forever. This chain has no non-trivial stationary distribution. Watch the walker bounce until absorbed.',
+      params: { preset: 'gambler', speed: 3 },
+    },
+  ];
   static formulaShort = '\u03C0 = \u03C0P (stationary distribution)';
   static formula = `<h3>Markov Chain</h3>
 <div class="formula-block">

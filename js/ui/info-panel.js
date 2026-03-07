@@ -6,6 +6,7 @@ import { getNote, saveNote, getSnapshots, saveSnapshot, deleteSnapshot } from '.
 import { getTagLabel, getFacet, isFacetTag } from '../explorations/taxonomy.js';
 import { addFilter } from './sidebar.js';
 import { openImageModal } from './image-modal.js';
+import { buildTrailList, attachTrailListeners, buildTrailNav, attachTrailNavListeners } from './trail-picker.js';
 
 let panel, formulaContent, tutorialContent, relatedContent, notesContent, toggleBtn;
 let currentTab = 'formula';
@@ -330,27 +331,106 @@ function buildTellMeMore(steps) {
   </div>`;
 }
 
+function isCircuitDemo(ExplClass) {
+  return Array.isArray(ExplClass?.tags) && ExplClass.tags.includes('analog-circuits');
+}
+
+function buildCircuitDiagram(diagram) {
+  if (!diagram) return '';
+  return `<div class="circuit-learning-block">
+    <h3>Circuit Diagram</h3>
+    <pre class="circuit-diagram">${escHtml(diagram)}</pre>
+  </div>`;
+}
+
+function buildProbeMap(probeMap) {
+  if (!probeMap || probeMap.length === 0) return '';
+  const rows = probeMap.map(p => `<tr>
+      <td>${escHtml(p.model || '')}</td>
+      <td>${escHtml(p.node || '')}</td>
+      <td>${escHtml(p.measure || '')}</td>
+      <td>${escHtml(p.expect || '')}</td>
+    </tr>`).join('');
+  return `<div class="circuit-learning-block">
+    <h3>Model to Probe Map</h3>
+    <table class="circuit-map-table">
+      <thead>
+        <tr><th>Model</th><th>Physical Node</th><th>How to Measure</th><th>Expected Observation</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function buildBenchMap(benchMap) {
+  if (!benchMap || benchMap.length === 0) return '';
+  const items = benchMap.map(row => `<li>
+    <strong>${escHtml(row.control || '')}</strong> -> ${escHtml(row.component || '')}
+    ${row.benchRange ? `<br><span>Bench range: ${escHtml(row.benchRange)}</span>` : ''}
+    ${row.impact ? `<br><span>Effect: ${escHtml(row.impact)}</span>` : ''}
+  </li>`).join('');
+  return `<div class="circuit-learning-block">
+    <h3>Parameter to Component Map</h3>
+    <ul class="circuit-map-list">${items}</ul>
+  </div>`;
+}
+
+function buildBenchChecklist(items) {
+  if (!items || items.length === 0) return '';
+  const list = items.map(item => `<li>${escHtml(item)}</li>`).join('');
+  return `<div class="circuit-learning-block">
+    <h3>If You Built This</h3>
+    <ul class="circuit-checklist">${list}</ul>
+  </div>`;
+}
+
+function buildCircuitLearningHtml(ExplClass) {
+  const diagramHtml = buildCircuitDiagram(ExplClass.circuitDiagram);
+  const probeHtml = buildProbeMap(ExplClass.probeMap);
+  const benchMapHtml = buildBenchMap(ExplClass.benchMap);
+  const checklistHtml = buildBenchChecklist(ExplClass.benchChecklist);
+  if (!diagramHtml && !probeHtml && !benchMapHtml && !checklistHtml) return '';
+  return `<div class="circuit-learning">${diagramHtml}${probeHtml}${benchMapHtml}${checklistHtml}</div>`;
+}
+
+function getEffectiveGuidedSteps(ExplClass) {
+  const baseSteps = Array.isArray(ExplClass.guidedSteps) ? ExplClass.guidedSteps.slice() : [];
+  if (baseSteps.length >= 3) return baseSteps;
+  const probeMap = Array.isArray(ExplClass.probeMap) ? ExplClass.probeMap : [];
+  if (probeMap.length === 0) return baseSteps;
+  const fallback = probeMap.slice(0, 3 - baseSteps.length).map((probe, idx) => ({
+    label: `Measure ${probe.node || `Node ${idx + 1}`}`,
+    description: `${probe.measure || 'Probe this node'}; expected: ${probe.expect || 'compare model vs scope waveform.'}`
+  }));
+  return baseSteps.concat(fallback);
+}
+
 export function updateInfoPanel(ExplClass) {
   if (!panel) return;
 
   const badgeHtml = buildTagBadges(ExplClass.tags);
   const overviewHtml = ExplClass.overview || '';
   const resourceHtml = buildResourceLinks(ExplClass.resources);
-  const tellMeMoreHtml = buildTellMeMore(ExplClass.guidedSteps);
+  const guidedSteps = getEffectiveGuidedSteps(ExplClass);
+  const tellMeMoreHtml = buildTellMeMore(guidedSteps);
+  const circuitLearningHtml = buildCircuitLearningHtml(ExplClass);
 
   let formulaHtml = '';
   if (overviewHtml) {
     formulaHtml = badgeHtml + overviewHtml;
     if (ExplClass.formula) formulaHtml += ExplClass.formula;
-    formulaHtml += resourceHtml + tellMeMoreHtml;
+    formulaHtml += circuitLearningHtml + resourceHtml + tellMeMoreHtml;
   } else if (ExplClass.formula) {
-    formulaHtml = badgeHtml + ExplClass.formula + resourceHtml + tellMeMoreHtml;
+    formulaHtml = badgeHtml + ExplClass.formula + circuitLearningHtml + resourceHtml + tellMeMoreHtml;
   } else {
-    formulaHtml = badgeHtml + '<p class="info-empty">No overview available.</p>' + tellMeMoreHtml;
+    const missing = isCircuitDemo(ExplClass)
+      ? '<p class="info-empty">Circuit learning scaffold is missing for this demo.</p>'
+      : '<p class="info-empty">No overview available.</p>';
+    formulaHtml = badgeHtml + missing + circuitLearningHtml + tellMeMoreHtml;
   }
   formulaContent.innerHTML = formulaHtml;
 
-  const guidedHtml = buildGuidedSteps(ExplClass.guidedSteps);
+  const guidedHtml = buildGuidedSteps(guidedSteps);
   if (ExplClass.tutorial) {
     let html = ExplClass.tutorial;
     html = html.replace(/<code class="language-js">([\s\S]*?)<\/code>/g, (_, code) => {
@@ -393,8 +473,10 @@ async function updateRelatedDemos(id, ExplClass) {
   const extensions = ExplClass?.extensions || [];
   const hasCurated = foundations.length + extensions.length > 0;
   const hasEmbed = hasEmbeddings();
+  const trailListHtml = buildTrailList();
+  const trailNavHtml = buildTrailNav();
 
-  if (!hasCurated && !hasEmbed) {
+  if (!hasCurated && !hasEmbed && !trailListHtml && !trailNavHtml) {
     if (relatedTab) relatedTab.style.display = 'none';
     relatedContent.innerHTML = '';
     return;
@@ -403,6 +485,10 @@ async function updateRelatedDemos(id, ExplClass) {
   if (relatedTab) relatedTab.style.display = '';
 
   let html = '';
+
+  if (trailNavHtml) {
+    html += trailNavHtml;
+  }
 
   if (foundations.length > 0) {
     html += '<h3>Foundations</h3><p class="related-section-hint">Understand these first</p>';
@@ -432,7 +518,14 @@ async function updateRelatedDemos(id, ExplClass) {
     }
   }
 
+  if (trailListHtml) {
+    html += trailListHtml;
+  }
+
   relatedContent.innerHTML = html || '<p class="info-empty">No related demos found.</p>';
+
+  attachTrailListeners(relatedContent);
+  attachTrailNavListeners(relatedContent);
 }
 
 async function renderNotesTab() {

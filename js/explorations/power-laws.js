@@ -7,9 +7,10 @@ class PowerLawsExploration extends BaseExploration {
   static description = 'Power law distributions on linear and log-log axes \u2014 the straight line fingerprint of scale-free phenomena.';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
-  static foundations = [];
-  static extensions = [];
+  static foundations = ['law-of-large-numbers'];
+  static extensions = ['random-walk'];
   static teaserQuestion = 'Why do cities, earthquakes, and words all follow the same law?';
+  static resources = [{ type: 'wikipedia', title: 'Power law', url: 'https://en.wikipedia.org/wiki/Power_law' }];
   static formulaShort = 'f(x) = C \u00b7 x<sup>\u2212\u03b1</sup>';
   static formula = `<h3>Power Law Distribution</h3>
 <div class="formula-block">

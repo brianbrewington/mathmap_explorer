@@ -117,6 +117,7 @@ x<sub>n+1</sub> = f(x, r, a, b, c, d), bifurcation over r
   static foundations = ['dejong'];
   static extensions = ['bifurcation-2d'];
   static teaserQuestion = 'What fractal is hiding in your equation?';
+  static resources = [{ type: 'wikipedia', title: 'Strange attractor', url: 'https://en.wikipedia.org/wiki/Attractor#Strange_attractor' }];
 
   static guidedSteps = [
     {

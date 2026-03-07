@@ -7,9 +7,35 @@ class RandomWalkExploration extends BaseExploration {
   static description = 'Ensemble random walks showing \u221AN scaling and Gaussian convergence of endpoints';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'beginner'];
-  static foundations = ['central-limit-theorem'];
-  static extensions = [];
+  static foundations = [];
+  static extensions = ['central-limit-theorem', 'markov-chain'];
   static teaserQuestion = 'How far does a random walker drift from where they started?';
+  static resources = [
+    { type: 'wikipedia', title: 'Random walk', url: 'https://en.wikipedia.org/wiki/Random_walk' },
+    { type: 'youtube', title: 'Numberphile — Random Walks', url: 'https://www.youtube.com/watch?v=stgYW6M5o4k' },
+  ];
+  static guidedSteps = [
+    {
+      label: 'One Walker',
+      description: 'A single random walker taking 200 steps. The path is jagged and unpredictable. The dashed yellow envelope shows ±√N — the expected scale of displacement.',
+      params: { dimension: '1d', numWalkers: 1, numSteps: 200, speed: 5 },
+    },
+    {
+      label: 'Many Walkers',
+      description: 'Run 50 walkers simultaneously. Most stay within the √N envelope, but some escape briefly. The histogram on the right should start to resemble a Gaussian bell curve.',
+      params: { dimension: '1d', numWalkers: 50, numSteps: 200, speed: 10 },
+    },
+    {
+      label: 'Longer Walks',
+      description: 'Increase to 1000 steps. The RMS displacement grows as √N ≈ 31.6 — not linearly. This sub-linear scaling is the signature of diffusion. Check the readout at the bottom.',
+      params: { dimension: '1d', numWalkers: 30, numSteps: 1000, speed: 20 },
+    },
+    {
+      label: '2D Random Walk',
+      description: 'Switch to 2D. Each step moves in a random direction. Walkers trace tangled paths from the origin. The distance histogram follows a Rayleigh distribution, not a Gaussian.',
+      params: { dimension: '2d', numWalkers: 20, numSteps: 500, speed: 10 },
+    },
+  ];
   static formulaShort = '\u27E8x\u00B2\u27E9 = N (1D), \u27E8r\u00B2\u27E9 = N (2D)';
   static formula = `<h3>Random Walk</h3>
 <div class="formula-block">
@@ -24,18 +50,19 @@ this is the hallmark of diffusive transport. The distribution of endpoints
 after N steps converges to a <strong>Gaussian</strong> by the Central Limit Theorem.</p>
 <p>An ensemble of many walkers lets us see both individual path variability and
 the collective statistical behavior simultaneously.</p>`;
-  static tutorial = `<h3>Reading the Visualization</h3>
-<p>The <strong>left panel</strong> shows the trajectory of each walker. In 1D the x-axis is the
-step number and the y-axis is position. In 2D both axes are spatial coordinates
-and the walk starts from the origin.</p>
-<p>The <strong>right panel</strong> shows a histogram of final positions (1D) or final distances
-from the origin (2D). A Gaussian overlay shows the theoretical prediction.</p>
-<h4>Things to Try</h4>
+  static tutorial = `<h3>The Drunkard's Walk</h3>
+<p>Imagine a person taking steps in random directions. How far do they get after N steps?
+Not N steps away — only &radic;N. This sub-linear scaling is the signature of
+<strong>diffusion</strong>, and it governs everything from molecules bouncing in a gas to
+stock prices wandering over time.</p>
+<p>Run many walkers simultaneously and their endpoints form a <strong>Gaussian bell curve</strong>
+— a direct demonstration of the Central Limit Theorem.</p>
+<h4>Experiments</h4>
 <ul>
-<li>Run with 1D and watch the &radic;N envelope emerge as walkers spread out.</li>
-<li>Switch to 2D to see random trajectories filling a disk whose radius grows as &radic;N.</li>
-<li>Increase <strong>numWalkers</strong> to see the histogram smooth out and match the Gaussian.</li>
-<li>Increase <strong>numSteps</strong> to see longer walks &mdash; the RMS distance grows as &radic;N.</li>
+<li>Run a single walker in 1D — the path zigzags unpredictably within the &radic;N envelope.</li>
+<li>Add more walkers to see the bell-curve histogram emerge on the right panel.</li>
+<li>Increase the step count and watch the RMS grow as &radic;N, not N.</li>
+<li>Switch to 2D — the distance distribution follows a <strong>Rayleigh distribution</strong>, not a Gaussian.</li>
 </ul>`;
 
   constructor(canvas, controlsContainer) {

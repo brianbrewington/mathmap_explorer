@@ -10,6 +10,7 @@ class UlamHelixExploration extends BaseExploration {
   static foundations = ['ulam-spiral'];
   static extensions = [];
   static teaserQuestion = 'What patterns emerge when you stand the Ulam spiral up into a helix?';
+  static resources = [{ type: 'wikipedia', title: 'Ulam spiral', url: 'https://en.wikipedia.org/wiki/Ulam_spiral' }];
   static formulaShort = '(x, y) = spiral(n), z = n · zScale; highlight if prime';
   static formula = `<h3>Ulam Helix</h3>
 <div class="formula-block">

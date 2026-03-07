@@ -22,17 +22,55 @@ horizontal projections of a point moving around the unit circle at constant angu
 <p>The phase parameter &phi; shifts sine along the time axis.
 When &phi;&nbsp;=&nbsp;&pi;/2 the sine becomes a cosine, illustrating that the two functions are
 identical but offset by a quarter cycle.</p>`;
-  static tutorial = `<h3>How The Visualization Works</h3>
-<p>A sine wave <code>y = A sin(&omega;t + &phi;)</code> is drawn across the canvas.
-When the cosine overlay is enabled, a second curve shows
-<code>y = A cos(&omega;t)</code> for comparison.</p>
+  static tutorial = `<h3>The Shape of Oscillation</h3>
+<p>Sine and cosine aren't just abstract curves — they are the <strong>shadow</strong>
+of circular motion. Imagine a point moving around a circle: its vertical shadow
+traces sin(t), its horizontal shadow traces cos(t). Every wave, every vibration,
+every oscillation is built from these two shapes.</p>
 <pre><code class="language-js">const ySin = A * Math.sin(omega * t + phi);
 const yCos = A * Math.cos(omega * t);</code></pre>
-<p>An animated dot traverses the sine curve. A dashed connecting line to the cosine
-dot reveals the constant &pi;/2 phase relationship between the two functions.</p>`;
+<h4>Experiments</h4>
+<ul>
+<li><strong>Amplitude</strong> stretches the wave vertically — taller peaks, deeper troughs, more energy.</li>
+<li><strong>Frequency</strong> compresses it horizontally — more cycles in the same time, higher pitch.</li>
+<li><strong>Phase</strong> shifts the wave in time. Set &phi; = &pi;/2 and sine becomes cosine — they are the same shape, offset by a quarter cycle.</li>
+<li>Turn on the <strong>cosine overlay</strong> and press Animate to see both functions dance together, always a quarter-cycle apart.</li>
+</ul>`;
   static foundations = [];
   static extensions = ['simple-harmonic', 'trig-identities-circle', 'wave-packet'];
   static teaserQuestion = 'What makes sine and cosine the most fundamental curves?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — Essence of trigonometry', url: 'https://www.youtube.com/watch?v=yBw67Fb31Cs' },
+    { type: 'wikipedia', title: 'Sine and cosine', url: 'https://en.wikipedia.org/wiki/Sine_and_cosine' },
+  ];
+
+  static guidedSteps = [
+    {
+      label: 'Pure Sine Wave',
+      description: 'A single cycle of sin(t) with amplitude 1 and no phase shift. This is the simplest periodic waveform — smooth, symmetric, and endlessly repeating.',
+      params: { frequency: 1, phase: 0, amplitude: 1, showCosine: 0 },
+    },
+    {
+      label: 'Change Amplitude',
+      description: 'Increase the amplitude to 2.5. The wave stretches vertically — peaks and troughs are farther from zero — but the period stays the same. Amplitude is energy, not speed.',
+      params: { frequency: 1, phase: 0, amplitude: 2.5, showCosine: 0 },
+    },
+    {
+      label: 'Higher Frequency',
+      description: 'Crank the frequency to 4. More cycles fit in the same time window. The wave compresses horizontally but the amplitude stays at 1. Frequency is speed, not energy.',
+      params: { frequency: 4, phase: 0, amplitude: 1, showCosine: 0 },
+    },
+    {
+      label: 'Phase Shift',
+      description: 'Add a phase offset of π/2 ≈ 1.57. The sine wave shifts left by a quarter cycle — and now it looks exactly like a cosine. Turn on the cosine overlay to confirm: sin(t + π/2) = cos(t).',
+      params: { frequency: 1, phase: 1.57, amplitude: 1, showCosine: 1 },
+    },
+    {
+      label: 'Sine and Cosine Together',
+      description: 'With no phase shift and cosine overlay on, you see both curves at once. The dashed line connecting the dots reveals they are always a quarter-cycle apart — the most fundamental relationship in trigonometry.',
+      params: { frequency: 1, phase: 0, amplitude: 1, showCosine: 1 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

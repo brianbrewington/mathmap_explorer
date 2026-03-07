@@ -37,6 +37,9 @@ analytical answer (shown as the dashed overlay).</p>`;
   static foundations = ['sine-cosine', 'taylor-series'];
   static extensions = ['derivative-definition'];
   static teaserQuestion = 'What do you get when you differentiate a wave?';
+  static resources = [
+    { type: 'wikipedia', title: 'Differentiation of trigonometric functions', url: 'https://en.wikipedia.org/wiki/Differentiation_of_trigonometric_functions' },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

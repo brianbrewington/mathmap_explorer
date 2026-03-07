@@ -34,6 +34,7 @@ patterns, or set r to an irrational fraction of R for space-filling paths.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['rose-curves'];
   static teaserQuestion = 'What happens when a circle rolls around another circle?';
+  static resources = [{ type: 'wikipedia', title: 'Epitrochoid', url: 'https://en.wikipedia.org/wiki/Epitrochoid' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

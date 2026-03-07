@@ -36,6 +36,7 @@ integers to watch the curve morph continuously.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['heart-curve'];
   static teaserQuestion = 'How many petals does sin(n\u03B8) draw?';
+  static resources = [{ type: 'wikipedia', title: 'Rose curve', url: 'https://en.wikipedia.org/wiki/Rose_(mathematics)' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

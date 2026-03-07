@@ -90,4 +90,35 @@ describe('coupled-metronomes exploration', () => {
     expect(instance._crossedVertical(0.3, 0.4)).toBe(false);
     expect(instance._crossedVertical(-Math.PI + 0.01, Math.PI - 0.01)).toBe(false);
   });
+
+  it('exposes _computeEnergy returning all expected terms', () => {
+    instance.activate();
+    const e = instance._computeEnergy();
+    expect(e).toHaveProperty('pendKE');
+    expect(e).toHaveProperty('pendPE');
+    expect(e).toHaveProperty('platKE');
+    expect(e).toHaveProperty('platPE');
+    expect(e).toHaveProperty('crossKE');
+    expect(e).toHaveProperty('total');
+    expect(e.total).toBeCloseTo(e.pendKE + e.pendPE + e.platKE + e.platPE + e.crossKE, 8);
+  });
+
+  it('conserves energy with zero friction and zero escapement', () => {
+    instance.activate();
+    instance.params.pendulumDamping = 0;
+    instance.params.baseFriction = 0;
+    instance.params.escapement = 0;
+
+    instance._thetas[0] = 0.5;
+    instance._omegas[0] = 0.3;
+
+    const E0 = instance._computeEnergy().total;
+
+    const dt = 0.005;
+    for (let i = 0; i < 2000; i++) instance._step(dt);
+
+    const E1 = instance._computeEnergy().total;
+    const drift = Math.abs(E1 - E0) / Math.max(1e-12, Math.abs(E0));
+    expect(drift).toBeLessThan(0.02);
+  });
 });

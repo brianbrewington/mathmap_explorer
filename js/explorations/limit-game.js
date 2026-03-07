@@ -44,6 +44,9 @@ class LimitGameExploration extends BaseExploration {
   static foundations = ['epsilon-delta'];
   static extensions = [];
   static teaserQuestion = 'Can the computer always find a response to your challenge?';
+  static resources = [
+    { type: 'wikipedia', title: 'Limit of a function', url: 'https://en.wikipedia.org/wiki/Limit_of_a_function' },
+  ];
   static formulaShort = '∀ε > 0, ∃δ > 0';
   static formula = `<h3>The ε-δ Game</h3>
 <div class="formula-block">

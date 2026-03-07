@@ -1,5 +1,6 @@
 import { BaseExploration } from './base-exploration.js';
 import { register } from './registry.js';
+import { forceDirectedLayout } from './force-layout.js';
 
 const TAU = Math.PI * 2;
 const S = 0, I = 1, R = 2;
@@ -78,6 +79,7 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
   static foundations = ['markov-chain', 'random-walk'];
   static extensions = ['opinion-dynamics', 'graph-laplacian'];
   static teaserQuestion = 'How many people must be vaccinated to prevent an epidemic on a scale-free network?';
+  static resources = [{ type: 'wikipedia', title: 'Epidemic model on networks', url: 'https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
@@ -212,44 +214,10 @@ small-world networks allow rapid global spread, and grids produce wave-like fron
     }
     for (let i = 0; i < vaccCount; i++) this._states[indices[i]] = R;
 
-    // Layout using force-directed (simplified)
-    this._positions = this._forceLayout(n, rng);
+    this._positions = forceDirectedLayout(n, this._graph.adj, rng);
     this._history = { s: [], i: [], r: [] };
     this._step = 0;
     this._recordHistory();
-  }
-
-  _forceLayout(n, rng) {
-    const pos = Array.from({ length: n }, () => [0.2 + rng() * 0.6, 0.2 + rng() * 0.6]);
-    for (let iter = 0; iter < 100; iter++) {
-      const forces = Array.from({ length: n }, () => [0, 0]);
-      for (let i = 0; i < n; i++) {
-        for (let j = i + 1; j < n; j++) {
-          const dx = pos[j][0] - pos[i][0];
-          const dy = pos[j][1] - pos[i][1];
-          const d = Math.max(0.01, Math.hypot(dx, dy));
-          const repel = 0.001 / (d * d);
-          forces[i][0] -= repel * dx / d;
-          forces[i][1] -= repel * dy / d;
-          forces[j][0] += repel * dx / d;
-          forces[j][1] += repel * dy / d;
-        }
-        for (const j of this._graph.adj[i]) {
-          const dx = pos[j][0] - pos[i][0];
-          const dy = pos[j][1] - pos[i][1];
-          const d = Math.hypot(dx, dy);
-          const attract = d * 0.5;
-          forces[i][0] += attract * dx;
-          forces[i][1] += attract * dy;
-        }
-      }
-      const cool = 0.05 * (1 - iter / 100);
-      for (let i = 0; i < n; i++) {
-        pos[i][0] = Math.max(0.05, Math.min(0.95, pos[i][0] + cool * forces[i][0]));
-        pos[i][1] = Math.max(0.05, Math.min(0.95, pos[i][1] + cool * forces[i][1]));
-      }
-    }
-    return pos;
   }
 
   _animate() {

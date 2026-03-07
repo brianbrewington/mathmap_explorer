@@ -36,9 +36,83 @@ h(x) = m<sub>1</sub> x + &frac12;(m<sub>0</sub> &minus; m<sub>1</sub>)(|x + 1| &
   <li><strong>Periodic orbit:</strong> at &alpha; &asymp; 8.5 the chaos gives way to a stable limit cycle.</li>
   <li><strong>Tune &alpha;:</strong> sweep it slowly to observe bifurcations between regimes.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Scope the double-scroll baseline',
+      description: 'Set the classic chaotic regime and compare x-z trace to the two-lobed scope pattern.',
+      params: { preset: 'double_scroll', alpha: 15.6, beta: 28, m0: -1.143, m1: -0.714 }
+    },
+    {
+      label: 'Measure collapse to one lobe',
+      description: 'Lower alpha and watch one wing disappear; this is a direct bench signature of reduced loop gain.',
+      params: { preset: 'single_scroll', alpha: 12.0 }
+    },
+    {
+      label: 'Capture periodic orbit',
+      description: 'Drop alpha until the attractor closes into a loop and verify repeat period on your time trace.',
+      params: { preset: 'periodic', alpha: 8.5 }
+    },
+  ];
+  static circuitDiagram = `   +V
+    |
+   [R]
+    |
+   o---- C1 ---- GND
+   |
+ [Chua diode]
+   |
+   o---- L ---- C2 ---- GND
+    |
+   GND`;
+  static probeMap = [
+    {
+      model: 'x',
+      node: 'C1 node voltage',
+      measure: 'Scope CH1 from C1 top node to ground',
+      expect: 'Fast swings that define left/right wings of the attractor',
+    },
+    {
+      model: 'y',
+      node: 'C2 node voltage',
+      measure: 'Scope CH2 from C2 top node to ground',
+      expect: 'Phase-shifted companion waveform to x',
+    },
+    {
+      model: 'z',
+      node: 'Inductor current proxy',
+      measure: 'Measure voltage over small sense resistor in series with L',
+      expect: 'Current-like signal that closes the 3-state loop',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'alpha',
+      component: 'Effective C1/C2 ratio and conductance scaling',
+      benchRange: 'Change C1/C2 by 2x to move between regimes',
+      impact: 'Primary route from periodic -> chaos',
+    },
+    {
+      control: 'm0, m1',
+      component: 'Chua-diode inner/outer slopes',
+      benchRange: 'Tune op-amp resistor ratios around breakpoint network',
+      impact: 'Sets nonlinearity strength and lobe geometry',
+    },
+    {
+      control: 'beta',
+      component: 'Inductor branch scaling',
+      benchRange: 'Adjust L or series R in inductor leg',
+      impact: 'Changes oscillation rate and wing dwell time',
+    },
+  ];
+  static benchChecklist = [
+    'Confirm supply rails and op-amp headroom before searching for chaos.',
+    'Measure C1 and C2 DC offsets first; drifting offsets often indicate incorrect diode slope network.',
+    'Use x-y mode (CH1 vs CH2) to verify lobe shape before fine parameter tweaks.',
+  ];
   static foundations = ['lorenz-attractor', 'phase-space'];
   static extensions = ['memristor-chaos'];
   static teaserQuestion = 'Can three components and a battery create chaos?';
+  static resources = [{ type: 'wikipedia', title: 'Chua\'s circuit', url: 'https://en.wikipedia.org/wiki/Chua%27s_circuit' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

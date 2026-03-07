@@ -12,6 +12,11 @@ class ReactionDiffusionExploration extends BaseExploration {
   static foundations = ['coupled-systems'];
   static extensions = [];
   static teaserQuestion = 'How do leopard spots and zebra stripes form themselves?';
+  static resources = [
+    { type: 'youtube', title: 'Numberphile — Turing\'s Patterns', url: 'https://www.youtube.com/watch?v=alH3yc6tX98' },
+    { type: 'wikipedia', title: 'Reaction-diffusion system', url: 'https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system' },
+    { type: 'paper', title: 'Turing (1952) — Chemical Basis of Morphogenesis', url: 'https://doi.org/10.1098/rstb.1952.0012' },
+  ];
   static formulaShort = '∂u/∂t = D<sub>u</sub>∇²u − uv² + F(1−u)';
   static formula = `<h3>Gray-Scott Reaction-Diffusion</h3>
 <div class="formula-block">
@@ -30,22 +35,49 @@ D<sub>u</sub> = 0.21, &nbsp; D<sub>v</sub> = 0.105, &nbsp; dt = 1.0
 spots, stripes, mitosis, coral, spirals, or chaos.</p>
 <p>The Laplacian ∇² is computed with a 5-point stencil and wrap-around (periodic) boundary conditions.
 Multiple simulation steps per frame keep the computation fast while maintaining visual smoothness.</p>`;
-  static tutorial = `<h3>Reading the Visualization</h3>
-<p>The image shows the concentration of chemical <strong>v</strong> across the 2D grid.
-Color is mapped using a viridis-like palette: <span style="color:#440154">dark purple</span> = low v,
-<span style="color:#21918c">teal</span> = medium, <span style="color:#fde725">yellow</span> = high.</p>
-<p><strong>Click or drag</strong> on the canvas to inject a blob of chemical v — this seeds new patterns
-that grow and interact with existing ones.</p>
-<h4>Things to try</h4>
+  static tutorial = `<h3>How Nature Paints Patterns</h3>
+<p>Alan Turing proposed in 1952 that biological patterns — spots on a leopard,
+stripes on a zebra, the branching of coral — arise from just two chemicals
+diffusing and reacting. No blueprint, no master plan: the pattern <em>self-organizes</em>
+from instability in the reaction-diffusion equations.</p>
+<p>The balance between <strong>feed rate F</strong> and <strong>kill rate k</strong> determines
+what emerges. Tiny changes in these parameters produce qualitatively different worlds.</p>
+<h4>Experiments</h4>
 <ul>
-<li>Select different <strong>presets</strong> — each (F, k) pair produces a qualitatively different pattern.</li>
 <li>Start with <strong>Mitosis</strong> and watch spots divide like cells.</li>
-<li>Try <strong>Stripes</strong> then click in an empty area — watch the labyrinthine fingers grow outward.</li>
-<li>Increase <strong>Steps/Frame</strong> to speed up the simulation without changing the physics.</li>
-<li>Fine-tune <strong>F</strong> and <strong>k</strong> manually to explore the phase boundary between different regimes.</li>
+<li>Try <strong>Stripes</strong> then click in an empty area — labyrinthine fingers grow outward.</li>
+<li><strong>Click or drag</strong> on the canvas to inject new chemical seeds.</li>
+<li>Fine-tune <strong>F</strong> and <strong>k</strong> manually to explore the phase boundary between order and chaos.</li>
+<li>Increase <strong>Steps/Frame</strong> to fast-forward the simulation.</li>
 </ul>`;
 
-  static guidedSteps = [];
+  static guidedSteps = [
+    {
+      label: 'Coral Growth',
+      description: 'The default coral preset (F=0.055, k=0.062) produces branching, organic structures. Watch the initial seed expand outward like a living organism. Click to inject new seeds.',
+      params: { preset: 'coral', feed: 0.055, kill: 0.062, stepsPerFrame: 8 },
+    },
+    {
+      label: 'Mitosis',
+      description: 'Spots that divide like cells. Each blob grows until it reaches a critical size, then pinches into two. This is the closest the model comes to biological cell division.',
+      params: { preset: 'mitosis', feed: 0.028, kill: 0.062, stepsPerFrame: 8 },
+    },
+    {
+      label: 'Stripes',
+      description: 'Labyrinthine stripes emerge from a random seed. Click in an empty area and watch fingers of chemical v grow outward, forming a maze. These patterns resemble zebra stripes and fingerprints.',
+      params: { preset: 'stripes', feed: 0.025, kill: 0.056, stepsPerFrame: 8 },
+    },
+    {
+      label: 'Spots',
+      description: 'Stable, well-separated spots like a leopard\'s coat. Unlike mitosis, these spots reach equilibrium and stop dividing. The spacing between spots is set by the diffusion ratio Dᵤ/Dᵥ.',
+      params: { preset: 'spots', feed: 0.035, kill: 0.065, stepsPerFrame: 8 },
+    },
+    {
+      label: 'Chemical Chaos',
+      description: 'Lower the feed and kill rates to enter a chaotic regime. Patterns form and dissolve unpredictably — no stable structure emerges. The boundary between order and chaos is sharp in (F, k) space.',
+      params: { preset: 'chaos', feed: 0.026, kill: 0.051, stepsPerFrame: 8 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

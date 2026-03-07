@@ -158,6 +158,7 @@ where the 2\u00D72 matrix is [[a, b], [c, d]], the translation is (e, f), and p 
   static foundations = ['sierpinski'];
   static extensions = ['barnsley'];
   static teaserQuestion = 'How many transformations does it take to build a fractal?';
+  static resources = [{ type: 'wikipedia', title: 'Iterated function system', url: 'https://en.wikipedia.org/wiki/Iterated_function_system' }];
 
   static guidedSteps = [
     {

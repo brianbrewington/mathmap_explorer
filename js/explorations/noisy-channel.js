@@ -10,6 +10,7 @@ class NoisyChannelExploration extends BaseExploration {
   static foundations = ['surprise-entropy', 'source-coding'];
   static extensions = ['kl-divergence', 'shannon-boltzmann'];
   static teaserQuestion = 'How much information can you push through a noisy wire?';
+  static resources = [{ type: 'wikipedia', title: 'Noisy-channel coding theorem', url: 'https://en.wikipedia.org/wiki/Noisy-channel_coding_theorem' }];
   static formulaShort = 'C = 1 − H(ε)';
   static formula = `<h3>Binary Symmetric Channel</h3>
 <div class="formula-block">

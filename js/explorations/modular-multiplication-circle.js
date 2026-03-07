@@ -10,6 +10,7 @@ class ModularMultiplicationCircleExploration extends BaseExploration {
   static foundations = ['roots-of-unity'];
   static extensions = ['ulam-spiral'];
   static teaserQuestion = 'How does a simple multiplication table draw a perfect cardioid?';
+  static resources = [{ type: 'youtube', title: 'Mathologer — Times Tables, Pair Mandelbrot', url: 'https://www.youtube.com/watch?v=qhbuKbxJsk8' }];
   static formulaShort = 'i → (i × k) mod N';
   static formula = `<h3>Modular Multiplication Circle</h3>
 <div class="formula-block">

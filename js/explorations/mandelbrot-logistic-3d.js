@@ -36,6 +36,7 @@ function logisticR_to_mandelbrotC(r) {
 <p>In this visualization, the Mandelbrot set is rendered as a floor plane. The bifurcation diagram stands vertically on the z=0 plane, directly above the real axis of the Mandelbrot set, making the conjugacy visible in 3D.</p>`;
   static foundations = ['mandelbrot', 'logistic-map'];
   static teaserQuestion = 'What does the bridge between order and chaos look like in 3D?';
+  static resources = [{ type: 'youtube', title: 'Numberphile — Mandelbrot and Logistic', url: 'https://www.youtube.com/watch?v=NGMRB4O922I' }];
 
   static guidedSteps = [
     {

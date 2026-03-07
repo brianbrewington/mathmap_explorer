@@ -32,6 +32,7 @@ Adjust <em>penRatio</em> to switch between curtate, standard, and prolate cycloi
   static foundations = ['unit-circle'];
   static extensions = ['epitrochoid'];
   static teaserQuestion = 'What path does a point on a rolling wheel trace?';
+  static resources = [{ type: 'youtube', title: 'Vsauce — Brachistochrone', url: 'https://www.youtube.com/watch?v=skvnj67YGmw' }, { type: 'wikipedia', title: 'Cycloid', url: 'https://en.wikipedia.org/wiki/Cycloid' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

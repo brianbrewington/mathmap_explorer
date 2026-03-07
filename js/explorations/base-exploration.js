@@ -20,6 +20,10 @@ export class BaseExploration {
   static overview = '';
   static resources = [];
   static guidedSteps = [];
+  static circuitDiagram = '';
+  static probeMap = [];
+  static benchMap = [];
+  static benchChecklist = [];
   static foundations = [];
   static extensions = [];
   static teaserQuestion = '';

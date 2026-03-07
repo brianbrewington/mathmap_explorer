@@ -33,6 +33,9 @@ ellipse collapse into a spiral.</p>`;
   static foundations = ['simple-harmonic'];
   static extensions = [];
   static teaserQuestion = 'Can you see the future of a system in a single picture?';
+  static resources = [
+    { type: 'wikipedia', title: 'Phase space', url: 'https://en.wikipedia.org/wiki/Phase_space' },
+  ];
 
   static guidedSteps = [
     {

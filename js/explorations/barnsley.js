@@ -46,6 +46,7 @@ for (let i = 0; i < iterations; i++) {
   static foundations = ['sierpinski', 'affine-ifs'];
   static extensions = ['l-system'];
   static teaserQuestion = 'How does pure randomness grow a perfect fern?';
+  static resources = [{ type: 'wikipedia', title: 'Barnsley fern', url: 'https://en.wikipedia.org/wiki/Barnsley_fern' }];
 
   static guidedSteps = [
     {

@@ -75,6 +75,11 @@ r ∈ [0, 4], &nbsp; x ∈ [0, 1]
 <p>The ratios of successive bifurcation intervals converge to δ ≈ 4.6692... and the scaling of the attractor converges to α ≈ 2.5029... These constants are <em>universal</em> — they appear in any system undergoing period-doubling, regardless of the specific function. This is one of the most remarkable discoveries in chaos theory.</p>`;
   static extensions = ['bifurcation-2d', 'henon', 'mandelbrot-logistic-3d', 'coupled-systems'];
   static teaserQuestion = 'Where exactly does a simple equation break into chaos?';
+  static resources = [
+    { type: 'youtube', title: 'Veritasium — This equation will change how you see the world', url: 'https://www.youtube.com/watch?v=ovJcsL7vyrk' },
+    { type: 'wikipedia', title: 'Logistic map', url: 'https://en.wikipedia.org/wiki/Logistic_map' },
+    { type: 'wolfram', title: 'Logistic Map', url: 'https://mathworld.wolfram.com/LogisticMap.html' },
+  ];
 
   static guidedSteps = [
     {

@@ -33,6 +33,7 @@ section gets a distinct hue.</p>`;
   static foundations = ['rose-curves'];
   static extensions = ['heart-curve'];
   static teaserQuestion = 'Can one equation draw a butterfly?';
+  static resources = [{ type: 'wikipedia', title: 'Butterfly curve', url: 'https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

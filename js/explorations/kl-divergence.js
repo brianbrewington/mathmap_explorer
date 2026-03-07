@@ -33,6 +33,7 @@ class KLDivergenceExploration extends BaseExploration {
   static foundations = ['surprise-entropy'];
   static extensions = ['shannon-boltzmann'];
   static teaserQuestion = 'Why does KL divergence care which distribution is "true"?';
+  static resources = [{ type: 'wikipedia', title: 'Kullback-Leibler divergence', url: 'https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence' }];
   static formulaShort = 'D_KL(P‖Q) = Σ p·log(p/q)';
   static formula = `<h3>Kullback-Leibler Divergence</h3>
 <div class="formula-block">

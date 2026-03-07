@@ -69,12 +69,20 @@ dy/dt = g(x, y)
 <p>Fixed points are classified by the eigenvalues of the Jacobian:
 stable node (both negative real), unstable node (both positive real),
 saddle (opposite signs), spiral (complex eigenvalues).</p>`;
-  static tutorial = `<h3>How to Explore</h3>
+  static tutorial = `<h3>Seeing All Futures at Once</h3>
+<p>A phase portrait shows every possible trajectory of a 2D dynamical system
+in a single picture. Instead of asking "what happens from this initial condition?"
+you see the answer for <em>all</em> initial conditions simultaneously.</p>
+<p><strong>Nullclines</strong> (green and orange curves) are where one component of velocity
+is zero. Fixed points lie at their intersections — equilibria where the system
+stays put. The type of fixed point (stable, unstable, saddle, spiral) determines
+the local flow pattern.</p>
+<h4>Experiments</h4>
 <ul>
-  <li><strong>Choose a preset</strong> or type your own expressions using x, y, and standard math operators (+ - * / ^).</li>
-  <li><strong>Click on the canvas</strong> to launch trajectories from that initial condition.</li>
-  <li><strong>Nullclines:</strong> green where dx/dt=0, orange where dy/dt=0. Fixed points are at intersections.</li>
-  <li><strong>Fixed point symbols:</strong> ● stable, ○ unstable, ◇ saddle, ◎ spiral.</li>
+<li><strong>Click on the canvas</strong> to launch trajectories from any initial condition.</li>
+<li>Try each preset and identify the fixed point types: ● stable, ○ unstable, ◇ saddle, ◎ spiral.</li>
+<li>The <strong>Van der Pol</strong> preset has a limit cycle — all trajectories converge to the same closed loop.</li>
+<li>Type your own equations to create custom vector fields.</li>
 </ul>`;
   static overview = `<p>This is the Swiss army knife for rebuilding ODE intuition. Every 2D autonomous
 system can be understood through its phase portrait: the interplay of nullclines, fixed
@@ -82,6 +90,37 @@ points, and the trajectories connecting them.</p>`;
   static foundations = ['derivative-definition'];
   static extensions = ['lorenz-attractor', 'ode-integrator'];
   static teaserQuestion = 'Can you predict the trajectory from a given start just by looking at the vector field?';
+  static resources = [
+    { type: 'wikipedia', title: 'Phase portrait', url: 'https://en.wikipedia.org/wiki/Phase_portrait' },
+    { type: 'youtube', title: 'Steve Brunton — Phase Portraits', url: 'https://www.youtube.com/watch?v=R7gMOBZFKQ0' },
+  ];
+  static guidedSteps = [
+    {
+      label: 'Harmonic Oscillator',
+      description: 'A center: trajectories form closed ellipses around the origin. No energy is gained or lost — the system orbits forever. Click to see perfect closed orbits.',
+      params: { preset: 'harmonic', dxExpr: 'y', dyExpr: '-x', showNullclines: true, showField: true, arrowDensity: 20 },
+    },
+    {
+      label: 'Saddle Point',
+      description: 'The origin is a saddle: trajectories approach along one direction and flee along another. The nullclines cross at the origin. Click near the axes to see the separating behavior.',
+      params: { preset: 'saddle', dxExpr: 'x', dyExpr: '-y', showNullclines: true, showField: true, arrowDensity: 20 },
+    },
+    {
+      label: 'Spiral Sink',
+      description: 'A stable spiral: trajectories wind inward toward the origin, combining rotation with decay. This is what damped oscillation looks like in phase space.',
+      params: { preset: 'spiral_sink', dxExpr: '-0.5*x - y', dyExpr: 'x - 0.5*y', showNullclines: true, showField: true, arrowDensity: 20 },
+    },
+    {
+      label: 'Limit Cycle',
+      description: 'The Van der Pol oscillator has a stable limit cycle — all trajectories are drawn to the same closed loop regardless of starting point. Click both inside and outside the loop.',
+      params: { preset: 'vanderpol', dxExpr: 'y', dyExpr: '(1 - x*x)*y - x', showNullclines: true, showField: true, arrowDensity: 20 },
+    },
+    {
+      label: 'Predator-Prey',
+      description: 'The Lotka-Volterra equations: prey and predator populations oscillate around a fixed point. Click to see closed orbits — periodic boom-and-bust cycles.',
+      params: { preset: 'predator_prey', dxExpr: 'x*(1 - 0.5*y)', dyExpr: 'y*(-1 + 0.5*x)', showNullclines: true, showField: true, arrowDensity: 20, xMin: -1, xMax: 8 },
+    },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

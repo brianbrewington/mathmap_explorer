@@ -53,9 +53,78 @@ and how strong they are.</p>
 <li>Add <strong>DC Bias</strong> to break symmetry and reveal even harmonics in otherwise odd-only curves.</li>
 <li>Change <strong>Input Frequency</strong> to shift where harmonics land in the spectrum.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Soft clip baseline',
+      description: 'Start with tanh curve and moderate drive, then measure mostly odd harmonics.',
+      params: { curve: 'tanh', drive: 1.0, bias: 0, inputFreq: 2 }
+    },
+    {
+      label: 'Hard clipping harmonics',
+      description: 'Increase drive in hard clip mode and verify stronger high-order odd harmonics.',
+      params: { curve: 'hard', drive: 3.5, bias: 0, inputFreq: 2 }
+    },
+    {
+      label: 'Even harmonics from asymmetry',
+      description: 'Add bias with asymmetric curve and observe even harmonics appear.',
+      params: { curve: 'asym', drive: 2.5, bias: 0.35, inputFreq: 2 }
+    },
+  ];
+  static circuitDiagram = ` Vin ~ ---[Rin]---o---- Vout
+                    | 
+                   |>| D1
+                    |
+                   GND
+              (optionally mirrored diode for symmetric clip)`;
+  static probeMap = [
+    {
+      model: 'x(t)',
+      node: 'Input node',
+      measure: 'Scope CH1 at generator output',
+      expect: 'Reference sine wave',
+    },
+    {
+      model: 'y(t)=f(x)',
+      node: 'Clipped output node',
+      measure: 'Scope CH2 at output after nonlinear element',
+      expect: 'Flattened/warped waveform depending on clipping mode',
+    },
+    {
+      model: 'FFT bins',
+      node: 'Spectral content',
+      measure: 'Use FFT mode on CH2',
+      expect: 'Odd-only for symmetric clip, odd+even when biased/asymmetric',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'drive',
+      component: 'Input amplitude and/or pre-gain',
+      benchRange: '0.1 Vpp to several Vpp',
+      impact: 'Stronger clipping produces richer harmonics',
+    },
+    {
+      control: 'bias',
+      component: 'DC offset at clipper input',
+      benchRange: '-1 V to +1 V offset',
+      impact: 'Breaks symmetry and introduces even harmonics',
+    },
+    {
+      control: 'curve',
+      component: 'Nonlinear device choice',
+      benchRange: 'Silicon diode, LED, op-amp shaper, wavefolder',
+      impact: 'Defines transfer shape and harmonic fingerprint',
+    },
+  ];
+  static benchChecklist = [
+    'Use AC coupling only if you intentionally want DC bias removed.',
+    'Confirm diode orientation before comparing symmetric vs asymmetric clipping.',
+    'Avoid overdriving oscilloscope input when using large drive settings.',
+  ];
   static foundations = ['fourier-synthesis'];
   static extensions = [];
   static teaserQuestion = 'Where do all those extra harmonics come from?';
+  static resources = [{ type: 'wikipedia', title: 'Clipper (electronics)', url: 'https://en.wikipedia.org/wiki/Clipper_(electronics)' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

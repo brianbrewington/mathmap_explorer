@@ -50,6 +50,7 @@ v -= 0.5 * gradient(pressure);</code></pre>
   static foundations = ['coupled-systems'];
   static extensions = ['vortex-shedding'];
   static teaserQuestion = 'Can you see turbulence emerge from smooth flow?';
+  static resources = [{ type: 'wikipedia', title: 'Navier-Stokes equations', url: 'https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations' }];
 
   static guidedSteps = [
     {

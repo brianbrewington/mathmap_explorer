@@ -37,9 +37,82 @@ amplitude on a limit cycle.</p>`;
   <li><strong>Damping vs gain:</strong> increase <em>Loss</em> — you'll need more gain to
   sustain oscillation.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure startup from noise',
+      description: 'Reset and watch amplitude build until nonlinear limiting stabilizes the waveform.',
+      params: { c1: 1e-6, c2: 1e-6, L: 0.01, gain: 1.5, damping: 0.1 }
+    },
+    {
+      label: 'Retune tank frequency',
+      description: 'Increase C values and verify lower oscillation frequency in spectrum panel.',
+      params: { c1: 3e-6, c2: 3e-6, L: 0.01, gain: 1.5, damping: 0.1 }
+    },
+    {
+      label: 'Find oscillation threshold',
+      description: 'Reduce gain until oscillation decays, then raise gain to recover sustained oscillation.',
+      params: { gain: 0.7, damping: 0.15 }
+    },
+  ];
+  static circuitDiagram = `          +V
+           |
+      [Amplifier]
+           |
+           o---- L ----o
+           |           |
+          C1          C2
+           |           |
+          GND         GND
+   (feedback taken from C-divider node)`;
+  static probeMap = [
+    {
+      model: 'x(t)',
+      node: 'Tank voltage node',
+      measure: 'Scope CH1 at LC node to ground',
+      expect: 'Growing sinusoid that settles to steady amplitude',
+    },
+    {
+      model: 'f0',
+      node: 'Oscillation frequency',
+      measure: 'Read fundamental peak in FFT or scope frequency counter',
+      expect: 'Tracks 1/(2*pi*sqrt(L*Cseries))',
+    },
+    {
+      model: 'gain,damping',
+      node: 'Startup envelope',
+      measure: 'Observe peak-to-peak growth/decay over time',
+      expect: 'Growth when loop gain > loss, decay when below threshold',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'c1,c2',
+      component: 'Capacitive divider in tank',
+      benchRange: '100 pF to 10 nF',
+      impact: 'Sets effective series capacitance and feedback ratio',
+    },
+    {
+      control: 'L',
+      component: 'Tank inductor',
+      benchRange: '10 uH to 10 mH',
+      impact: 'Higher L lowers resonant frequency',
+    },
+    {
+      control: 'gain',
+      component: 'Amplifier transconductance / bias',
+      benchRange: 'Bias current or emitter/source resistor tuning',
+      impact: 'Controls startup and steady-state amplitude',
+    },
+  ];
+  static benchChecklist = [
+    'Confirm transistor/op-amp bias point before expecting oscillation startup.',
+    'Use short leads around the tank to reduce stray capacitance shifts.',
+    'If oscillation clips hard, reduce gain or add emitter/source degeneration.',
+  ];
   static foundations = ['simple-harmonic', 'rlc-filter'];
   static extensions = [];
   static teaserQuestion = 'How does a circuit decide what note to sing?';
+  static resources = [{ type: 'wikipedia', title: 'Colpitts oscillator', url: 'https://en.wikipedia.org/wiki/Colpitts_oscillator' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

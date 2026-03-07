@@ -35,6 +35,7 @@ depending on the frequency relationship.</p>`;
   static foundations = ['unit-circle', 'complex-spiral'];
   static extensions = [];
   static teaserQuestion = 'Why do engineers represent waves as spinning arrows?';
+  static resources = [{ type: 'wikipedia', title: 'Phasor', url: 'https://en.wikipedia.org/wiki/Phasor' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

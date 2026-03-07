@@ -32,6 +32,9 @@ Your score is based on mean squared error over sampled points.</p>`;
   static foundations = ['taylor-series', 'taylor-approximation'];
   static extensions = ['fourier-synthesis'];
   static teaserQuestion = 'Can you beat the built-in Taylor guess by hand?';
+  static resources = [
+    { type: 'wikipedia', title: 'Curve fitting', url: 'https://en.wikipedia.org/wiki/Curve_fitting' },
+  ];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

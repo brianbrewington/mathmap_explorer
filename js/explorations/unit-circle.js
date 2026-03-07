@@ -31,6 +31,10 @@ views of the same phenomenon.</p>`;
   static foundations = [];
   static extensions = ['lissajous'];
   static teaserQuestion = 'Why does going in circles create waves?';
+  static resources = [
+    { type: 'wikipedia', title: 'Unit circle', url: 'https://en.wikipedia.org/wiki/Unit_circle' },
+    { type: 'youtube', title: 'Khan Academy — Unit circle', url: 'https://www.youtube.com/watch?v=1m9p9iubMLU' },
+  ];
 
   static guidedSteps = [
     {

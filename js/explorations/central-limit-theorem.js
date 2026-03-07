@@ -10,6 +10,7 @@ class CentralLimitTheoremExploration extends BaseExploration {
   static foundations = [];
   static extensions = ['random-walk'];
   static teaserQuestion = 'Why does everything in nature end up looking like a bell curve?';
+  static resources = [{ type: 'youtube', title: '3B1B — Central Limit Theorem', url: 'https://www.youtube.com/watch?v=zeJD6dqJ5lo' }, { type: 'wikipedia', title: 'Central limit theorem', url: 'https://en.wikipedia.org/wiki/Central_limit_theorem' }];
   static formulaShort = 'f<sub>X+Y</sub> = f<sub>X</sub> * f<sub>Y</sub>';
   static formula = `<h3>Central Limit Theorem</h3>
 <div class="formula-block">

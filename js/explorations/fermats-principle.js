@@ -10,6 +10,7 @@ class FermatsPrincipleExploration extends BaseExploration {
   static foundations = ['least-action-paths'];
   static extensions = ['laplacian-growth'];
   static teaserQuestion = 'Why does light bend when it enters water?';
+  static resources = [{ type: 'wikipedia', title: 'Fermat\'s principle', url: 'https://en.wikipedia.org/wiki/Fermat%27s_principle' }];
   static formulaShort = 'sin θ₁ / sin θ₂ = v₁ / v₂';
   static formula = `<h3>Fermat&rsquo;s Principle</h3>
 <div class="formula-block">

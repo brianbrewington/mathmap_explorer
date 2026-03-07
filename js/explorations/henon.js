@@ -37,6 +37,7 @@ for (let i = 0; i < iterations; i++) {
   static foundations = ['dejong'];
   static extensions = ['logistic-map', 'coupled-systems'];
   static teaserQuestion = 'Can a simple map create structure that never repeats?';
+  static resources = [{ type: 'wikipedia', title: 'Hénon map', url: 'https://en.wikipedia.org/wiki/H%C3%A9non_map' }];
 
   static guidedSteps = [
     {

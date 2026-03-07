@@ -20,18 +20,30 @@ integer multiples of a fundamental frequency &mdash; the <em>Fourier series</em>
 <p>A square wave uses only <strong>odd harmonics</strong> (1, 3, 5, &hellip;) with amplitudes
 that decrease as 1/k. As more harmonics are added the approximation sharpens, though the
 <em>Gibbs phenomenon</em> keeps an overshoot at the discontinuities.</p>`;
-  static tutorial = `<h3>How Fourier Synthesis Works</h3>
-<p>We sum odd-harmonic sines up to a maximum order n:</p>
+  static tutorial = `<h3>Building Any Shape from Sine Waves</h3>
+<p>Joseph Fourier discovered something astonishing: <em>any</em> periodic signal can be built
+by adding up sine waves. A square wave? That's an infinite sum of odd harmonics.
+The more harmonics you add, the sharper the corners become.</p>
 <pre><code class="language-js">let sum = 0;
-for (let k = 1; k &lt;= n; k += 2) {
+for (let k = 1; k <= n; k += 2) {
   sum += (1 / k) * Math.sin(k * omega * t);
 }
 y = sum * amplitude * (4 / Math.PI);</code></pre>
-<p>Increase the harmonic count to watch the sum converge toward the ideal square wave. Individual
-harmonics are shown as faint curves so you can see each contribution.</p>`;
-  static foundations = [];
-  static extensions = [];
+<h4>Experiments</h4>
+<ul>
+<li>Start with 1 harmonic — just a smooth sine wave.</li>
+<li>Add harmonics one by one and watch the wave deform toward a square.</li>
+<li>At 15 harmonics, notice the small overshoot at the corners — this is the
+<strong>Gibbs phenomenon</strong>, and it never disappears, even with infinite harmonics.</li>
+<li>The faint curves show each harmonic's individual contribution to the sum.</li>
+</ul>`;
+  static foundations = ['sine-cosine', 'unit-circle'];
+  static extensions = ['taylor-series'];
   static teaserQuestion = 'Can you build any shape from pure sine waves?';
+  static resources = [
+    { type: 'youtube', title: '3B1B — But what is a Fourier series?', url: 'https://www.youtube.com/watch?v=r6sGWTCMz2k' },
+    { type: 'wikipedia', title: 'Fourier series', url: 'https://en.wikipedia.org/wiki/Fourier_series' },
+  ];
 
   static guidedSteps = [
     {

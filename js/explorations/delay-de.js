@@ -68,6 +68,7 @@ deceptively simple equations.</p>`;
   static foundations = ['lorenz-attractor', 'phase-space'];
   static extensions = ['bifurcation-anatomy', 'chua-circuit'];
   static teaserQuestion = 'How can a single-variable ODE produce chaos just by adding a delay?';
+  static resources = [{ type: 'wikipedia', title: 'Delay differential equation', url: 'https://en.wikipedia.org/wiki/Delay_differential_equation' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

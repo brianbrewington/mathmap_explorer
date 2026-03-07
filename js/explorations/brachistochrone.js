@@ -12,6 +12,7 @@ class BrachistochroneExploration extends BaseExploration {
   static foundations = ['least-action-paths'];
   static extensions = [];
   static teaserQuestion = 'Which ramp shape gets a ball from A to B fastest?';
+  static resources = [{ type: 'youtube', title: 'Vsauce — Brachistochrone', url: 'https://www.youtube.com/watch?v=skvnj67YGmw' }, { type: 'wikipedia', title: 'Brachistochrone curve', url: 'https://en.wikipedia.org/wiki/Brachistochrone_curve' }];
   static formulaShort = 'x = R(θ − sinθ), y = R(1 − cosθ)';
   static formula = `<h3>The Brachistochrone Problem</h3>
 <div class="formula-block">

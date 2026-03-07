@@ -32,9 +32,10 @@ collapses to a line segment; at &delta;&nbsp;=&nbsp;&pi;/2 with a&nbsp;=&nbsp;b 
 }</code></pre>
 <p>Integer frequency ratios produce closed curves with a fixed number of lobes. Try a=3, b=2 for a
 classic "figure-8" variant, or a=5, b=4 for a more complex knot.</p>`;
-  static foundations = [];
-  static extensions = ['unit-circle'];
+  static foundations = ['unit-circle', 'sine-cosine'];
+  static extensions = ['epitrochoid'];
   static teaserQuestion = 'What shapes emerge when two vibrations meet?';
+  static resources = [{ type: 'wikipedia', title: 'Lissajous curve', url: 'https://en.wikipedia.org/wiki/Lissajous_curve' }];
 
   static guidedSteps = [
     {

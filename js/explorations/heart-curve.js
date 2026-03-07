@@ -35,6 +35,7 @@ heart shape.</p>`;
   static foundations = ['unit-circle', 'fourier-synthesis'];
   static extensions = ['rose-curves'];
   static teaserQuestion = 'What does love look like in polar coordinates?';
+  static resources = [{ type: 'wolfram', title: 'Heart Curve', url: 'https://mathworld.wolfram.com/HeartCurve.html' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

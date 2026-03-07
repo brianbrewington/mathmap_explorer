@@ -45,10 +45,84 @@ topologies — from single-wing butterflies to double-wing strange attractors.</
   <li><strong>Try different initial conditions:</strong> reset and tweak starting values
       to reveal hidden attractors that share the same parameter set.</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure butterfly baseline',
+      description: 'Start from butterfly preset and record x-y phase trace shape.',
+      params: { preset: 'butterfly', alpha: 10, beta: 14.87, a: -1.27, b: 0.68 }
+    },
+    {
+      label: 'Compare double-wing regime',
+      description: 'Switch to double-wing parameters and verify lobe occupancy changes.',
+      params: { preset: 'double_wing', alpha: 12, beta: 15.5, a: -1.0, b: 0.5 }
+    },
+    {
+      label: 'Find near-periodic behavior',
+      description: 'Move to periodic preset and check for closed-orbit signatures.',
+      params: { preset: 'periodic', alpha: 8, beta: 12, a: -0.8, b: 0.3 }
+    },
+  ];
+  static circuitDiagram = `   +V
+    |
+   [R]
+    |
+   o---- C1 ---- GND
+   |
+ [Memristor W(phi)]
+   |
+   o---- L ---- C2 ---- GND
+    |
+   GND`;
+  static probeMap = [
+    {
+      model: 'x',
+      node: 'Primary capacitor node',
+      measure: 'Scope CH1 at C1 node',
+      expect: 'Main fast state participating in chaotic switching',
+    },
+    {
+      model: 'phi',
+      node: 'Memristor internal state proxy',
+      measure: 'Integrate memristor terminal voltage/current estimate',
+      expect: 'Slow state that reshapes effective conductance',
+    },
+    {
+      model: 'W(phi)',
+      node: 'Instantaneous memristance',
+      measure: 'Compute v/i from simultaneous voltage and current probes',
+      expect: 'State-dependent resistance bends attractor topology',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'a',
+      component: 'Baseline memristance term',
+      benchRange: 'Bias term in emulator transfer function',
+      impact: 'Shifts average conductance level',
+    },
+    {
+      control: 'b',
+      component: 'Nonlinear memory coefficient',
+      benchRange: 'Quadratic shaping gain in memristor emulator',
+      impact: 'Controls attractor wing splitting and complexity',
+    },
+    {
+      control: 'alpha,beta',
+      component: 'Linear network scaling around memristor',
+      benchRange: 'Tune RC/L branch values',
+      impact: 'Changes oscillation rate and boundedness',
+    },
+  ];
+  static benchChecklist = [
+    'Use current sensing for memristor branch; voltage-only probing hides key state behavior.',
+    'Verify emulator does not rail-limit before interpreting attractor changes.',
+    'Repeat runs from multiple initial conditions to expose coexisting attractors.',
+  ];
   static foundations = ['chua-circuit'];
   static extensions = [];
   static teaserQuestion =
     'What if a resistor could remember how much current flowed through it?';
+  static resources = [{ type: 'wikipedia', title: 'Memristor', url: 'https://en.wikipedia.org/wiki/Memristor' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

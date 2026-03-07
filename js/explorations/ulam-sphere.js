@@ -12,6 +12,7 @@ class UlamSphereExploration extends BaseExploration {
   static foundations = ['ulam-spiral'];
   static extensions = [];
   static teaserQuestion = 'Do prime patterns survive the jump from 2D spirals to 3D spheres?';
+  static resources = [{ type: 'wikipedia', title: 'Ulam spiral', url: 'https://en.wikipedia.org/wiki/Ulam_spiral' }];
   static formulaShort = 'Shell k: 6k points via Fibonacci sphere; highlight primes';
   static formula = `<h3>Ulam Sphere</h3>
 <div class="formula-block">

@@ -34,6 +34,7 @@ through P to the axes.</p>`;
   static foundations = ['sine-cosine'];
   static extensions = ['wave-identities'];
   static teaserQuestion = 'Can you see a trig identity?';
+  static resources = [{ type: 'wikipedia', title: 'Pythagorean trigonometric identity', url: 'https://en.wikipedia.org/wiki/Pythagorean_trigonometric_identity' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

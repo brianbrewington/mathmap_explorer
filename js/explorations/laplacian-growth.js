@@ -10,6 +10,7 @@ class LaplacianGrowthExploration extends BaseExploration {
   static foundations = ['reaction-diffusion'];
   static extensions = [];
   static teaserQuestion = 'Why do lightning bolts, river deltas, and cracked mud all branch the same way?';
+  static resources = [{ type: 'wikipedia', title: 'Diffusion-limited aggregation', url: 'https://en.wikipedia.org/wiki/Diffusion-limited_aggregation' }];
   static formulaShort = 'P(grow) ∝ |∇φ|^η, ∇²φ = 0';
   static formula = `<h3>Dielectric Breakdown / Laplacian Growth</h3>
 <div class="formula-block">

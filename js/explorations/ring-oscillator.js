@@ -30,9 +30,76 @@ target<sub>i</sub> = V<sub>dd</sub> · (1 &minus; tanh(gain · (V<sub>i&minus;1<
   <li><strong>Change gate delay &tau;</strong> to speed up or slow down the ring.</li>
   <li><strong>Odd stages oscillate</strong> while even stages latch to a fixed state — try it!</li>
 </ul>`;
+  static guidedSteps = [
+    {
+      label: 'Measure nominal oscillation',
+      description: 'Start with 5 stages and compare measured frequency with the 1/(2*N*tau) estimate.',
+      params: { stages: 5, gateDelay: 0.05, gain: 10 }
+    },
+    {
+      label: 'Verify stage-count scaling',
+      description: 'Increase stage count and confirm period increases roughly linearly with N.',
+      params: { stages: 11 }
+    },
+    {
+      label: 'Check latch behavior',
+      description: 'Reduce inverter sharpness to approach metastable/latching behavior and inspect node waveforms.',
+      params: { stages: 5, gain: 2.5, gateDelay: 0.05 }
+    },
+  ];
+  static circuitDiagram = ` [INV1] -> [INV2] -> [INV3] -> ... -> [INVN]
+    ^                                   |
+    |-----------------------------------|
+   (N must be odd for oscillation)`;
+  static probeMap = [
+    {
+      model: 'V_i',
+      node: 'Each inverter output node',
+      measure: 'Probe any two adjacent inverter outputs with CH1/CH2',
+      expect: 'Roughly opposite logic levels with finite delay',
+    },
+    {
+      model: 'f_theo',
+      node: 'Ring output frequency',
+      measure: 'Measure one node period with scope frequency counter',
+      expect: 'f ~= 1/(2*N*tau) in steady operation',
+    },
+    {
+      model: 'gain',
+      node: 'Inverter transfer steepness',
+      measure: 'Observe rise/fall edge softness in node waveforms',
+      expect: 'Lower gain broadens transitions and can suppress oscillation',
+    },
+  ];
+  static benchMap = [
+    {
+      control: 'stages',
+      component: 'Number of inverter stages in loop',
+      benchRange: '3 to 15 stages',
+      impact: 'Higher N lowers oscillation frequency',
+    },
+    {
+      control: 'gateDelay',
+      component: 'Per-stage propagation delay',
+      benchRange: 'Use logic families with 2 ns to 20 ns delays',
+      impact: 'Longer delay lowers oscillation frequency',
+    },
+    {
+      control: 'gain',
+      component: 'Effective inverter transition sharpness',
+      benchRange: 'Varies with supply voltage and logic family',
+      impact: 'Low sharpness can stall oscillation',
+    },
+  ];
+  static benchChecklist = [
+    'Use an odd number of inverters; even counts tend to latch.',
+    'Keep loop wiring short to reduce added parasitic delay uncertainty.',
+    'Measure supply voltage at the IC while oscillating to catch droop-induced jitter.',
+  ];
   static foundations = ['relaxation-oscillator'];
   static extensions = [];
   static teaserQuestion = "Can you make something oscillate just by saying 'not' enough times?";
+  static resources = [{ type: 'wikipedia', title: 'Ring oscillator', url: 'https://en.wikipedia.org/wiki/Ring_oscillator' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

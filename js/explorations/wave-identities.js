@@ -36,6 +36,7 @@ double-angle and power-reduction identities the same way.</p>`;
   static foundations = ['sine-cosine', 'trig-identities-circle'];
   static extensions = ['fourier-synthesis'];
   static teaserQuestion = 'What happens when two waves collide?';
+  static resources = [{ type: 'wikipedia', title: 'List of trigonometric identities', url: 'https://en.wikipedia.org/wiki/List_of_trigonometric_identities' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
