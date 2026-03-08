@@ -60,6 +60,10 @@ The order parameter $R$ measures how synchronized the population is.</p>`;
   <li><strong>Coupling:</strong> increase K to drive alignment.</li>
   <li><strong>Strip Chart:</strong> each colored track shows one fly phase over time.</li>
 </ul>`;
+  static overview = `<p>Fireflies are modeled as Kuramoto-like phase oscillators with tunable natural-frequency
+spread and coupling strength. When coupling exceeds a critical threshold the population
+locks into synchronized flashing \u2014 a phase transition visible in the order-parameter
+strip chart and the collective blink pattern.</p>`;
   static foundations = ['coupled-systems', 'phase-space'];
   static extensions = ['coupled-metronomes', 'reaction-diffusion'];
   static teaserQuestion = 'How strong must coupling be before a crowd blinks together?';

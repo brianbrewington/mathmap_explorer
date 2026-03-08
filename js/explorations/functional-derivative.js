@@ -13,6 +13,10 @@ class FunctionalDerivativeExploration extends BaseExploration {
   static title = 'Functional Derivative';
   static description = 'δS/δy(t) is the "partial derivative with respect to the coordinate at time t." One gradient component per point.';
   static tags = ['calculus', 'physics', 'advanced', 'numerical-methods'];
+  static overview = `<p>The functional derivative \u03B4S/\u03B4y(t) generalizes the partial derivative to function
+space: it tells you how the action changes when the path is nudged at a single point t.
+Where the gradient vanishes the path is optimal, recovering the Euler\u2013Lagrange equation
+in the continuous limit.</p>`;
   static foundations = ['discrete-path-action'];
   static extensions = ['euler-lagrange-bridge'];
   static teaserQuestion = 'What is the gradient of the action with respect to the path?';

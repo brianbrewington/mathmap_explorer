@@ -7,6 +7,10 @@ class ModularMultiplicationCircleExploration extends BaseExploration {
   static description = 'Times tables on a circle — connect i to (i×k) mod N and watch cardioids, nephroids, and epicycloids emerge from modular arithmetic.';
   static category = '';
   static tags = ['number-theory', 'iteration', 'beginner'];
+  static overview = `<p>Place N points on a circle and draw a line from each point i to (i\u00D7k) mod N.
+Depending on the multiplier k, cardioids, nephroids, and epicycloids emerge from
+pure modular arithmetic. Sweeping k continuously reveals how these families of
+curves transform into one another.</p>`;
   static foundations = ['roots-of-unity'];
   static extensions = ['ulam-spiral'];
   static teaserQuestion = 'How does a simple multiplication table draw a perfect cardioid?';

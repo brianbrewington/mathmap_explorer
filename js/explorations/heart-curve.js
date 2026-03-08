@@ -34,6 +34,10 @@ const x = 16 * Math.pow(Math.sin(t), 3);</code></pre>
 <p>Start with 1 harmonic (just 13&middot;cos&nbsp;t) to see a lopsided ellipse, then add
 each successive term to watch the dip at the top deepen into the characteristic
 heart shape.</p>`;
+  static overview = `<p>A parametric heart curve is built from a small set of cosine harmonics whose
+coefficients are tuned to produce the iconic heart shape. Each harmonic adds one
+frequency component, illustrating Fourier synthesis in a visually memorable form.
+Toggle individual harmonics to see how they combine into the final outline.</p>`;
   static foundations = ['unit-circle', 'fourier-synthesis'];
   static extensions = ['rose-curves'];
   static teaserQuestion = 'What does love look like in polar coordinates?';

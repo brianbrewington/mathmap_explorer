@@ -7,6 +7,10 @@ class PascalsTriangleExploration extends BaseExploration {
   static description = "Binomial coefficients with modular coloring — mod 2 reveals the Sierpinski gasket.";
   static category = 'map';
   static tags = ['fractals', 'iteration', 'beginner'];
+  static overview = `<p>Pascal\u2019s triangle arranges the binomial coefficients C(n,k) in a triangular grid
+where each entry is the sum of the two above it. Coloring entries by their value
+mod p reveals striking fractal patterns \u2014 mod 2 produces the Sierpinski gasket,
+while higher primes uncover nested self-similar structures of their own.</p>`;
   static foundations = ['sierpinski'];
   static extensions = [];
   static teaserQuestion = 'How much structure is hiding in a triangle of numbers?';

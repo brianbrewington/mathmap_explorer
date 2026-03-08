@@ -7,6 +7,10 @@ class FermatsPrincipleExploration extends BaseExploration {
   static description = "Drag the refraction point along the interface and watch Snell's law emerge from minimum travel time";
   static category = '';
   static tags = ['physics', 'simulation', 'intermediate'];
+  static overview = `<p>Fermat\u2019s principle states that light follows the path of least travel time.
+Drag the refraction point along the interface between two media and watch
+Snell\u2019s law emerge: the refraction angle that minimizes total time exactly
+matches the ratio of wave speeds predicted by n\u2081 sin \u03B8\u2081 = n\u2082 sin \u03B8\u2082.</p>`;
   static foundations = ['least-action-paths'];
   static extensions = ['laplacian-growth'];
   static teaserQuestion = 'Why does light bend when it enters water?';

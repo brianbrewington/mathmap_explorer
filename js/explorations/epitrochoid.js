@@ -33,6 +33,10 @@ for (let i = 0; i &lt;= steps; i++) {
 }</code></pre>
 <p>The curve closes when R/r is rational. Try R&nbsp;=&nbsp;5, r&nbsp;=&nbsp;3 for classic five-lobed
 patterns, or set r to an irrational fraction of R for space-filling paths.</p>`;
+  static overview = `<p>An epitrochoid is the curve traced by a pen on a small circle rolling around
+the outside of a larger circle \u2014 the mathematics behind Spirograph toys. Rational
+radius ratios produce closed patterns that repeat after a finite number of loops;
+irrational ratios generate space-filling paths that never exactly close.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['rose-curves'];
   static teaserQuestion = 'What happens when a circle rolls around another circle?';

@@ -30,6 +30,10 @@ class KLDivergenceExploration extends BaseExploration {
   static description = 'Compare two distributions and visualize the asymmetry of Kullback-Leibler divergence';
   static category = '';
   static tags = ['information-theory', 'simulation', 'intermediate'];
+  static overview = `<p>Kullback\u2013Leibler divergence D_KL(P\u2016Q) measures how much distribution P
+diverges from a reference Q, in units of extra bits. Crucially, it is asymmetric:
+D_KL(P\u2016Q) \u2260 D_KL(Q\u2016P). Side-by-side bar charts and divergence gauges make
+this asymmetry visually obvious. Swap P and Q to see the difference directly.</p>`;
   static foundations = ['surprise-entropy'];
   static extensions = ['shannon-boltzmann'];
   static teaserQuestion = 'Why does KL divergence care which distribution is "true"?';

@@ -30,6 +30,10 @@ const totalY = z1y + z2y;</code></pre>
 <p>The upper half shows the phasor diagram (complex plane). The lower half shows
 Re(z<sub>total</sub>) as a time-domain waveform, revealing beats or standing-wave patterns
 depending on the frequency relationship.</p>`;
+  static overview = `<p>Phasor diagrams represent sinusoidal signals as rotating complex vectors. Two
+phasors are summed tip-to-tail to visualize interference; the resulting amplitude
+and phase depend on the relative frequency and phase offset. A synchronized
+time-domain waveform shows the real-valued signal each phasor represents.</p>`;
   static foundations = ['unit-circle', 'complex-spiral'];
   static extensions = [];
   static teaserQuestion = 'Why do engineers represent waves as spinning arrows?';

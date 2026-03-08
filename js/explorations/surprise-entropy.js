@@ -7,6 +7,11 @@ class SurpriseEntropyExploration extends BaseExploration {
   static description = 'Drag probability bars to see how Shannon entropy measures the average surprise of a distribution';
   static category = '';
   static tags = ['information-theory', 'simulation', 'beginner'];
+  static overview = `<p>Shannon entropy measures the average surprise of a probability distribution.
+Drag the probability bars to reshape the distribution and watch the entropy
+gauge respond: a uniform distribution maximizes entropy while a peaked one
+minimizes it. Surprise markers on each bar show how rare events carry more
+information than common ones.</p>`;
   static foundations = [];
   static extensions = ['source-coding', 'noisy-channel', 'kl-divergence'];
   static teaserQuestion = 'Which distribution is the most surprising on average?';

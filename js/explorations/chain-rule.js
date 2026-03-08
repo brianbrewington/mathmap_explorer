@@ -31,6 +31,10 @@ is first stretched by f'(a) to produce du, then by g'(f(a)) to produce dy.
 The final bar length equals the chain rule product.</p>
 <p>Drag <em>a</em> across the domain to see how the derivative of the composition varies.
 Notice that when either f' or g' is zero, the composition's derivative is also zero.</p>`;
+  static overview = `<p>The chain rule says the derivative of a composition g(f(x)) is g\u2019(f(x))\u00B7f\u2019(x).
+Three linked panels show f, g, and g\u2218f with tangent lines at the current point.
+Stretching bars visualize how a small change dx is first scaled by f\u2019 into du, then
+by g\u2019 into dy \u2014 making the multiplicative nature of the chain rule tangible.</p>`;
   static foundations = ['derivative-definition'];
   static extensions = [];
   static teaserQuestion = 'Why do rates of change multiply when functions compose?';

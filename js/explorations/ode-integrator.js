@@ -91,37 +91,43 @@ const METHODS = {
   euler:    { label: 'Euler',    color: '#f87171', step: eulerStep },
   midpoint: { label: 'Midpoint', color: '#fbbf24', step: midpointStep },
   rk4:      { label: 'RK4',     color: '#34d399', step: rk4Step },
-  rkf45:    { label: 'RKF45',   color: '#60a5fa', step: rkf45Step },
+  rkf45:    { label: 'RK5 (Fehlberg)',   color: '#60a5fa', step: rkf45Step },
 };
 
 class ODEIntegratorExploration extends BaseExploration {
   static id = 'ode-integrator';
   static title = 'ODE Integrator Playground';
-  static description = 'Compare Euler, Midpoint, RK4 and RKF45 on the same ODE — see how method choice and step size affect accuracy.';
+  static description = 'Compare Euler, Midpoint, RK4 and RK5 (Fehlberg) on the same ODE — see how method choice and step size affect accuracy.';
   static tags = [
     'dynamical-systems', 'numerical-methods', 'beginner',
     'ode-integration', 'pedagogy',
   ];
-  static formulaShort = "dy/dt = f(t,y) — Euler vs Midpoint vs RK4 vs RKF45";
+  static formulaShort = "dy/dt = f(t,y) — Euler vs Midpoint vs RK4 vs RK5 (Fehlberg)";
   static formula = `<h3>Numerical ODE Integration</h3>
 <div class="formula-block">
-$$\\begin{aligned} \\textbf{Euler:}\\quad y_{n+1} &= y_n + h\\,f(t_n, y_n) \\\\ \\textbf{Midpoint:}\\quad y_{n+1} &= y_n + h\\,f\\!\\left(t_n + \\tfrac{h}{2},\\, y_n + \\tfrac{h}{2}f(t_n, y_n)\\right) \\\\ \\textbf{RK4:}\\quad y_{n+1} &= y_n + \\tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4) \\end{aligned}$$
+$$\\begin{aligned} \\textbf{Euler:}\\quad y_{n+1} &= y_n + h\\,f(t_n, y_n) \\\\ \\textbf{Midpoint:}\\quad y_{n+1} &= y_n + h\\,f\\!\\left(t_n + \\tfrac{h}{2},\\, y_n + \\tfrac{h}{2}f(t_n, y_n)\\right) \\\\ \\textbf{RK4:}\\quad y_{n+1} &= y_n + \\tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4) \\\\ \\textbf{RK5 (Fehlberg):}\\quad y_{n+1} &= y_n + h\\!\\left(\\tfrac{16}{135}k_1 + \\tfrac{6656}{12825}k_3 + \\tfrac{28561}{56430}k_4 - \\tfrac{9}{50}k_5 + \\tfrac{2}{55}k_6\\right) \\end{aligned}$$
 </div>
-<p>All methods approximate the same continuous ODE. Higher-order methods use more evaluations
-of $f$ per step but achieve much higher accuracy for the same step size.</p>`;
+<p>All methods approximate the same continuous ODE with a fixed step size $h$.
+Higher-order methods use more evaluations of $f$ per step but achieve much higher accuracy.
+The RK5 column uses the 5th-order weights from the Runge\u2013Kutta\u2013Fehlberg tableau;
+note that the full RKF45 <em>adaptive</em> algorithm also computes a 4th-order estimate
+to drive step-size control, which is omitted here so every method shares the same $h$.</p>`;
   static blockDiagram = `graph LR
   ODE["dy/dt = f(t,y)"] --> Method["Integrator"]
   Method --> Sol["y(t) solution"]
   Method -.-> Euler
   Method -.-> Midpoint
   Method -.-> RK4
-  Method -.-> RKF45`;
+  Method -.-> RK5Fehlberg["RK5 (Fehlberg)"]`;
   static tutorial = `<h3>How to Explore</h3>
 <ul>
   <li><strong>System:</strong> Pick an ODE system — some have exact solutions for comparison.</li>
   <li><strong>Step size h:</strong> Increase to see methods diverge. Euler fails first.</li>
   <li><strong>Step mode:</strong> Toggle to advance one step at a time and watch error grow.</li>
   <li><strong>Stiff system:</strong> Try "Stiff System" with large h — explicit methods blow up.</li>
+  <li><strong>RK5 (Fehlberg):</strong> Uses the 5th-order weights from the RKF45 tableau at fixed step size.
+  The full adaptive RKF45 algorithm would also compute a 4th-order estimate to adjust h
+  automatically — here all methods share the same h for a fair comparison.</li>
 </ul>`;
   static overview = `<p>This exploration is a side-by-side lab for comparing four classical ODE
 integration methods. Each method approximates the same ODE with the same step size,
@@ -171,7 +177,7 @@ no reference — watch how quickly the trajectories separate from each other.</p
       { type: 'checkbox', key: 'showEuler', label: 'Euler', value: this.params.showEuler },
       { type: 'checkbox', key: 'showMidpoint', label: 'Midpoint', value: this.params.showMidpoint },
       { type: 'checkbox', key: 'showRK4', label: 'RK4', value: this.params.showRK4 },
-      { type: 'checkbox', key: 'showRKF45', label: 'RKF45', value: this.params.showRKF45 },
+      { type: 'checkbox', key: 'showRKF45', label: 'RK5 (Fehlberg)', value: this.params.showRKF45 },
       { type: 'separator' },
       { type: 'button', key: 'start', label: 'Start / Step', action: 'start' },
       { type: 'button', key: 'stop', label: 'Stop', action: 'stop' },

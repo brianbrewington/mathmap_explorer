@@ -31,6 +31,10 @@ appear throughout nature in flower petal arrangements and phyllotaxis.</p>`;
 }</code></pre>
 <p>Try integer values of k first to see symmetric petals. Then sweep k slowly between
 integers to watch the curve morph continuously.</p>`;
+  static overview = `<p>Rose curves are polar flowers defined by r = A\u00B7cos(k\u03B8). The number of petals
+depends on whether k is even, odd, or fractional. Animate k through non-integer
+values to watch petals merge and split, revealing the connection between polar
+symmetry and rational versus irrational frequency ratios.</p>`;
   static foundations = ['lissajous'];
   static extensions = ['heart-curve'];
   static teaserQuestion = 'How many petals does sin(n\u03B8) draw?';

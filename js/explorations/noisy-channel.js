@@ -7,6 +7,10 @@ class NoisyChannelExploration extends BaseExploration {
   static description = 'Explore mutual information and channel capacity in a binary symmetric channel';
   static category = '';
   static tags = ['information-theory', 'simulation', 'intermediate'];
+  static overview = `<p>A binary symmetric channel flips each bit with probability \u03B5. This exploration
+visualizes mutual information as the overlap region in an entropy Venn diagram
+and plots channel capacity C = 1 \u2212 H(\u03B5) as a function of the error rate. At
+\u03B5 = 0.5 the channel destroys all information; at \u03B5 = 0 it is perfect.</p>`;
   static foundations = ['surprise-entropy', 'source-coding'];
   static extensions = ['kl-divergence', 'shannon-boltzmann'];
   static teaserQuestion = 'How much information can you push through a noisy wire?';

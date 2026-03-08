@@ -30,6 +30,10 @@ const y = r * Math.sin(theta);</code></pre>
 <p>An animated dot traces the curve from &theta;&nbsp;=&nbsp;0 to &theta;&nbsp;=&nbsp;2&pi;&middot;n,
 where n is the number of rotations. The trail colour is mapped to the current angle so each wing
 section gets a distinct hue.</p>`;
+  static overview = `<p>Temple Fay\u2019s butterfly curve is a single polar equation that produces an
+intricate wing-like pattern. The formula combines exponentials, cosines, and a
+fifth-power cosine term to achieve its detailed shape. Angle-mapped coloring
+highlights the curve\u2019s self-similar looping structure.</p>`;
   static foundations = ['rose-curves'];
   static extensions = ['heart-curve'];
   static teaserQuestion = 'Can one equation draw a butterfly?';

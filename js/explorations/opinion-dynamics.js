@@ -87,7 +87,7 @@ groups that reinforce internally while drifting apart from outsiders.</p>`;
   static foundations = ['markov-chain'];
   static extensions = ['kuramoto-network', 'network-epidemic'];
   static teaserQuestion = 'How narrow must the confidence threshold be before a population splinters?';
-  static resources = [{ type: 'wikipedia', title: 'Deffuant model', url: 'https://en.wikipedia.org/wiki/Deffuant_model' }];
+  static resources = [{ type: 'paper', title: 'Deffuant et al. (2002) — How can extremism prevail?', url: 'https://www.jasss.org/5/3/2.html' }];
 
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);

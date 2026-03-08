@@ -7,6 +7,10 @@ class NormalDistributionExploration extends BaseExploration {
   static description = 'Interactive Gaussian \u2014 PDF with 68-95-99.7 rule, CDF, and sample histogram';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'beginner'];
+  static overview = `<p>An interactive Gaussian explorer showing the probability density function with
+the 68-95-99.7 rule, the cumulative distribution function, and a live sample
+histogram. Adjust the mean \u03BC and standard deviation \u03C3 to see how the bell curve
+shifts and spreads, and draw samples to watch the histogram converge to the PDF.</p>`;
   static foundations = [];
   static extensions = ['central-limit-theorem'];
   static teaserQuestion = 'What makes the bell curve so universal?';

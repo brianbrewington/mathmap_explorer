@@ -121,6 +121,12 @@ import '../js/explorations/stochastic-resonance.js';
 import '../js/explorations/ulam-sphere.js';
 import '../js/explorations/ulam-helix.js';
 import '../js/explorations/fourier-analysis.js';
+import '../js/explorations/resonance.js';
+import '../js/explorations/additive-synthesis.js';
+import '../js/explorations/acoustic-beats.js';
+import '../js/explorations/spectrogram.js';
+import '../js/explorations/electro-mechanical-analogy.js';
+import '../js/explorations/doppler-effect.js';
 import '../js/explorations/gradient-dimensions.js';
 import '../js/explorations/discrete-path-action.js';
 import '../js/explorations/functional-derivative.js';
@@ -148,7 +154,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(105);
+    expect(explorations.length).toBe(111);
   });
 
   it('all ids are unique', () => {

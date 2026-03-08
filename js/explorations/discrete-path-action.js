@@ -19,6 +19,10 @@ class DiscretePathActionExploration extends BaseExploration {
   static title = 'Discrete Path Action';
   static description = 'A path with N control points lives in R^N. The action S is a function of that vector. As N grows, the sum becomes an integral.';
   static tags = ['physics', 'calculus', 'intermediate', 'numerical-methods'];
+  static overview = `<p>A discretized path with N control points lives in an N-dimensional space. The
+action S is an ordinary function of that vector, and as N increases the discrete sum
+converges to the continuous action integral. Drag points to see how any deviation from
+the true path raises the action.</p>`;
   static foundations = ['least-action-paths'];
   static extensions = ['functional-derivative', 'euler-lagrange-bridge'];
   static teaserQuestion = 'What happens to the path as you add more control points?';

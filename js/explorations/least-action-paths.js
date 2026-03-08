@@ -9,6 +9,10 @@ class LeastActionPathsExploration extends BaseExploration {
   static description = 'Drag alternative trajectories for a thrown ball and compare their action to the true path';
   static category = '';
   static tags = ['physics', 'simulation', 'beginner'];
+  static overview = `<p>The principle of least action says that the true trajectory of a projectile
+is the one that minimizes the action integral S = \u222B(T \u2212 V) dt. Drag
+alternative paths and compare their action to the true parabola \u2014 every
+deviation increases S, making the physical path a genuine minimum.</p>`;
   static foundations = ['simple-harmonic'];
   static extensions = ['brachistochrone', 'fermats-principle'];
   static teaserQuestion = 'Why does nature choose the parabola over every other path?';

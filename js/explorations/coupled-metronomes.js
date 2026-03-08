@@ -80,6 +80,10 @@ the bob velocity in the lab frame.</p>`;
   <li><strong>In-Phase:</strong> strong coupling and low mismatch produce alignment.</li>
   <li><strong>Mismatch:</strong> broaden natural frequencies to break lock.</li>
 </ul>`;
+  static overview = `<p>Spring-driven metronomes sit on a shared rolling platform, exchanging energy through
+the platform\u2019s motion. With sufficient coupling and low frequency mismatch, the
+metronomes spontaneously synchronize \u2014 a mechanical demonstration of the same
+phase-locking phenomenon seen in fireflies and power grids.</p>`;
   static foundations = ['damped-oscillation', 'phase-space'];
   static extensions = ['firefly-synchrony', 'coupled-systems'];
   static teaserQuestion = 'Can a moving platform make independent clocks agree?';

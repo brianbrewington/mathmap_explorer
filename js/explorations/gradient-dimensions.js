@@ -6,6 +6,10 @@ class GradientDimensionsExploration extends BaseExploration {
   static title = 'Gradient Dimensions';
   static description = 'A gradient in n dimensions has n partial derivatives. Watch n grow — each dimension adds one more "direction" to nudge.';
   static tags = ['calculus', 'numerical-methods', 'intermediate', 'linear-algebra'];
+  static overview = `<p>This exploration shows how a gradient vector grows with the number of dimensions.
+In 2-D the gradient has two components; in 50-D it has fifty. Each bar represents one
+partial derivative, building intuition for the leap to infinite-dimensional functional
+derivatives where every point on a curve contributes a "direction."</p>`;
   static foundations = ['derivative-definition'];
   static extensions = ['functional-derivative'];
   static teaserQuestion = 'What happens to the gradient as the number of dimensions grows?';

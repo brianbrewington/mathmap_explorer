@@ -9,6 +9,10 @@ class VortexSheddingExploration extends BaseExploration {
   static description = 'Flow past a cylinder showing periodic vortex shedding \u2014 the K\u00E1rm\u00E1n street';
   static category = 'pde';
   static tags = ['pde-simulation', 'numerical-methods', 'advanced'];
+  static overview = `<p>Flow past a cylinder produces periodic vortex shedding known as the K\u00E1rm\u00E1n
+vortex street. This lattice-Boltzmann simulation shows how symmetric flow breaks
+into an alternating pattern of vortices. Switch between dye, velocity, and
+vorticity visualizations to see the structure from different perspectives.</p>`;
   static foundations = ['fluid-dynamics'];
   static extensions = [];
   static teaserQuestion = 'Why do flags flutter and bridges sway in the wind?';

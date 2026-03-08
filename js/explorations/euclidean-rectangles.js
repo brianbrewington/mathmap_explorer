@@ -7,6 +7,10 @@ class EuclideanRectanglesExploration extends BaseExploration {
   static description = 'Visualize GCD as geometry — repeatedly cut the largest square from a rectangle to see the Euclidean algorithm and continued fractions in action.';
   static category = '';
   static tags = ['number-theory', 'iteration', 'beginner'];
+  static overview = `<p>The Euclidean algorithm finds the GCD of two numbers by repeated subtraction.
+Here it is visualized as geometry: cut the largest possible square from a rectangle,
+then repeat on the remainder. The colored squares correspond to the quotients in
+the continued-fraction expansion, connecting number theory to geometric proportion.</p>`;
   static foundations = [];
   static extensions = ['ford-circles'];
   static teaserQuestion = 'What does the greatest common divisor look like as a picture?';

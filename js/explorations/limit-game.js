@@ -41,6 +41,10 @@ class LimitGameExploration extends BaseExploration {
   static description = 'An adversarial game: you set the error bar ε, the computer responds with δ. Can you stump it?';
   static category = 'map';
   static tags = ['calculus', 'numerical-methods', 'beginner'];
+  static overview = `<p>An adversarial game that brings the \u03B5-\u03B4 definition of a limit to life.
+You set an error tolerance \u03B5 and the computer responds with a \u03B4-neighborhood.
+If f(x) stays within the \u03B5-band for every x in the \u03B4-band, the limit exists.
+Try functions with discontinuities or wild oscillations to stump the defender.</p>`;
   static foundations = ['epsilon-delta'];
   static extensions = [];
   static teaserQuestion = 'Can the computer always find a response to your challenge?';

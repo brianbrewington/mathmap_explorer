@@ -29,6 +29,10 @@ Your score is based on mean squared error over sampled points.</p>`;
   <li><strong>Tune coefficients:</strong> move c<sub>0</sub>, c<sub>1</sub>, ... sliders to reduce error.</li>
   <li><strong>Read score:</strong> lower MSE means better fit; score rises as fit improves.</li>
 </ul>`;
+  static overview = `<p>Instead of computing Taylor coefficients analytically, try tuning them by hand.
+Adjust each polynomial coefficient with a slider and watch the approximation
+improve or worsen. A running score shows how close your manual fit is to the
+optimal Taylor expansion, building intuition for what each coefficient controls.</p>`;
   static foundations = ['taylor-series', 'taylor-approximation'];
   static extensions = ['fourier-synthesis'];
   static teaserQuestion = 'Can you beat the built-in Taylor guess by hand?';

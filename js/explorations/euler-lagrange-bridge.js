@@ -8,6 +8,10 @@ class EulerLagrangeBridgeExploration extends BaseExploration {
   static title = 'Euler-Lagrange Bridge';
   static description = 'The optimality condition ∇S = 0 becomes δS/δy = 0 — the Euler-Lagrange equation. Infinitely many equations, one per t.';
   static tags = ['physics', 'calculus', 'advanced'];
+  static overview = `<p>This exploration connects the finite-dimensional optimality condition \u2207S = 0 to
+the infinite-dimensional Euler\u2013Lagrange equation \u03B4S/\u03B4y = 0. The discrete gradient
+has one component per control point; in the continuum limit these become one equation
+per instant t \u2014 a differential equation that the true path must satisfy.</p>`;
   static foundations = ['functional-derivative'];
   static extensions = [];
   static teaserQuestion = 'How does "set the gradient to zero" become a differential equation?';

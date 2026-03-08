@@ -7,6 +7,10 @@ class FordCirclesExploration extends BaseExploration {
   static description = 'Circle packing of the rationals — each fraction p/q gets a circle tangent to the x-axis with radius 1/(2q²). They never overlap.';
   static category = '';
   static tags = ['number-theory', 'parametric', 'intermediate'];
+  static overview = `<p>Ford circles assign each reduced fraction p/q a circle tangent to the x-axis with
+radius 1/(2q\u00B2). Remarkably, these circles never overlap \u2014 they are tangent precisely
+when the corresponding fractions are Farey neighbors. Increase the maximum denominator
+to watch the packing fill in and reveal the mediant structure of the rationals.</p>`;
   static foundations = ['roots-of-unity'];
   static extensions = ['euclidean-rectangles'];
   static teaserQuestion = 'How can you pack a circle for every fraction without any overlaps?';

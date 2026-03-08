@@ -30,6 +30,10 @@ exponentials and geometry.</p>`;
 <p>When the polygon overlay is enabled, edges connect successive roots to form a regular
 polygon. Labels show each root&rsquo;s index and coordinates. Use the <em>zoom</em> slider
 to scale the view.</p>`;
+  static overview = `<p>The n-th roots of unity are the n complex solutions of z\u207F = 1, spaced equally
+around the unit circle. They form a regular polygon whose vertices encode deep
+connections between algebra, geometry, and the discrete Fourier transform. Toggle
+the polygon overlay to see the symmetry directly.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
   static teaserQuestion = 'Why do the solutions of z\u207F = 1 form a perfect polygon?';

@@ -7,6 +7,10 @@ class CentralLimitTheoremExploration extends BaseExploration {
   static description = 'Sums of random variables converge to Gaussian \u2014 visualized as iterated convolution of densities.';
   static category = 'map';
   static tags = ['probability-statistics', 'convolution', 'beginner'];
+  static overview = `<p>The Central Limit Theorem says that sums of independent random variables converge
+to a Gaussian distribution regardless of the original shape. This exploration
+visualizes the convergence as iterated convolution: start with any base distribution
+and watch its sum density approach the bell curve as you add more terms.</p>`;
   static foundations = [];
   static extensions = ['random-walk'];
   static teaserQuestion = 'Why does everything in nature end up looking like a bell curve?';

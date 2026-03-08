@@ -7,6 +7,10 @@ class TaylorApproximationExploration extends BaseExploration {
   static description = 'Taylor expansion as error minimization — watch the approximation error shrink as terms increase';
   static category = 'series-transforms';
   static tags = ['calculus', 'numerical-methods', 'intermediate'];
+  static overview = `<p>A Taylor polynomial approximates a function near a center point by matching
+successive derivatives. This exploration frames the approximation as error
+minimization: watch the integrated squared error shrink as you add terms,
+and see how the region of good fit expands outward from the center.</p>`;
   static foundations = ['taylor-series', 'derivative-definition'];
   static extensions = [];
   static teaserQuestion = 'How many terms does it take to approximate a function?';

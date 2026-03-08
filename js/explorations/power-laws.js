@@ -7,6 +7,10 @@ class PowerLawsExploration extends BaseExploration {
   static description = 'Power law distributions on linear and log-log axes \u2014 the straight line fingerprint of scale-free phenomena.';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'intermediate'];
+  static overview = `<p>Power-law distributions appear in phenomena from earthquake magnitudes to city
+sizes. On linear axes the heavy tail is barely visible; on log-log axes it
+becomes a straight line whose slope is the exponent \u03B1. Compare power laws to
+exponential and log-normal distributions to see why the tail matters.</p>`;
   static foundations = ['law-of-large-numbers'];
   static extensions = ['random-walk'];
   static teaserQuestion = 'Why do cities, earthquakes, and words all follow the same law?';

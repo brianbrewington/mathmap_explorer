@@ -9,7 +9,7 @@ make help         # Show all targets
 ```
 
 The dev server proxies Ollama API requests automatically — no CORS
-configuration needed. Just have [Ollama](https://ollama.com) running
+configuration needed. Just have [Ollama](https://ollama.com/) running
 if you want the embedding and chat features.
 
 ### Adding a New Exploration

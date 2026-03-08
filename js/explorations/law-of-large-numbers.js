@@ -7,6 +7,10 @@ class LawOfLargeNumbersExploration extends BaseExploration {
   static description = 'Watch multiple running averages converge to the expected value';
   static category = 'map';
   static tags = ['probability-statistics', 'simulation', 'beginner'];
+  static overview = `<p>The Law of Large Numbers guarantees that sample averages converge to the
+expected value as the number of trials grows. Multiple independent running
+averages are plotted simultaneously so you can see the convergence envelope
+tighten. Try the Cauchy distribution to see a case where convergence fails.</p>`;
   static foundations = [];
   static extensions = ['central-limit-theorem'];
   static teaserQuestion = 'Do averages always stabilize?';

@@ -9,6 +9,10 @@ class WavePacketExploration extends BaseExploration {
   static tags = [
     'physics', 'parametric', 'intermediate',
   ];
+  static overview = `<p>A wave packet is a Gaussian envelope modulating a sinusoidal carrier, illustrating
+the distinction between group velocity (envelope speed) and phase velocity (carrier
+speed). Dispersion spreads the packet over time as different frequency components
+travel at different speeds, a core concept in quantum mechanics and signal processing.</p>`;
   static foundations = ['sine-cosine'];
   static extensions = ['fourier-synthesis'];
   static teaserQuestion = 'What happens when you add infinitely many waves together?';

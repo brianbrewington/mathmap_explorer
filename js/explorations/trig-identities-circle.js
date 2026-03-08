@@ -29,6 +29,10 @@ cos&theta; and sin&theta; with hypotenuse&nbsp;=&nbsp;1. In <strong>Tangent</str
 line at (1, 0) extends to meet the radius line, giving a segment of length tan&theta;.
 The <strong>Reciprocal</strong> mode draws sec&theta; and csc&theta; as full segments from the origin
 through P to the axes.</p>`;
+  static overview = `<p>Fundamental trigonometric identities are visualized as geometric relationships on
+the unit circle. Move the point P around the circle to see the Pythagorean, tangent,
+and reciprocal identities as actual line-segment lengths, making abstract algebra
+concrete and intuitive.</p>`;
   static foundations = ['sine-cosine'];
   static extensions = ['wave-identities'];
   static teaserQuestion = 'Can you see a trig identity?';

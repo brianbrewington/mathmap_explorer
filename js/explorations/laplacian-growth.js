@@ -7,6 +7,10 @@ class LaplacianGrowthExploration extends BaseExploration {
   static description = 'Grow lightning, fracture, and root-like branching patterns via the dielectric breakdown model';
   static category = '';
   static tags = ['physics', 'pde-simulation', 'simulation', 'advanced'];
+  static overview = `<p>Laplacian growth models branching patterns like lightning, mineral dendrites, and
+root networks via the dielectric breakdown model. Particles aggregate at the
+cluster boundary with probability proportional to the local electric field raised
+to a power \u03B7, producing fractal structures whose branching density is tunable.</p>`;
   static foundations = ['reaction-diffusion'];
   static extensions = [];
   static teaserQuestion = 'Why do lightning bolts, river deltas, and cracked mud all branch the same way?';

@@ -29,6 +29,10 @@ const y = r * Math.sin(theta);</code></pre>
 <p>Construction lines show the current radius and angle. Adjust <em>growthRate</em> (b)
 to change the spacing, <em>startOffset</em> (a) to push the spiral away from the
 center, and <em>turns</em> to control how many revolutions are drawn.</p>`;
+  static overview = `<p>The Archimedean spiral r = a + b\u03B8 is the simplest spiral: turns are evenly spaced
+because the radius grows linearly with angle. Adjust the growth rate b to widen or
+tighten the spacing, and watch how the construction lines trace the relationship between
+polar coordinates and the resulting curve.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['complex-spiral'];
   static teaserQuestion = 'What curve does a point make moving steadily along a spinning arm?';

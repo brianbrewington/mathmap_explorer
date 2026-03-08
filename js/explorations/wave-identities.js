@@ -30,6 +30,10 @@ const part2 = Math.cos(omega * t) * Math.sin(a);
 // part1 + part2 === original</code></pre>
 <p>Both curves are overlaid so you can verify they match exactly. Switch modes to explore
 double-angle and power-reduction identities the same way.</p>`;
+  static overview = `<p>Trig identities are shown as wave transformations: a sum-to-product identity
+decomposes one wave into two component waves, a double-angle formula reshapes the
+waveform, and power reduction changes amplitude and offset. The overlay of original
+versus expanded forms makes each identity visually verifiable.</p>`;
   static foundations = ['sine-cosine', 'trig-identities-circle'];
   static extensions = ['fourier-synthesis'];
   static teaserQuestion = 'What happens when two waves collide?';

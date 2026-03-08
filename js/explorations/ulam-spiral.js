@@ -7,6 +7,10 @@ class UlamSpiralExploration extends BaseExploration {
   static description = 'Arrange natural numbers in a spiral and highlight the primes — mysterious diagonal lines reveal deep structure in prime distribution.';
   static category = '';
   static tags = ['number-theory', 'iteration', 'beginner'];
+  static overview = `<p>The Ulam spiral arranges natural numbers in a spiral and highlights the primes.
+Mysterious diagonal lines appear, revealing that certain quadratic polynomials are
+unusually rich in primes. Toggle twin-prime highlighting and quadratic overlays
+to explore the deep structure hidden in prime distribution.</p>`;
   static foundations = ['pascals-triangle'];
   static extensions = ['gaussian-primes'];
   static teaserQuestion = 'Why do primes line up in diagonals when you spiral the integers?';

@@ -9,6 +9,10 @@ class BrachistochroneExploration extends BaseExploration {
   static description = 'Race beads down a straight line, parabola, circular arc, and the optimal cycloid to see which arrives first';
   static category = '';
   static tags = ['physics', 'calculus', 'simulation', 'intermediate'];
+  static overview = `<p>The brachistochrone problem asks: what curve gives the fastest slide between
+two points under gravity? Four beads race simultaneously down a straight line,
+parabola, circular arc, and the optimal cycloid. The cycloid always wins \u2014 a
+result first proved by Johann Bernoulli using the calculus of variations.</p>`;
   static foundations = ['least-action-paths'];
   static extensions = [];
   static teaserQuestion = 'Which ramp shape gets a ball from A to B fastest?';

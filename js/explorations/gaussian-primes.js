@@ -7,6 +7,10 @@ class GaussianPrimesExploration extends BaseExploration {
   static description = 'Prime numbers in the complex plane — see how primes split, remain inert, or ramify in the Gaussian integers ℤ[i].';
   static category = '';
   static tags = ['number-theory', 'iteration', 'intermediate'];
+  static overview = `<p>Gaussian primes are the prime elements of the Gaussian integers \u2124[i]. Ordinary
+primes that are 3 mod 4 stay prime in \u2124[i], while primes that are 1 mod 4 split
+into conjugate pairs. The resulting pattern in the complex plane reveals a
+fourfold symmetry and unexpected visual structure in prime factorization.</p>`;
   static foundations = ['roots-of-unity'];
   static extensions = [];
   static teaserQuestion = 'Which primes can be written as the sum of two squares?';

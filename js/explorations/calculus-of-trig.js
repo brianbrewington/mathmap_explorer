@@ -36,6 +36,11 @@ for (let i = 0; i &lt; n; i++) {
 }</code></pre>
 <p>Increase the resolution slider to see the numerical result converge toward the exact
 analytical answer (shown as the dashed overlay).</p>`;
+  static overview = `<p>Derivatives and integrals of sine and cosine are computed numerically using
+central differences and Riemann sums, then overlaid with the exact analytical
+result. Watching the numerical approximation converge to the dashed analytical
+curve builds intuition for how differentiation and integration transform
+trigonometric functions.</p>`;
   static foundations = ['sine-cosine', 'taylor-series'];
   static extensions = ['derivative-definition'];
   static teaserQuestion = 'What do you get when you differentiate a wave?';

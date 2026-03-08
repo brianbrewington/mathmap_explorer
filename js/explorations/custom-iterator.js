@@ -100,9 +100,9 @@ x_{n+1} &= f(x, y, a, b, c, d) \\\\
 y_{n+1} &= g(x, y, a, b, c, d)
 \\end{aligned}$$
 <p><strong>Complex mode:</strong></p>
-$$z_{n+1} = f(z, c, a, b, c, d)$$
+$$z_{n+1} = f(z, c, a, b, d)$$
 <p><strong>Escape Time (GPU):</strong></p>
-$$z_{n+1} = f(z, c, a, b, c, d)\\text{, colored by escape iteration}$$
+$$z_{n+1} = f(z, c, a, b, d)\\text{, colored by escape iteration}$$
 <p><strong>1D Map:</strong></p>
 $$x_{n+1} = f(x, r, a, b, c, d)\\text{, bifurcation over } r$$
 </div>

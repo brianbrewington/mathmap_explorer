@@ -30,6 +30,11 @@ class SourceCodingExploration extends BaseExploration {
   static description = 'Build a Huffman tree from symbol frequencies and see how entropy bounds the average code length';
   static category = '';
   static tags = ['information-theory', 'simulation', 'beginner'];
+  static overview = `<p>Huffman coding assigns short bit strings to frequent symbols and long ones to
+rare symbols. This exploration builds the tree live from symbol frequencies and
+shows how the average code length approaches Shannon\u2019s entropy bound \u2014 the
+theoretical minimum for lossless compression. Skew the distribution to see the
+tree become highly asymmetric.</p>`;
   static foundations = ['surprise-entropy'];
   static extensions = ['noisy-channel'];
   static teaserQuestion = 'Can you compress a message below its entropy?';

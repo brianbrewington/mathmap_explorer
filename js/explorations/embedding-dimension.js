@@ -21,6 +21,10 @@ class EmbeddingDimensionExploration extends BaseExploration {
   static title = 'Embedding Dimension';
   static description = 'High-dimensional embeddings approximate something that might live in an infinite-dimensional space. More basis functions = better approximation.';
   static tags = ['calculus', 'numerical-methods', 'intermediate', 'fourier-transform'];
+  static overview = `<p>High-dimensional embeddings approximate objects that may live in an infinite-dimensional
+space. Here you choose a target function and reconstruct it with n Fourier modes \u2014 each
+mode adds one dimension to the representation. Reconstruction error shrinks as n grows,
+but sharp features need many more dimensions than smooth ones.</p>`;
   static foundations = ['gradient-dimensions', 'fourier-synthesis'];
   static extensions = [];
   static teaserQuestion = 'What are we approximating when we use 768-dimensional word embeddings?';

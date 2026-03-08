@@ -31,6 +31,10 @@ const y = r * (1 - d * Math.cos(t));</code></pre>
 <p>The wheel rolls without slipping: it advances by <code>r&middot;&Delta;t</code> for each
 radian of rotation. The pen point (shown as a dot) draws the trail behind it.
 Adjust <em>penRatio</em> to switch between curtate, standard, and prolate cycloids.</p>`;
+  static overview = `<p>A cycloid is the curve traced by a point on the rim of a circle rolling along a
+straight line. It is simultaneously the brachistochrone (fastest descent under gravity)
+and the tautochrone (equal descent time regardless of starting position). Adjust the
+pen ratio to explore curtate and prolate variants.</p>`;
   static foundations = ['unit-circle'];
   static extensions = ['epitrochoid'];
   static teaserQuestion = 'What path does a point on a rolling wheel trace?';
