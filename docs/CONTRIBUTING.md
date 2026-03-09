@@ -32,7 +32,7 @@ class MyExploration extends BaseExploration {
   static id = 'my-exploration';         // Unique kebab-case identifier
   static title = 'My Exploration';       // Display name
   static description = 'What this shows'; // One-line description
-  static category = 'fractal';           // One of: fractal, attractor, map, custom
+  static category = 'fractal';           // One of: fractal, attractor, map, pde, circuit, network, calculus, probability, information, variational, numerical, custom
 
   // --- Optional metadata ---
   static tags = ['chaos', '2D'];         // For neighborhoods and embedding similarity
