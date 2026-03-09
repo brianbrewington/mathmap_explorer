@@ -8,6 +8,7 @@ const STORAGE_KEY = 'ifs-sidebar-state';
 const PLACEHOLDER_EMOJI = '\u221E'; // ∞
 let heroImages = {};
 let onSelectCallback = null;
+let onShowLobbyCallback = null;
 let onCaptureHeroCallback = null;
 let onSnapshotLoadCallback = null;
 let listElRef = null;
@@ -160,9 +161,10 @@ function buildGroups(scrollZone, explorations, filter) {
 
 // ── Public API ───────────────────────────────────────────────────────────
 
-export async function buildSidebar(listEl, onSelect) {
+export async function buildSidebar(listEl, onSelect, onShowLobby) {
   listEl.innerHTML = '';
   onSelectCallback = onSelect;
+  onShowLobbyCallback = onShowLobby;
   listElRef = listEl;
 
   allExplorations = getAll();
@@ -172,6 +174,14 @@ export async function buildSidebar(listEl, onSelect) {
   const fixedZone = document.createElement('div');
   fixedZone.className = 'sidebar-fixed';
   listEl.appendChild(fixedZone);
+
+  const mapBtn = document.createElement('button');
+  mapBtn.id = 'map-toggle';
+  mapBtn.className = 'map-toggle-btn';
+  mapBtn.title = 'Show Map of All Demos';
+  mapBtn.textContent = 'Show Map of All Demos';
+  mapBtn.addEventListener('click', () => onShowLobbyCallback?.());
+  fixedZone.appendChild(mapBtn);
 
   const searchWrap = document.createElement('div');
   searchWrap.className = 'sidebar-search';

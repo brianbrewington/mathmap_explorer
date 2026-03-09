@@ -7,10 +7,12 @@ import { AnimationController } from './ui/animation-controller.js';
 import { RecipeManager } from './ui/recipe-manager.js';
 import { captureHeroImage, captureCanvasThumbnail, hasRealHero, setHeroImage } from './ui/hero-images.js';
 import { embedAllExplorations } from './embeddings/exploration-embeddings.js';
-import { recordVisit, hasVisited, getSnapshots, getLastExploration, setLastExploration } from './ui/user-state.js';
+import { recordVisit, hasVisited, getSnapshots, getLastExploration, setLastExploration, getVisitHistory } from './ui/user-state.js';
 import { initChatPanel } from './ui/chat-panel.js';
 import { AudioEngine } from './audio/engine.js';
 import { initTrailPicker } from './ui/trail-picker.js';
+
+import { LobbyView } from './ui/lobby.js';
 
 // Import all explorations (self-registering)
 import './explorations/mandelbrot.js';
@@ -106,8 +108,6 @@ import './explorations/charge-pump.js';
 // Number theory (batch 5)
 import './explorations/modular-multiplication-circle.js';
 import './explorations/ulam-spiral.js';
-import './explorations/ulam-sphere.js';
-import './explorations/ulam-helix.js';
 import './explorations/ford-circles.js';
 import './explorations/euclidean-rectangles.js';
 import './explorations/gaussian-primes.js';
@@ -192,6 +192,8 @@ function resetCanvas() {
 let currentExploration = null;
 let currentInstance = null;
 let currentExplClass = null;
+let currentMode = 'exploration'; // 'lobby' | 'exploration'
+let currentLobby = null;
 
 let teaserTimerId = null;
 let teaserFadeTimerId = null;
@@ -669,8 +671,10 @@ function selectExploration(id) {
     currentInstance.deactivate();
     currentInstance = null;
   }
+  if (currentLobby) { currentLobby.deactivate(); currentLobby = null; }
 
   resetCanvas();
+  currentMode = 'exploration';
 
   const ExplClass = getById(id);
   if (!ExplClass) return;
@@ -752,6 +756,25 @@ function selectExploration(id) {
   }, 1500);
 }
 
+function selectLobby() {
+  animator.stop();
+  hideTeaser();
+  if (currentInstance) {
+    currentInstance.teardownAudio?.();
+    currentInstance.deactivate();
+    currentInstance = null;
+  }
+  if (currentLobby) { currentLobby.deactivate(); currentLobby = null; }
+  resetCanvas();
+  currentMode = 'lobby';
+  currentExploration = null;
+  currentExplClass = null;
+  setActive(listEl, null);
+  currentLobby = new LobbyView(canvas, (id) => selectExploration(id));
+  currentLobby.activate();
+  currentLobby.resize(canvas.width, canvas.height);
+}
+
 initInfoPanel();
 setRelatedCallback(id => selectExploration(id));
 
@@ -821,7 +844,7 @@ function trailNavigate(explorationId, params) {
 initTrailPicker(document.getElementById('info-panel'), trailNavigate);
 
 // buildSidebar is async (loads hero images from IndexedDB)
-buildSidebar(listEl, selectExploration).then(() => {
+buildSidebar(listEl, selectExploration, selectLobby).then(() => {
   const all = getAll();
   if (all.length === 0) return;
 
@@ -831,10 +854,15 @@ buildSidebar(listEl, selectExploration).then(() => {
     return;
   }
 
-  // Restore last exploration or fall back to first
-  const lastId = getLastExploration();
-  const startId = (lastId && all.find(e => e.id === lastId)) ? lastId : all[0].id;
-  selectExploration(startId);
+  // First-time visitors see the lobby; returning users restore their last exploration
+  const history = getVisitHistory();
+  if (history.length === 0) {
+    selectLobby();
+  } else {
+    const lastId = getLastExploration();
+    const startId = (lastId && all.find(e => e.id === lastId)) ? lastId : all[0].id;
+    selectExploration(startId);
+  }
 
   // Embed explorations in background (non-blocking, graceful if Ollama unavailable)
   embedAllExplorations().then(ok => {
@@ -917,7 +945,10 @@ async function runHeroGeneration(explorations) {
 }
 
 setupCanvasResize(canvas, (w, h) => {
-  if (currentInstance) {
+  if (currentMode === 'lobby' && currentLobby) {
+    currentLobby.resize(w, h);
+    currentLobby.render();
+  } else if (currentInstance) {
     currentInstance.resize(w, h);
     currentInstance.render();
   }

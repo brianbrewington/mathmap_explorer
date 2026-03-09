@@ -1,12 +1,21 @@
-.PHONY: serve test test-watch heroes heroes-refresh help
+.PHONY: serve test test-watch heroes heroes-refresh ensure-regions regions ensure-ideas help
 
 PORT ?= 8080
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-serve: ## Start the dev server (PORT=8080 by default)
+ensure-regions: ## Generate data/regions.json if missing or stale
+	@node scripts/generate-regions.js
+
+regions: ## Force-regenerate data/regions.json
+	@node scripts/generate-regions.js --force
+
+ensure-ideas: ## Generate data/ideas.json if missing
+	@node scripts/generate-ideas-manifest.js
+
+serve: ensure-regions ensure-ideas ## Start the dev server (PORT=8080 by default)
 	@if lsof -iTCP:$(PORT) -sTCP:LISTEN -t > /dev/null 2>&1; then \
 		echo "\n  Error: port $(PORT) is already in use.\n  Run: PORT=<other> make serve\n"; \
 		exit 1; \

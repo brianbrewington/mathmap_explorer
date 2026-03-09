@@ -23,6 +23,7 @@ const MIME = {
   '.woff': 'font/woff',
   '.ico':  'image/x-icon',
   '.wasm': 'application/wasm',
+  '.md':   'text/plain; charset=utf-8',
 };
 
 function serveStatic(res, filePath) {

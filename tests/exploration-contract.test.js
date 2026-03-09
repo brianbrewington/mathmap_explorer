@@ -118,8 +118,6 @@ import '../js/explorations/kuramoto-network.js';
 import '../js/explorations/bifurcation-anatomy.js';
 import '../js/explorations/delay-de.js';
 import '../js/explorations/stochastic-resonance.js';
-import '../js/explorations/ulam-sphere.js';
-import '../js/explorations/ulam-helix.js';
 import '../js/explorations/fourier-analysis.js';
 import '../js/explorations/resonance.js';
 import '../js/explorations/additive-synthesis.js';
@@ -154,7 +152,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(111);
+    expect(explorations.length).toBe(109);
   });
 
   it('all ids are unique', () => {

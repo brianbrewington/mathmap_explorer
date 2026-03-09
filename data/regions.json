@@ -1,0 +1,57 @@
+{
+  "cacheKey": "cffc993be62fff8cf7b3584e63ddd674",
+  "regions": [
+    {
+      "topicKey": "fractals",
+      "label": "Fractal Geometry"
+    },
+    {
+      "topicKey": "dynamical-systems",
+      "label": "Strange Attractors & Chaos"
+    },
+    {
+      "topicKey": "parametric-curves",
+      "label": "Curves & Spirals"
+    },
+    {
+      "topicKey": "complex-analysis",
+      "label": "Complex Plane"
+    },
+    {
+      "topicKey": "physics",
+      "label": "Physical Systems"
+    },
+    {
+      "topicKey": "series-transforms",
+      "label": "Series & Transforms"
+    },
+    {
+      "topicKey": "signal-processing",
+      "label": "Signal Processing"
+    },
+    {
+      "topicKey": "pde-simulation",
+      "label": "PDEs & Simulation"
+    },
+    {
+      "topicKey": "probability-statistics",
+      "label": "Probability & Statistics"
+    },
+    {
+      "topicKey": "information-theory",
+      "label": "Information Theory"
+    },
+    {
+      "topicKey": "combinatorics",
+      "label": "Combinatorics"
+    },
+    {
+      "topicKey": "calculus",
+      "label": "The Language of Change"
+    },
+    {
+      "topicKey": "number-theory",
+      "label": "Number Theory"
+    }
+  ]
+}

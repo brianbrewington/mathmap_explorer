@@ -1,0 +1,172 @@
+[
+  {
+    "id": "am-radio",
+    "title": "AM Radio (Amplitude Modulation)",
+    "topic": "signal-processing",
+    "description": "Amplitude modulation is the oldest electronic communication technique and one of the most elegant applications of trigonometric identities. Multiply a high-frequency carrier by a low-frequency message signal, and the message \"rides\" on the carrier — recoverable by a simple envelope detector. The product-to-sum identity cos(A)·cos(B) = ½[cos(A−B) + cos(A+B)] explains exactly what happens in the frequency domain: the carrier sprouts symmetric sidebands, one above and one below.",
+    "foundations": [
+      "sine-cosine",
+      "simple-harmonic",
+      "additive-synthesis"
+    ],
+    "extensions": [
+      "spectrogram"
+    ],
+    "markdownPath": "docs/suggested_modules/am_radio.md"
+  },
+  {
+    "id": "audio-feedback",
+    "title": "Audio Feedback / Delay",
+    "topic": "physics",
+    "description": "Feed a sound back into itself with a delay, and you get an echo. Shorten the delay to a few milliseconds and the echo fuses into a pitch — a metallic, ringing tone. Shorten it further, add a lowpass filter, and you get the Karplus-Strong algorithm: a startlingly realistic plucked string synthesized from nothing but a noise burst and a delay line. This is one of the most elegant results in digital audio: a single feedback equation produces sounds that range from cavernous reverb to guitar plucks.",
+    "foundations": [
+      "sine-cosine",
+      "simple-harmonic"
+    ],
+    "extensions": [
+      "additive-synthesis",
+      "spectrogram"
+    ],
+    "markdownPath": "docs/suggested_modules/audio_feedback.md"
+  },
+  {
+    "id": "diffusion-limited-aggregation",
+    "title": "Diffusion-Limited Aggregation (DLA)",
+    "topic": "fractals",
+    "description": "Release a random walker far from a seed. When it touches the seed, it sticks. Repeat thousands of times. The result is a fractal dendrite — a branching, snowflake-like structure. This simple rule produces patterns that appear in electrodeposition, lightning, mineral growth, and frost on a window.",
+    "foundations": [
+      "random-walk"
+    ],
+    "extensions": [
+      "laplacian-growth"
+    ],
+    "markdownPath": "docs/suggested_modules/diffusion_limited_aggregation.md"
+  },
+  {
+    "id": "fourier-limit",
+    "title": "Series to Transform (Fourier Limit)",
+    "topic": "series-transforms",
+    "description": "Students learn Fourier series (periodic signals, discrete spectra) and the Fourier transform (aperiodic signals, continuous spectra) as separate topics. In reality, one is the limit of the other: as the period T → ∞, the discrete spectral lines merge into a continuous envelope. This exploration animates that transition, showing spectral lines crowding together and filling in the continuous transform — one of the most important conceptual bridges in signal processing and mathematical physics.",
+    "foundations": [
+      "fourier-synthesis",
+      "fourier-analysis"
+    ],
+    "extensions": [
+      "spectrogram"
+    ],
+    "markdownPath": "docs/suggested_modules/fourier_limit.md"
+  },
+  {
+    "id": "matthew-conjecture",
+    "title": "The Matthew Conjecture",
+    "topic": "series-transforms",
+    "description": "What shape is the level set sin(x) + sin(y) = a when a is very close to its maximum value of 2? At exactly a = 2, there's only a single point: (π/2, π/2). As a decreases slightly, a tiny closed curve appears around that point. Taylor-expand to second order and the curve is a **circle**. But push to fourth order and something unexpected emerges: the curve is a **roundtangle** — a shape smoothly interpolating between a circle and a square, with the superellipse |x|⁴ + |y|⁴ = r⁴ as its skeleton.",
+    "foundations": [
+      "taylor-series",
+      "sine-cosine"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/matthew_conjecture.md"
+  },
+  {
+    "id": "moire-patterns",
+    "title": "Moiré Patterns",
+    "topic": "parametric-curves",
+    "description": "Overlay two grids at slightly different angles or spacings and something magical happens: large-scale patterns emerge that exist in neither grid alone. These moiré patterns are visual interference — the same phenomenon that produces acoustic beats when two close frequencies combine.",
+    "foundations": [
+      "sine-cosine"
+    ],
+    "extensions": [
+      "fourier-synthesis",
+      "acoustic-beats"
+    ],
+    "markdownPath": "docs/suggested_modules/moire_patterns.md"
+  },
+  {
+    "id": "pendulum-phase-space",
+    "title": "Pendulum Phase Space",
+    "topic": "physics",
+    "description": "The simple pendulum is the first nonlinear system most students encounter. For small angles, it reduces to simple harmonic motion — but for large swings, the full nonlinearity reveals qualitatively new behavior: the separatrix, the boundary between oscillation (libration) and full rotation.",
+    "foundations": [
+      "simple-harmonic",
+      "phase-space"
+    ],
+    "extensions": [
+      "double-pendulum",
+      "bifurcation-anatomy"
+    ],
+    "markdownPath": "docs/suggested_modules/pendulum_phase_space.md"
+  },
+  {
+    "id": "percolation",
+    "title": "Percolation",
+    "topic": "probability-statistics",
+    "description": "Remove links from a grid at random. At first, paths still cross the grid from side to side. Remove enough, and suddenly connectivity collapses — there's a sharp phase transition at a critical threshold p_c. Below p_c: isolated islands. Above p_c: a spanning cluster connects opposite edges.",
+    "foundations": [
+      "random-walk",
+      "network-epidemic"
+    ],
+    "extensions": [
+      "power-laws"
+    ],
+    "markdownPath": "docs/suggested_modules/percolation.md"
+  },
+  {
+    "id": "pole-zero-plot",
+    "title": "Pole-Zero Plot",
+    "topic": "signal-processing",
+    "description": "Every linear time-invariant system — from a guitar string to a radio filter to a suspension bridge — is completely characterized by the locations of its poles and zeros in the complex plane. Poles are frequencies where the system blows up (resonances); zeros are frequencies where it goes silent (cancellations). The pole-zero plot is the single most information-dense diagram in all of signal processing.",
+    "foundations": [
+      "complex-spiral",
+      "simple-harmonic"
+    ],
+    "extensions": [
+      "phasor-diagrams"
+    ],
+    "markdownPath": "docs/suggested_modules/pole_zero_plot.md"
+  },
+  {
+    "id": "power-mapping",
+    "title": "Power Mapping",
+    "topic": "complex-analysis",
+    "description": "The map w = z^n is one of the simplest conformal transformations, yet it produces stunning visual effects: it wraps the complex plane n times around itself, multiplying angles by n and raising radii to the n-th power. Domain coloring — where every complex number gets a color based on its argument and modulus — turns this into a vivid psychedelic painting that encodes the map's full behavior in a single image.",
+    "foundations": [
+      "unit-circle",
+      "roots-of-unity"
+    ],
+    "extensions": [
+      "newton-fractal",
+      "mandelbrot"
+    ],
+    "markdownPath": "docs/suggested_modules/power_mapping.md"
+  },
+  {
+    "id": "predator-prey",
+    "title": "Predator-Prey (Lotka-Volterra)",
+    "topic": "dynamical-systems",
+    "description": "The Lotka-Volterra equations are the simplest model of ecological boom-and-bust cycles. Two populations — prey (rabbits) and predators (foxes) — interact: prey reproduce, predators eat prey, and without prey the predators decline. The result is perpetual oscillation: more rabbits lead to more foxes, which eat the rabbits, causing fox decline, letting rabbits recover. This cycle appears in fisheries data, lynx-hare records, and epidemiology.",
+    "foundations": [
+      "phase-portrait",
+      "ode-integrator"
+    ],
+    "extensions": [
+      "lorenz-attractor",
+      "bifurcation-anatomy",
+      "network-epidemic"
+    ],
+    "markdownPath": "docs/suggested_modules/predator_prey.md"
+  },
+  {
+    "id": "sandpile-model",
+    "title": "Sandpile Model (Self-Organized Criticality)",
+    "topic": "probability-statistics",
+    "description": "Drop grains of sand one at a time onto a pile. Most grains cause nothing. Occasionally, a small avalanche. Very rarely, a catastrophic collapse that reshapes the entire pile. The Bak-Tang-Wiesenfeld sandpile model shows that this \"self-organized criticality\" produces power-law distributed avalanche sizes — no characteristic scale, no tuning required.",
+    "foundations": [
+      "random-walk"
+    ],
+    "extensions": [
+      "power-laws"
+    ],
+    "markdownPath": "docs/suggested_modules/sandpile_model.md"
+  }
+]
