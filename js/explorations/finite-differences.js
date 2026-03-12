@@ -357,7 +357,7 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
 
     // Stencil weight labels (only if cells are large enough)
     if (cell > 18) {
-      ctx.font = `bold ${Math.min(11, cell * 0.45)}px monospace`;
+      ctx.font = `bold ${Math.min(cell - 4, Math.max(10, cell * 0.55))}px monospace`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       // Center: −4
