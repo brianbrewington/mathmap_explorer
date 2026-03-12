@@ -417,12 +417,12 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
     // Layout
     const rx = readX;
     const ry = gridY;
-    const lineH = 20;
+    const lineH = 28;
     let y = ry + 10;
 
     const mono = (s, cx, cy, col) => {
       ctx.fillStyle = col || '#e2e4ea';
-      ctx.font = '14px monospace';
+      ctx.font = '22px monospace';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       ctx.fillText(s, cx, cy);
