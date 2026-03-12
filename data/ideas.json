@@ -57,18 +57,6 @@
     "markdownPath": "docs/suggested_modules/fourier_limit.md"
   },
   {
-    "id": "matthew-conjecture",
-    "title": "The Matthew Conjecture",
-    "topic": "series-transforms",
-    "description": "What shape is the level set sin(x) + sin(y) = a when a is very close to its maximum value of 2? At exactly a = 2, there's only a single point: (π/2, π/2). As a decreases slightly, a tiny closed curve appears around that point. Taylor-expand to second order and the curve is a **circle**. But push to fourth order and something unexpected emerges: the curve is a **roundtangle** — a shape smoothly interpolating between a circle and a square, with the superellipse |x|⁴ + |y|⁴ = r⁴ as its skeleton.",
-    "foundations": [
-      "taylor-series",
-      "sine-cosine"
-    ],
-    "extensions": [],
-    "markdownPath": "docs/suggested_modules/matthew_conjecture.md"
-  },
-  {
     "id": "moire-patterns",
     "title": "Moiré Patterns",
     "topic": "parametric-curves",

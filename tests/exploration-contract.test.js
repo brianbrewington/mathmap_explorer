@@ -54,6 +54,7 @@ import '../js/explorations/cycloid.js';
 import '../js/explorations/rose-curves.js';
 import '../js/explorations/epitrochoid.js';
 import '../js/explorations/taylor-series.js';
+import '../js/explorations/matthew-conjecture.js';
 import '../js/explorations/damped-oscillation.js';
 import '../js/explorations/trig-identities-circle.js';
 import '../js/explorations/wave-identities.js';
@@ -130,6 +131,7 @@ import '../js/explorations/discrete-path-action.js';
 import '../js/explorations/functional-derivative.js';
 import '../js/explorations/euler-lagrange-bridge.js';
 import '../js/explorations/embedding-dimension.js';
+import '../js/explorations/finite-differences.js';
 
 const VALID_CATEGORIES = ['fractal', 'attractor', 'map', 'custom', 'pde', 'parametric-curves', 'series-transforms', 'complex-analysis', 'physics', ''];
 
@@ -152,7 +154,7 @@ const explorations = getAll();
 
 describe('Exploration Contract Compliance', () => {
   it('has the expected number of registered explorations', () => {
-    expect(explorations.length).toBe(109);
+    expect(explorations.length).toBe(111);
   });
 
   it('all ids are unique', () => {

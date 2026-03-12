@@ -48,7 +48,7 @@ is shown as a faint background gradient.</p>
   constructor(canvas, controlsContainer) {
     super(canvas, controlsContainer);
     this.params = {
-      gridSize: 150,
+      gridSize: 250,
       eta: 2.0,
       seedShape: 'point',
       speed: 8,
@@ -69,7 +69,7 @@ is shown as a faint background gradient.</p>
 
   getControls() {
     return [
-      { type: 'slider', key: 'gridSize', label: 'Grid size', min: 60, max: 300, step: 10, value: this.params.gridSize },
+      { type: 'slider', key: 'gridSize', label: 'Grid size', min: 60, max: 500, step: 10, value: this.params.gridSize },
       { type: 'slider', key: 'eta', label: 'η (growth exponent)', min: 0.5, max: 6, step: 0.1, value: this.params.eta },
       { type: 'select', key: 'seedShape', label: 'Seed', options: [
         { value: 'point', label: 'Center point' },

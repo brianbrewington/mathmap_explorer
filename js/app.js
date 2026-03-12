@@ -40,6 +40,7 @@ import './explorations/fluid-dynamics.js';
 
 // PDE demos
 import './explorations/thermal-diffusion.js';
+import './explorations/finite-differences.js';
 
 // Trig explorer ports
 import './explorations/lissajous.js';
@@ -57,6 +58,7 @@ import './explorations/cycloid.js';
 import './explorations/rose-curves.js';
 import './explorations/epitrochoid.js';
 import './explorations/taylor-series.js';
+import './explorations/matthew-conjecture.js';
 import './explorations/damped-oscillation.js';
 import './explorations/trig-identities-circle.js';
 import './explorations/wave-identities.js';
