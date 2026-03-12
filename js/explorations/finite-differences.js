@@ -228,12 +228,10 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
       const py = (e.clientY - rect.top)  * (this.canvas.height / rect.height);
       const layout = this._layout();
       if (!layout) return;
-      const { gridX, gridY, gridW, gridH } = layout;
+      const { gridX, gridY, cell } = layout;
       const N = this._N;
-      const cellW = gridW / N;
-      const cellH = gridH / N;
-      const ci = Math.floor((px - gridX) / cellW);
-      const cj = Math.floor((py - gridY) / cellH);
+      const ci = Math.floor((px - gridX) / cell);
+      const cj = Math.floor((py - gridY) / cell);
       if (ci >= 0 && ci < N && cj >= 0 && cj < N) {
         this._selI = ci;
         this._selJ = cj;
@@ -255,15 +253,20 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
     const W = this.canvas.width;
     const H = this.canvas.height;
     if (W < 2 || H < 2) return null;
+    const N = this._N;
     const pad = 30;
     const splitX = Math.floor(W * 0.60);
     const gridX = pad;
     const gridY = pad + 20;
-    const gridW = splitX - pad * 2;
-    const gridH = H - gridY - pad;
+    const availW = splitX - pad * 2;
+    const availH = H - gridY - pad;
+    // Force square cells
+    const cell = Math.floor(Math.min(availW, availH) / N);
+    const gridW = cell * N;
+    const gridH = cell * N;
     const readX = splitX + 10;
     const readW = W - splitX - 14;
-    return { pad, splitX, gridX, gridY, gridW, gridH, readX, readW, W, H };
+    return { pad, splitX, gridX, gridY, gridW, gridH, cell, readX, readW, W, H };
   }
 
   // ── Diverging colormap: blue–white–red centred at 0 ──
@@ -301,20 +304,18 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
 
   // ── Left panel: grid ──
   _drawGrid(ctx, layout) {
-    const { gridX, gridY, gridW, gridH, pad } = layout;
+    const { gridX, gridY, gridW, gridH, cell } = layout;
     const N = this._N;
-    const cellW = gridW / N;
-    const cellH = gridH / N;
     const u = this._u;
 
     // Draw each cell via ImageData for speed
-    const imgW = Math.max(1, Math.floor(gridW));
-    const imgH = Math.max(1, Math.floor(gridH));
+    const imgW = Math.max(1, gridW);
+    const imgH = Math.max(1, gridH);
     const imgData = ctx.createImageData(imgW, imgH);
     for (let py = 0; py < imgH; py++) {
-      const cj = Math.min(N - 1, Math.floor((py / imgH) * N));
+      const cj = Math.min(N - 1, Math.floor(py / cell));
       for (let px = 0; px < imgW; px++) {
-        const ci = Math.min(N - 1, Math.floor((px / imgW) * N));
+        const ci = Math.min(N - 1, Math.floor(px / cell));
         const [r, g, b] = this._colormap(u[ci * N + cj]);
         const idx = (py * imgW + px) * 4;
         imgData.data[idx]     = r;
@@ -329,11 +330,11 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
     ctx.strokeStyle = 'rgba(255,255,255,0.12)';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= N; i++) {
-      const x = gridX + i * cellW;
+      const x = gridX + i * cell;
       ctx.beginPath(); ctx.moveTo(x, gridY); ctx.lineTo(x, gridY + gridH); ctx.stroke();
     }
     for (let j = 0; j <= N; j++) {
-      const y = gridY + j * cellH;
+      const y = gridY + j * cell;
       ctx.beginPath(); ctx.moveTo(gridX, y); ctx.lineTo(gridX + gridW, y); ctx.stroke();
     }
 
@@ -345,28 +346,28 @@ current value, each neighbour, the discrete Laplacian ∇²u, and the updated va
       if (ni >= 0 && ni < N && nj >= 0 && nj < N) {
         ctx.strokeStyle = 'rgba(250,204,21,0.7)';
         ctx.lineWidth = 1.5;
-        ctx.strokeRect(gridX + ni * cellW + 1, gridY + nj * cellH + 1, cellW - 2, cellH - 2);
+        ctx.strokeRect(gridX + ni * cell + 1, gridY + nj * cell + 1, cell - 2, cell - 2);
       }
     }
 
     // Selected cell border
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
-    ctx.strokeRect(gridX + si * cellW, gridY + sj * cellH, cellW, cellH);
+    ctx.strokeRect(gridX + si * cell, gridY + sj * cell, cell, cell);
 
     // Stencil weight labels (only if cells are large enough)
-    if (cellW > 22 && cellH > 14) {
-      ctx.font = `bold ${Math.min(11, cellH * 0.45)}px monospace`;
+    if (cell > 18) {
+      ctx.font = `bold ${Math.min(11, cell * 0.45)}px monospace`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       // Center: −4
       ctx.fillStyle = '#fff';
-      ctx.fillText('−4', gridX + si * cellW + cellW / 2, gridY + sj * cellH + cellH / 2);
+      ctx.fillText('−4', gridX + si * cell + cell / 2, gridY + sj * cell + cell / 2);
       // Neighbors: +1
       ctx.fillStyle = '#fde68a';
       for (const [ni, nj] of neighbors) {
         if (ni >= 0 && ni < N && nj >= 0 && nj < N) {
-          ctx.fillText('+1', gridX + ni * cellW + cellW / 2, gridY + nj * cellH + cellH / 2);
+          ctx.fillText('+1', gridX + ni * cell + cell / 2, gridY + nj * cell + cell / 2);
         }
       }
     }
