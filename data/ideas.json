@@ -30,6 +30,30 @@
     "markdownPath": "docs/suggested_modules/audio_feedback.md"
   },
   {
+    "id": "belousov-zhabotinsky",
+    "title": "Belousov-Zhabotinsky Reaction",
+    "topic": "physics",
+    "description": "In 1951, Boris Belousov tried to publish a paper showing that a chemical solution oscillates between two colors — and was rejected, because editors said thermodynamics forbade it. He was right. The Belousov-Zhabotinsky (BZ) reaction is a real clock reaction: red, then blue, then red again, cycling indefinitely far from equilibrium.",
+    "foundations": [
+      "reaction-diffusion",
+      "coupled-systems"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/belousov-zhabotinsky.md"
+  },
+  {
+    "id": "brusselator",
+    "title": "Brusselator",
+    "topic": "dynamical-systems",
+    "description": "Named for the city where Ilya Prigogine won the Nobel Prize, the Brusselator is the simplest chemical reaction scheme that can oscillate. Four steps, two intermediates, two parameters. In a well-stirred flask it produces sustained limit-cycle oscillations — a chemical clock. Add diffusion and a second dimension, and it produces Turing patterns with the same mechanism as animal coats.",
+    "foundations": [
+      "reaction-diffusion",
+      "coupled-systems"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/brusselator.md"
+  },
+  {
     "id": "diffusion-limited-aggregation",
     "title": "Diffusion-Limited Aggregation (DLA)",
     "topic": "fractals",
@@ -41,6 +65,28 @@
       "laplacian-growth"
     ],
     "markdownPath": "docs/suggested_modules/diffusion_limited_aggregation.md"
+  },
+  {
+    "id": "dryland-vegetation",
+    "title": "Dryland Vegetation Patterns",
+    "topic": "dynamical-systems",
+    "description": "From a satellite 400 km above Niger or Somalia, you can see something strange: the savanna is striped. Perfectly regular bands of vegetation run perpendicular to the slope, separated by bare soil, like green corduroy on a hillside. No human planted them. No fence caused them. They are a spontaneous Turing pattern — but the morphogens are plants and water.",
+    "foundations": [
+      "reaction-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/dryland-vegetation.md"
+  },
+  {
+    "id": "fitzhugh-nagumo",
+    "title": "FitzHugh-Nagumo: Excitable Media",
+    "topic": "pde-simulation",
+    "description": "A nerve impulse travels without decay from your fingertip to your brain. A heartbeat propagates in an orderly wave from apex to base. Both are examples of excitable media: systems that, when poked hard enough, fire a pulse that travels at constant speed and amplitude, then return to rest. FitzHugh-Nagumo (FHN) is the minimal mathematical model of this phenomenon.",
+    "foundations": [
+      "reaction-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/fitzhugh-nagumo.md"
   },
   {
     "id": "fourier-limit",
@@ -57,6 +103,30 @@
     "markdownPath": "docs/suggested_modules/fourier_limit.md"
   },
   {
+    "id": "gierer-meinhardt",
+    "title": "Gierer-Meinhardt Activator-Inhibitor",
+    "topic": "pde-simulation",
+    "description": "A tiny hydra polyp, sliced in half, regenerates a new head — always at the right end. Alan Turing predicted in 1952 that two diffusing chemicals could produce this. Alfred Gierer and Hans Meinhardt formalized the mechanism in 1972: a short-range activator that stimulates its own production, paired with a long-range inhibitor that suppresses it. This is why tabby cats have stripes, zebrafish have lateral-line spots, and your fingertips have fingerprints.",
+    "foundations": [
+      "reaction-diffusion",
+      "coupled-systems"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/gierer-meinhardt.md"
+  },
+  {
+    "id": "keller-segel-chemotaxis",
+    "title": "Chemotaxis: Keller-Segel Model",
+    "topic": "pde-simulation",
+    "description": "Slime mold cells live alone, grazing on bacteria. When food runs out, they start secreting a chemical signal — cyclic AMP — and simultaneously drift toward it. The result: thousands of isolated cells aggregate into a fruiting body, a multicellular structure that can survive the famine. No central command. No blueprint. Just cells following gradients they themselves create.",
+    "foundations": [
+      "reaction-diffusion",
+      "random-walk"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/keller-segel-chemotaxis.md"
+  },
+  {
     "id": "moire-patterns",
     "title": "Moiré Patterns",
     "topic": "parametric-curves",
@@ -69,6 +139,18 @@
       "acoustic-beats"
     ],
     "markdownPath": "docs/suggested_modules/moire_patterns.md"
+  },
+  {
+    "id": "morphogen-gradient",
+    "title": "Morphogen Gradient (French Flag)",
+    "topic": "pde-simulation",
+    "description": "How does a cell in your developing embryo know whether to become a head cell or a tail cell? It reads the concentration of a diffusing molecule — a morphogen — and compares it to a threshold. High concentration: head. Medium: body. Low: tail. The cell's fate is encoded in a number.",
+    "foundations": [
+      "thermal-diffusion",
+      "reaction-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/morphogen-gradient.md"
   },
   {
     "id": "pendulum-phase-space",
@@ -156,5 +238,39 @@
       "power-laws"
     ],
     "markdownPath": "docs/suggested_modules/sandpile_model.md"
+  },
+  {
+    "id": "swift-hohenberg",
+    "title": "Swift-Hohenberg Pattern Formation",
+    "topic": "pde-simulation",
+    "description": "The Gray-Scott model requires two chemicals. Gierer-Meinhardt requires two morphogens. But is a second species strictly necessary for patterns? The Swift-Hohenberg equation shows that a single scalar field — one chemical, one temperature, one anything — can spontaneously develop stripes, hexagons, or squares, depending on just one parameter.",
+    "foundations": [
+      "reaction-diffusion",
+      "thermal-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/swift-hohenberg.md"
+  },
+  {
+    "id": "turing-dispersion",
+    "title": "Turing Instability Analyzer",
+    "topic": "pde-simulation",
+    "description": "The reaction-diffusion simulation shows you the patterns. This exploration shows you *why* they form — before running a single simulation step. It's the analytical engine behind every Turing pattern.",
+    "foundations": [
+      "reaction-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/turing-dispersion.md"
+  },
+  {
+    "id": "turing-on-surface",
+    "title": "Reaction-Diffusion on a Surface",
+    "topic": "pde-simulation",
+    "description": "Leopards have spots on their bodies but stripes on their tails. The conventional wisdom is that a narrow cylindrical geometry (tail) forces a stripe solution while a large spherical one (body) supports spots. This is Turing's mechanism sensitive to the domain's shape.",
+    "foundations": [
+      "reaction-diffusion"
+    ],
+    "extensions": [],
+    "markdownPath": "docs/suggested_modules/turing-on-surface.md"
   }
 ]
