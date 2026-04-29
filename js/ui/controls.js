@@ -53,6 +53,16 @@ export function buildControls(container, descriptors, callbacks) {
       });
       wrapper.appendChild(label);
       wrapper.appendChild(select);
+    } else if (desc.type === 'checkbox') {
+      const label = document.createElement('label');
+      label.className = 'control-checkbox-label';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = !!desc.value;
+      input.addEventListener('change', () => callbacks.onChange(desc.key, input.checked));
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(desc.label));
+      wrapper.appendChild(label);
     } else if (desc.type === 'button') {
       const btn = document.createElement('button');
       btn.className = 'control-btn' + (desc.style ? ' ' + desc.style : '');
