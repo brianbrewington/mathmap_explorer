@@ -226,7 +226,7 @@ for (let i = 0; i < maxIter; i++) {
       const dy = (e.clientY - this._dragStart.y) / rect.height;
       const aspect = this.canvas.width / this.canvas.height;
       this.params.centerX = this._dragCenterStart.x - dx * this.params.zoom * aspect;
-      this.params.centerY = this._dragCenterStart.y + dy * this.params.zoom;
+      this.params.centerY = this._dragCenterStart.y - dy * this.params.zoom;
       this.scheduleRender();
     };
 
