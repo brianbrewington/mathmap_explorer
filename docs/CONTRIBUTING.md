@@ -217,19 +217,23 @@ static foundations = ['prereq-id'];
 One paragraph on the key insight or "aha moment."
 ```
 
-See [`docs/suggested_modules/reaction_diffusion.md`](suggested_modules/reaction_diffusion.md)
-for a detailed example. The `docs/suggested_modules/` directory contains
-specs for 30 proposed explorations organized by topic:
+For a detailed example, see any spec in
+[`docs/suggested_modules/implemented/`](suggested_modules/implemented/) — those
+are the proposals that have already shipped as explorations. Active (not yet
+implemented) proposals live in `docs/suggested_modules/`:
 
 | Topic | Modules |
 |-------|---------|
-| **Fundamentals** | [Sine & Cosine](suggested_modules/sine_cosine.md), [Trig Identities (Circle)](suggested_modules/trig_identities_circle.md), [Wave Identities](suggested_modules/wave_identities.md) |
-| **Physics & Waves** | [Damped Oscillation](suggested_modules/damped_oscillation.md), [Resonance](suggested_modules/resonance.md), [Electro-Mechanical Analogy](suggested_modules/electro_mechanical_analogy.md), [Acoustic Beats](suggested_modules/acoustic_beats.md), [Wave Packet](suggested_modules/wave_packet.md), [Doppler Effect](suggested_modules/doppler_effect.md) |
-| **Complex Analysis** | [Roots of Unity](suggested_modules/roots_of_unity.md), [Complex Spiral](suggested_modules/complex_spiral.md), [Power Mapping](suggested_modules/power_mapping.md), [Phasor Diagrams](suggested_modules/phasor_diagrams.md), [Pole-Zero Plot](suggested_modules/pole_zero_plot.md) |
-| **Parametric Curves** | [Rose Curves](suggested_modules/rose_curves.md), [Epitrochoid](suggested_modules/epitrochoid.md), [Archimedean Spiral](suggested_modules/archimedean_spiral.md), [Cycloid](suggested_modules/cycloid.md), [Heart Curve](suggested_modules/heart_curve.md), [Butterfly Curve](suggested_modules/butterfly_curve.md) |
-| **Series & Transforms** | [Fourier Analysis](suggested_modules/fourier_analysis.md), [Series to Transform](suggested_modules/fourier_limit.md), [Taylor Series](suggested_modules/taylor_series.md), [Calculus of Trig](suggested_modules/calculus_of_trig.md), [The Matthew Conjecture](suggested_modules/matthew_conjecture.md) |
-| **Signal Processing** | [Audio Feedback](suggested_modules/audio_feedback.md), [Additive Synthesis](suggested_modules/additive_synthesis.md), [AM Radio](suggested_modules/am_radio.md), [Spectrogram](suggested_modules/spectrogram.md) |
-| **PDEs & Simulation** | [Reaction-Diffusion](suggested_modules/reaction_diffusion.md) |
+| **Physics & Waves** | [Pendulum Phase Space](suggested_modules/pendulum_phase_space.md) |
+| **Complex Analysis** | [Power Mapping](suggested_modules/power_mapping.md), [Pole-Zero Plot](suggested_modules/pole_zero_plot.md) |
+| **Series & Transforms** | [Series to Transform](suggested_modules/fourier_limit.md) |
+| **Signal Processing** | [Audio Feedback](suggested_modules/audio_feedback.md), [AM Radio](suggested_modules/am_radio.md) |
+| **Dynamical Systems** | [Predator-Prey](suggested_modules/predator_prey.md) |
+| **PDEs & Reaction-Diffusion** | [Belousov-Zhabotinsky](suggested_modules/belousov-zhabotinsky.md), [Brusselator](suggested_modules/brusselator.md), [Dryland Vegetation](suggested_modules/dryland-vegetation.md), [FitzHugh-Nagumo](suggested_modules/fitzhugh-nagumo.md), [Gierer-Meinhardt](suggested_modules/gierer-meinhardt.md), [Keller-Segel Chemotaxis](suggested_modules/keller-segel-chemotaxis.md), [Morphogen Gradient](suggested_modules/morphogen-gradient.md), [Swift-Hohenberg](suggested_modules/swift-hohenberg.md), [Turing Dispersion](suggested_modules/turing-dispersion.md), [Turing on a Surface](suggested_modules/turing-on-surface.md) |
+| **Fractals & Random Growth** | [Diffusion-Limited Aggregation](suggested_modules/diffusion_limited_aggregation.md), [Percolation](suggested_modules/percolation.md), [Sandpile Model](suggested_modules/sandpile_model.md), [Moiré Patterns](suggested_modules/moire_patterns.md) |
+
+When you implement a proposal, move its `.md` file into
+`docs/suggested_modules/implemented/` to keep the active queue accurate.
 
 The `docs/ideas/` directory is for broader design discussions and roadmap
 documents (not individual module specs).

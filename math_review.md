@@ -1,7 +1,7 @@
 # Math Review Report
 
 ## Overview
-I have carefully verified the mathematical formulas across all 115 demos and explorations in the project, including the JavaScript simulations, WebGL shaders, and web workers. 
+I have carefully verified the mathematical formulas across all 113 demos and explorations in the project, including the JavaScript simulations, WebGL shaders, and web workers. 
 
 ## Areas Verified
 

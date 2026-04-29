@@ -206,8 +206,8 @@ function error(a, R, N) {
       case 'ln': {
         // ln(1+x): f(a) = ln(1+a)
         // f^(n)(a) = (-1)^(n+1) * (n-1)! / (1+a)^n for n >= 1
-        if (n === 0) return Math.log(1 + a);
         if (1 + a <= 0) return NaN;
+        if (n === 0) return Math.log(1 + a);
         return Math.pow(-1, n + 1) * this._factorial(n - 1) / Math.pow(1 + a, n);
       }
       default: return 0;

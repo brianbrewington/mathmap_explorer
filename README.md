@@ -8,7 +8,7 @@ A web-based tool for exploring interactive mathematical visualizations — fract
 
 ## Features
 
-The suite contains **111 interactive explorations** organized across the following topic areas:
+The suite contains **113 interactive explorations** organized across the following topic areas:
 
 *   **Fractals & IFS** — Mandelbrot, Julia, Newton fractal, Sierpinski, Barnsley fern, Kleinian groups, affine IFS, and more.
 *   **Strange Attractors** — Lorenz, de Jong, Hénon map, coupled systems.
@@ -81,14 +81,14 @@ Current trails include:
 
 | Trail | What you'll discover |
 |-------|----------------------|
-| **Road to Chaos** | Logistic map → bifurcation → strange attractors → Lorenz |
-| **Circles to Fourier** | Unit circle → sine/cosine → Lissajous → Fourier synthesis |
-| **Calculus from Scratch** | Epsilon-delta limits → derivative definition → chain rule → integration |
-| **Path to Infinite Dimensions** | Vectors → function spaces → Fourier series → calculus of variations |
-| **Probability to Information** | Random walk → distributions → entropy → Shannon channel capacity |
-| **Complex Plane** | Complex numbers → Möbius transforms → Julia sets → Kleinian groups |
-| **From Circuits to Chaos** | RLC filter → Chua circuit → memristor chaos |
-| **Network Dynamics** | Graph basics → epidemics → opinion dynamics → Kuramoto synchronization |
+| **The Road to Chaos** | From predictable springs to the butterfly effect — how deterministic systems become unpredictable. |
+| **From Circles to Fourier** | A point on a circle casts a shadow that becomes a wave. Stack enough waves and you can build anything. |
+| **Calculus from Scratch** | From "what does approaching mean?" to "the area under a curve" — the foundations of calculus. |
+| **Path to Infinite Dimensions** | From finite-dimensional gradients to the calculus of variations — the Euler-Lagrange equation. |
+| **Information and Entropy** | What is a surprise? How to measure uncertainty. The cost of communication. |
+| **Fractal Worlds** | From simple triangles to the infinite complexity of the Mandelbrot set. |
+| **Oscillations and Circuits** | A spring. A spring with friction. The same equation in a circuit. A circuit that generates chaos. |
+| **Networks and Collective Behavior** | From a drunkard's walk to diseases spreading and opinions forming on networks. |
 
 ## Contributing
 

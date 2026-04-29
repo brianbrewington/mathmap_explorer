@@ -41,15 +41,16 @@ export function buildControls(container, descriptors, callbacks) {
       const label = document.createElement('label');
       label.textContent = desc.label;
       const select = document.createElement('select');
-      desc.options.forEach(opt => {
+      desc.options.forEach((opt, idx) => {
         const option = document.createElement('option');
-        option.value = opt.value;
+        option.value = String(idx);
         option.textContent = opt.label;
         if (String(opt.value) === String(desc.value)) option.selected = true;
         select.appendChild(option);
       });
       select.addEventListener('change', () => {
-        callbacks.onChange(desc.key, isNaN(select.value) ? select.value : Number(select.value));
+        const idx = Number(select.value);
+        callbacks.onChange(desc.key, desc.options[idx].value);
       });
       wrapper.appendChild(label);
       wrapper.appendChild(select);
