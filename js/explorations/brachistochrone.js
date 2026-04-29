@@ -52,7 +52,7 @@ is shown in the right panel.</p>
     };
     this.ctx = null;
     this._curves = [];
-    this._beadProgress = [];
+    this._beadArc = [];
     this._beadTimes = [];
     this._beadFinished = [];
     this._t = 0;
@@ -117,7 +117,7 @@ is shown in the right panel.</p>
   resize() { this.render(); }
 
   _resetBeads() {
-    this._beadProgress = this._curves.map(() => 0);
+    this._beadArc = this._curves.map(() => 0);
     this._beadTimes = this._curves.map(() => null);
     this._beadFinished = this._curves.map(() => false);
     this._t = 0;
@@ -170,7 +170,38 @@ is shown in the right panel.</p>
       { points: circle, color: '#fb7185', label: 'Circular arc', dash: [] },
       { points: cycloid, color: '#facc15', label: 'Cycloid ★', dash: [] },
     ];
+    for (const c of this._curves) {
+      c.arcLen = this._buildArcLen(c.points);
+      c.totalLen = c.arcLen[c.arcLen.length - 1];
+    }
     this._resetBeads();
+  }
+
+  _buildArcLen(points) {
+    const a = [0];
+    for (let i = 1; i < points.length; i++) {
+      const dx = points[i].x - points[i - 1].x;
+      const dy = points[i].y - points[i - 1].y;
+      a.push(a[i - 1] + Math.sqrt(dx * dx + dy * dy));
+    }
+    return a;
+  }
+
+  // Interpolate position along a curve at a given arc length.
+  _posAtArc(c, arc) {
+    const { points, arcLen } = c;
+    const s = Math.min(arc, arcLen[arcLen.length - 1]);
+    let lo = 0, hi = points.length - 1;
+    while (lo < hi - 1) {
+      const mid = (lo + hi) >> 1;
+      if (arcLen[mid] <= s) lo = mid; else hi = mid;
+    }
+    const span = arcLen[hi] - arcLen[lo];
+    const t = span > 0 ? (s - arcLen[lo]) / span : 1;
+    return {
+      x: points[lo].x + t * (points[hi].x - points[lo].x),
+      y: points[lo].y + t * (points[hi].y - points[lo].y),
+    };
   }
 
   _fitCycloid(bx, by, steps) {
@@ -227,21 +258,11 @@ is shown in the right panel.</p>
 
       for (let ci = 0; ci < this._curves.length; ci++) {
         if (this._beadFinished[ci]) continue;
-        const pts = this._curves[ci].points;
-        let prog = this._beadProgress[ci];
-        const v = Math.sqrt(Math.max(2 * G * pts[Math.min(prog, pts.length - 1)].y, 0.01));
-        const step = v * dt;
-        let dist = 0;
-        while (prog < pts.length - 1) {
-          const dx = pts[prog + 1].x - pts[prog].x;
-          const dy = pts[prog + 1].y - pts[prog].y;
-          const segLen = Math.sqrt(dx * dx + dy * dy);
-          if (dist + segLen > step) break;
-          dist += segLen;
-          prog++;
-        }
-        this._beadProgress[ci] = Math.min(prog, pts.length - 1);
-        if (this._beadProgress[ci] >= pts.length - 1 && !this._beadFinished[ci]) {
+        const c = this._curves[ci];
+        const pos = this._posAtArc(c, this._beadArc[ci]);
+        const v = Math.sqrt(Math.max(2 * G * pos.y, 0.01));
+        this._beadArc[ci] = Math.min(c.totalLen, this._beadArc[ci] + v * dt);
+        if (this._beadArc[ci] >= c.totalLen && !this._beadFinished[ci]) {
           this._beadFinished[ci] = true;
           this._beadTimes[ci] = this._t;
         }
@@ -278,14 +299,17 @@ is shown in the right panel.</p>
     const bx = this.params.endX;
     const by = this.params.endY;
 
-    let yMax = by * 1.3;
+    let xMin = 0, yMax = by * 1.3;
     for (const c of this._curves) {
       for (const p of c.points) {
+        if (p.x < xMin) xMin = p.x;
         if (p.y > yMax) yMax = p.y * 1.1;
       }
     }
+    const xPad = 1.1;
+    const xRange = (bx - xMin) * xPad;
 
-    const toSX = x => plotR.x + (x / (bx * 1.1)) * plotR.w;
+    const toSX = x => plotR.x + ((x - xMin * xPad) / xRange) * plotR.w;
     const toSY = y => plotR.y + (y / yMax) * plotR.h;
 
     // title
@@ -325,8 +349,7 @@ is shown in the right panel.</p>
       if (c.dash.length) ctx.setLineDash([]);
 
       // bead
-      const prog = this._beadProgress[ci];
-      const pt = c.points[Math.min(prog, c.points.length - 1)];
+      const pt = this._posAtArc(c, this._beadArc[ci] ?? 0);
       ctx.fillStyle = c.color;
       ctx.beginPath();
       ctx.arc(toSX(pt.x), toSY(pt.y), px(5), 0, Math.PI * 2);
@@ -352,10 +375,24 @@ is shown in the right panel.</p>
     for (let ci = 0; ci < this._curves.length; ci++) {
       const c = this._curves[ci];
       const y = rpY + ci * px(60);
-      ctx.fillStyle = c.color;
       ctx.font = this._font(11);
       ctx.textAlign = 'left';
+
+      // medal immediately after the label
+      let medal = '';
+      if (this._beadFinished.every(Boolean)) {
+        const rank = [...this._beadTimes].sort((a, b) => a - b).indexOf(this._beadTimes[ci]) + 1;
+        medal = ['🥇', '🥈', '🥉', '4️⃣'][rank - 1] || '';
+      }
+
+      ctx.fillStyle = c.color;
       ctx.fillText(c.label, rpX, y);
+      if (medal) {
+        const labelW = ctx.measureText(c.label).width;
+        ctx.font = this._font(13);
+        ctx.fillText(medal, rpX + labelW + px(5), y);
+        ctx.font = this._font(11);
+      }
 
       ctx.fillStyle = '#a0a8c0';
       ctx.font = this._font(10);
@@ -367,14 +404,6 @@ is shown in the right panel.</p>
       } else if (this._t > 0) {
         ctx.fillStyle = '#6b7089';
         ctx.fillText('racing...', rpX, y + px(32));
-      }
-
-      // rank indicator
-      if (this._beadFinished.every(Boolean)) {
-        const rank = [...this._beadTimes].sort((a, b) => a - b).indexOf(this._beadTimes[ci]) + 1;
-        const medals = ['🥇', '🥈', '🥉', '4th'];
-        ctx.font = this._font(14);
-        ctx.fillText(medals[rank - 1] || '', rpX + rpW - px(10), y + px(6));
       }
     }
 
